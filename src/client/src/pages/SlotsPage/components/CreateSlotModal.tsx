@@ -92,12 +92,21 @@ export default function CreateSlotModal({
 				</FormControl>
 			</ModalBody>
 			<ModalFooter>
-				<ModalButton kind={KIND.tertiary} onClick={onClose}>
-					{t("slots.cancel")}
-				</ModalButton>
-				<ModalButton onClick={onCreate} isLoading={loading}>
-					{t("slots.create")}
-				</ModalButton>
+				<div
+					style={{
+						display: "flex",
+						gap: "10px",
+						justifyContent: "flex-end",
+						width: "100%",
+					}}
+				>
+					<ModalButton kind={KIND.tertiary} onClick={onClose}>
+						{t("slots.cancel")}
+					</ModalButton>
+					<ModalButton onClick={onCreate} isLoading={loading}>
+						{t("slots.create")}
+					</ModalButton>
+				</div>
 			</ModalFooter>
 		</Modal>
 	);

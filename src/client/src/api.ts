@@ -1,3 +1,5 @@
+import type { AppColors } from "./theme";
+
 const API_BASE = "/api";
 
 interface ApiResponse<T> {
@@ -76,6 +78,8 @@ export interface LoginResponseData {
 	token: string;
 	must_change_password: boolean;
 }
+
+export type ApiThemeColors = AppColors;
 
 async function request<T>(
 	endpoint: string,
@@ -233,6 +237,28 @@ export const api = {
 			method: "PUT",
 			body: JSON.stringify({ language }),
 		}),
+
+	getThemeColors: () =>
+		request<{ success: boolean; data: { colors: ApiThemeColors | null } }>(
+			"/settings/theme-colors",
+		).then((r) => r.data.colors),
+
+	saveThemeColors: (colors: ApiThemeColors) =>
+		request<{ success: boolean; data: { colors: ApiThemeColors } }>(
+			"/admin/settings/theme-colors",
+			{
+				method: "PUT",
+				body: JSON.stringify({ colors }),
+			},
+		),
+
+	resetThemeColors: () =>
+		request<{ success: boolean; data: { reset: boolean } }>(
+			"/admin/settings/theme-colors",
+			{
+				method: "DELETE",
+			},
+		),
 
 	getAdminEmail: () =>
 		request<{ success: boolean; data: { email: string } }>(

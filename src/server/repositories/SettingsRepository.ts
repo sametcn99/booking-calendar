@@ -21,4 +21,8 @@ export class SettingsRepository {
 			await this.repo.save(setting);
 		}
 	}
+
+	async delete(key: string): Promise<void> {
+		await this.repo.delete({ key });
+	}
 }

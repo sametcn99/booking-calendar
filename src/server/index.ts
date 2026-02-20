@@ -15,6 +15,9 @@ import { getLanguage, loadLanguageFromDB, setLanguage, t } from "./i18n";
 import { getAuthenticatedUser, isAuthenticated } from "./middleware/auth";
 import { checkRateLimit } from "./middleware/rateLimit";
 import { SettingsRepository } from "./repositories/SettingsRepository";
+import { parseThemeColorsFromUnknown } from "./theme/appColors";
+
+const THEME_COLORS_SETTING_KEY = "theme_colors";
 
 // Initialize DB
 await initializeDatabase();
@@ -198,6 +201,33 @@ const _server = Bun.serve({
 				{ success: true, data: { language: getLanguage() } },
 				corsHeaders,
 			);
+		}
+
+		if (pathname === "/api/settings/theme-colors" && method === "GET") {
+			const settingsRepo = new SettingsRepository();
+			const saved = await settingsRepo.get(THEME_COLORS_SETTING_KEY);
+			if (!saved) {
+				return jsonResponse(
+					200,
+					{ success: true, data: { colors: null } },
+					corsHeaders,
+				);
+			}
+
+			try {
+				const parsed = parseThemeColorsFromUnknown(JSON.parse(saved));
+				return jsonResponse(
+					200,
+					{ success: true, data: { colors: parsed } },
+					corsHeaders,
+				);
+			} catch {
+				return jsonResponse(
+					200,
+					{ success: true, data: { colors: null } },
+					corsHeaders,
+				);
+			}
 		}
 
 		// Public API: Validate booking token
@@ -755,6 +785,44 @@ const _server = Bun.serve({
 				return jsonResponse(
 					200,
 					{ success: true, data: { enabled: !!body.enabled } },
+					corsHeaders,
+				);
+			}
+
+			if (pathname === "/api/admin/settings/theme-colors" && method === "PUT") {
+				const body = await parseJsonBody<{ colors?: unknown }>(request);
+				const colors = parseThemeColorsFromUnknown(body.colors);
+				if (!colors) {
+					return jsonResponse(
+						400,
+						{ success: false, error: t("general.invalidRequest") },
+						corsHeaders,
+					);
+				}
+
+				const settingsRepo = new SettingsRepository();
+				await settingsRepo.set(
+					THEME_COLORS_SETTING_KEY,
+					JSON.stringify(colors),
+				);
+
+				return jsonResponse(
+					200,
+					{ success: true, data: { colors } },
+					corsHeaders,
+				);
+			}
+
+			if (
+				pathname === "/api/admin/settings/theme-colors" &&
+				method === "DELETE"
+			) {
+				const settingsRepo = new SettingsRepository();
+				await settingsRepo.delete(THEME_COLORS_SETTING_KEY);
+
+				return jsonResponse(
+					200,
+					{ success: true, data: { reset: true } },
 					corsHeaders,
 				);
 			}

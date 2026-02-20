@@ -8,7 +8,7 @@ import { Provider as StyletronProvider } from "styletron-react";
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 import { I18nProvider } from "./context/I18nContext";
-import { applyAppColorVariables, theme } from "./theme";
+import { ThemeProvider, useThemeColors } from "./context/ThemeContext";
 import "./index.css";
 
 const engine = new Styletron();
@@ -22,20 +22,32 @@ if ("serviceWorker" in navigator) {
 	registerSW({ immediate: true });
 }
 
-applyAppColorVariables();
+function AppShell() {
+	const { loaded, theme } = useThemeColors();
+
+	if (!loaded) {
+		return null;
+	}
+
+	return (
+		<BaseProvider theme={theme}>
+			<BrowserRouter>
+				<I18nProvider>
+					<AuthProvider>
+						<App />
+					</AuthProvider>
+				</I18nProvider>
+			</BrowserRouter>
+		</BaseProvider>
+	);
+}
 
 ReactDOM.createRoot(rootElement).render(
 	<React.StrictMode>
 		<StyletronProvider value={engine}>
-			<BaseProvider theme={theme}>
-				<BrowserRouter>
-					<I18nProvider>
-						<AuthProvider>
-							<App />
-						</AuthProvider>
-					</I18nProvider>
-				</BrowserRouter>
-			</BaseProvider>
+			<ThemeProvider>
+				<AppShell />
+			</ThemeProvider>
 		</StyletronProvider>
 	</React.StrictMode>,
 );
