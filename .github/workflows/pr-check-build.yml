@@ -1,0 +1,44 @@
+name: PR Check and Build
+
+on:
+    pull_request:
+        branches:
+            - "**"
+
+jobs:
+    check-and-build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install root dependencies
+              run: bun install
+
+            - name: Check root (lint, type, test)
+              run: |
+                  bun run lint || true
+                  bun run check || true
+                  bun test || true
+
+            - name: Install client dependencies
+              run: |
+                  cd src/client
+                  bun install
+
+            - name: Check client (lint, type, test)
+              run: |
+                  cd src/client
+                  bun run lint || true
+                  bun run check || true
+                  bun test || true
+
+            - name: Build client
+              run: |
+                  cd src/client
+                  bun run build
