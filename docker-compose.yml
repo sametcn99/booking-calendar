@@ -1,8 +1,8 @@
-# Coolify bu dosyayı tarayarak ${VAR:-default} kalıplarını otomatik olarak
-# Environment Variables arayüzünde gösterir.
+# Coolify scans this file and automatically displays ${VAR:-default} patterns
+# in the Environment Variables interface.
 #
-# VITE_* değişkenleri build-time'dır (bundle'a gömülür); değiştirmek için
-# yeni bir build tetiklemek gerekir.
+# VITE_* variables are build-time (embedded in the bundle); to change them,
+# a new build must be triggered.
 
 services:
   app:
@@ -11,15 +11,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # VITE_* değerleri Vite build sırasında bundle'a gömülür.
-      # Coolify UI'ındaki environment değişkenlerini değiştirdiğinizde
-      # yeni bir deploy (rebuild) gerektirir.
+      # VITE_* values are embedded in the bundle during Vite build.
+      # When you change environment variables in Coolify UI,
+      # a new deploy (rebuild) is required.
       args:
-        VITE_SEO_TITLE: ${VITE_SEO_TITLE:-Booking Calendar}
-        VITE_SEO_DESCRIPTION: ${VITE_SEO_DESCRIPTION:-Personal booking calendar}
+        VITE_SEO_TITLE: ${VITE_SEO_TITLE:-Calendar}
+        VITE_SEO_DESCRIPTION: ${VITE_SEO_DESCRIPTION:-Personal calendar}
         VITE_SEO_LANG: ${VITE_SEO_LANG:-en}
         VITE_SEO_KEYWORDS: ${VITE_SEO_KEYWORDS:-booking,calendar,appointments,self-hosted}
-        VITE_SEO_AUTHOR: ${VITE_SEO_AUTHOR:-Booking Calendar}
+        VITE_SEO_AUTHOR: ${VITE_SEO_AUTHOR:-Calendar}
         VITE_SEO_OG_TYPE: ${VITE_SEO_OG_TYPE:-website}
         VITE_SEO_TWITTER_CARD: ${VITE_SEO_TWITTER_CARD:-summary}
         VITE_PUBLIC_URL: ${VITE_PUBLIC_URL:-}
@@ -41,7 +41,7 @@ services:
       # ── JWT ───────────────────────────────────────────────────────────────
       JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production}
 
-      # ── SMTP (boş bırakılırsa e-posta gönderimleri atlanır) ────────────────
+      # ── SMTP (if left empty, email sending is skipped) ─────────────────────
       SMTP_HOST: ${SMTP_HOST:-smtp.example.com}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
