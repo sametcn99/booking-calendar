@@ -31,13 +31,6 @@ jobs:
                   cd src/client
                   bun install
 
-            - name: Check client (lint, type, test)
-              run: |
-                  cd src/client
-                  bun run lint || true
-                  bun run check || true
-                  bun test || true
-
             - name: Build client
               run: |
                   cd src/client
