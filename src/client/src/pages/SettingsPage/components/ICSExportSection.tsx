@@ -7,6 +7,7 @@ import { api } from "../../../api";
 
 interface Props {
 	t: (key: string) => string;
+	surface?: "card" | "list";
 }
 
 async function downloadIcs(url: string) {
@@ -23,8 +24,9 @@ async function downloadIcs(url: string) {
 	URL.revokeObjectURL(a.href);
 }
 
-export default function ICSExportSection({ t }: Props) {
+export default function ICSExportSection({ t, surface = "card" }: Props) {
 	const [css] = useStyletron();
+	const isList = surface === "list";
 	const [from, setFrom] = useState("");
 	const [to, setTo] = useState("");
 
@@ -41,8 +43,8 @@ export default function ICSExportSection({ t }: Props) {
 		<div
 			className={css({
 				backgroundColor: "#141414",
-				borderRadius: "12px",
-				padding: "24px",
+				borderRadius: isList ? "10px" : "12px",
+				padding: isList ? "18px" : "24px",
 				border: "1px solid #2a2a2a",
 			})}
 		>

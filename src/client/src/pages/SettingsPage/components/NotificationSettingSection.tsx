@@ -10,6 +10,7 @@ interface Props {
 	descriptionKey: string;
 	enabledKey: string;
 	disabledKey: string;
+	surface?: "card" | "list";
 }
 
 export default function NotificationSettingSection({
@@ -21,15 +22,17 @@ export default function NotificationSettingSection({
 	descriptionKey,
 	enabledKey,
 	disabledKey,
+	surface = "card",
 }: Props) {
 	const [css] = useStyletron();
+	const isList = surface === "list";
 
 	return (
 		<div
 			className={css({
 				backgroundColor: "#141414",
-				borderRadius: "12px",
-				padding: "24px",
+				borderRadius: isList ? "10px" : "12px",
+				padding: isList ? "18px" : "24px",
 				border: "1px solid #2a2a2a",
 			})}
 		>
