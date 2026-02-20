@@ -1,15 +1,30 @@
 import { useStyletron } from "baseui";
 import { Button, KIND, SIZE } from "baseui/button";
 import { Input } from "baseui/input";
+import {
+	Modal,
+	ModalBody,
+	ModalButton,
+	ModalFooter,
+	ModalHeader,
+} from "baseui/modal";
 import { Textarea } from "baseui/textarea";
 import { toaster } from "baseui/toast";
-import { Copy, ExternalLink, Plus, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { Copy, ExternalLink, Trash2 } from "lucide-react";
+import {
+	type Dispatch,
+	type SetStateAction,
+	useCallback,
+	useEffect,
+	useState,
+} from "react";
 import { type ApiCommunityEvent, api } from "../../../api";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import { APP_COLORS } from "../../../theme";
 
 interface Props {
+	showForm: boolean;
+	setShowForm: Dispatch<SetStateAction<boolean>>;
 	t: (key: string) => string;
 }
 
@@ -25,10 +40,13 @@ const STATUS_COLORS: Record<string, string> = {
 	canceled: "var(--color-error)",
 };
 
-export default function CommunityEventsSection({ t }: Props) {
+export default function CommunityEventsSection({
+	showForm,
+	setShowForm,
+	t,
+}: Props) {
 	const [css] = useStyletron();
 	const [events, setEvents] = useState<ApiCommunityEvent[]>([]);
-	const [showForm, setShowForm] = useState(false);
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [startAt, setStartAt] = useState("");
@@ -139,208 +157,176 @@ export default function CommunityEventsSection({ t }: Props) {
 	};
 
 	return (
-		<div
-			className={css({
-				backgroundColor: "var(--color-bg-secondary)",
-				borderRadius: "12px",
-				padding: "24px",
-				border: "1px solid var(--color-bg-quaternary)",
-			})}
-		>
-			<div
-				className={css({
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-					marginBottom: "16px",
-				})}
+		<>
+			<Modal
+				onClose={() => setShowForm(false)}
+				isOpen={showForm}
+				overrides={{
+					Dialog: {
+						style: {
+							backgroundColor: "var(--color-bg-secondary)",
+							borderRadius: "12px",
+						},
+					},
+				}}
 			>
-				<h2
-					className={css({
-						fontSize: "18px",
-						fontWeight: 700,
-						color: "var(--color-text-primary)",
-						margin: 0,
-					})}
-				>
-					{t("communityEvents.title")}
-				</h2>
-				<Button
-					kind={KIND.secondary}
-					size={SIZE.compact}
-					onClick={() => setShowForm((p) => !p)}
-				>
-					<Plus size={14} />
-					<span className={css({ marginLeft: "4px" })}>
-						{t("communityEvents.create")}
-					</span>
-				</Button>
-			</div>
-
-			{showForm && (
-				<div
-					className={css({
-						backgroundColor: "var(--color-bg-tertiary)",
-						borderRadius: "8px",
-						padding: "16px",
-						border: "1px solid var(--color-bg-quaternary)",
-						marginBottom: "16px",
-						display: "flex",
-						flexDirection: "column",
-						gap: "10px",
-					})}
-				>
-					<div>
-						<div
-							className={css({
-								fontSize: "12px",
-								color: "var(--color-text-secondary)",
-								marginBottom: "4px",
-							})}
-						>
-							{t("communityEvents.eventTitle")}
-						</div>
-						<Input
-							value={title}
-							onChange={(e) => setTitle(e.currentTarget.value)}
-							placeholder={t("communityEvents.eventTitlePlaceholder")}
-							size={SIZE.compact}
-						/>
-					</div>
-					<div>
-						<div
-							className={css({
-								fontSize: "12px",
-								color: "var(--color-text-secondary)",
-								marginBottom: "4px",
-							})}
-						>
-							{t("communityEvents.description")}
-						</div>
-						<Textarea
-							value={description}
-							onChange={(e) => setDescription(e.currentTarget.value)}
-							placeholder={t("communityEvents.descriptionPlaceholder")}
-							size={SIZE.compact}
-						/>
-					</div>
-					<div
-						className={css({ display: "flex", gap: "10px", flexWrap: "wrap" })}
-					>
-						<div className={css({ flex: 1, minWidth: "140px" })}>
-							<div
-								className={css({
-									fontSize: "12px",
-									color: "var(--color-text-secondary)",
-									marginBottom: "4px",
-								})}
-							>
-								{t("communityEvents.startTime")}
-							</div>
-							<Input
-								value={startAt}
-								onChange={(e) => setStartAt(e.currentTarget.value)}
-								type="datetime-local"
-								size={SIZE.compact}
-							/>
-						</div>
-						<div className={css({ flex: 1, minWidth: "140px" })}>
-							<div
-								className={css({
-									fontSize: "12px",
-									color: "var(--color-text-secondary)",
-									marginBottom: "4px",
-								})}
-							>
-								{t("communityEvents.endTime")}
-							</div>
-							<Input
-								value={endAt}
-								onChange={(e) => setEndAt(e.currentTarget.value)}
-								type="datetime-local"
-								size={SIZE.compact}
-							/>
-						</div>
-					</div>
-					<div
-						className={css({ display: "flex", gap: "10px", flexWrap: "wrap" })}
-					>
-						<div className={css({ flex: 1, minWidth: "100px" })}>
-							<div
-								className={css({
-									fontSize: "12px",
-									color: "var(--color-text-secondary)",
-									marginBottom: "4px",
-								})}
-							>
-								{t("communityEvents.color")}
-							</div>
-							<input
-								type="color"
-								aria-label={t("communityEvents.color")}
-								value={color}
-								onChange={(e) => setColor(e.target.value)}
-								className={css({
-									width: "100%",
-									height: "32px",
-									border: "none",
-									borderRadius: "6px",
-									cursor: "pointer",
-									backgroundColor: "transparent",
-								})}
-							/>
-						</div>
-						<div className={css({ flex: 1, minWidth: "100px" })}>
-							<div
-								className={css({
-									fontSize: "12px",
-									color: "var(--color-text-secondary)",
-									marginBottom: "4px",
-								})}
-							>
-								{t("communityEvents.requiredApprovals")}
-							</div>
-							<Input
-								value={String(requiredApprovals)}
-								onChange={(e) =>
-									setRequiredApprovals(Number(e.currentTarget.value) || 1)
-								}
-								type="number"
-								min={1}
-								size={SIZE.compact}
-							/>
-						</div>
-					</div>
+				<ModalHeader>{t("communityEvents.create")}</ModalHeader>
+				<ModalBody>
 					<div
 						className={css({
 							display: "flex",
-							gap: "8px",
-							justifyContent: "flex-end",
+							flexDirection: "column",
+							gap: "10px",
 						})}
 					>
-						<Button
-							kind={KIND.tertiary}
-							size={SIZE.compact}
-							onClick={() => setShowForm(false)}
+						<div>
+							<div
+								className={css({
+									fontSize: "12px",
+									color: "var(--color-text-secondary)",
+									marginBottom: "4px",
+								})}
+							>
+								{t("communityEvents.eventTitle")}
+							</div>
+							<Input
+								value={title}
+								onChange={(e) => setTitle(e.currentTarget.value)}
+								placeholder={t("communityEvents.eventTitlePlaceholder")}
+								size={SIZE.compact}
+							/>
+						</div>
+						<div>
+							<div
+								className={css({
+									fontSize: "12px",
+									color: "var(--color-text-secondary)",
+									marginBottom: "4px",
+								})}
+							>
+								{t("communityEvents.description")}
+							</div>
+							<Textarea
+								value={description}
+								onChange={(e) => setDescription(e.currentTarget.value)}
+								placeholder={t("communityEvents.descriptionPlaceholder")}
+								size={SIZE.compact}
+							/>
+						</div>
+						<div
+							className={css({
+								display: "flex",
+								gap: "10px",
+								flexWrap: "wrap",
+							})}
 						>
-							{t("communityEvents.cancel")}
-						</Button>
-						<Button
-							size={SIZE.compact}
-							onClick={handleCreate}
-							isLoading={creating}
+							<div className={css({ flex: 1, minWidth: "140px" })}>
+								<div
+									className={css({
+										fontSize: "12px",
+										color: "var(--color-text-secondary)",
+										marginBottom: "4px",
+									})}
+								>
+									{t("communityEvents.startTime")}
+								</div>
+								<Input
+									value={startAt}
+									onChange={(e) => setStartAt(e.currentTarget.value)}
+									type="datetime-local"
+									size={SIZE.compact}
+								/>
+							</div>
+							<div className={css({ flex: 1, minWidth: "140px" })}>
+								<div
+									className={css({
+										fontSize: "12px",
+										color: "var(--color-text-secondary)",
+										marginBottom: "4px",
+									})}
+								>
+									{t("communityEvents.endTime")}
+								</div>
+								<Input
+									value={endAt}
+									onChange={(e) => setEndAt(e.currentTarget.value)}
+									type="datetime-local"
+									size={SIZE.compact}
+								/>
+							</div>
+						</div>
+						<div
+							className={css({
+								display: "flex",
+								gap: "10px",
+								flexWrap: "wrap",
+							})}
 						>
-							{t("communityEvents.createBtn")}
-						</Button>
+							<div className={css({ flex: 1, minWidth: "100px" })}>
+								<div
+									className={css({
+										fontSize: "12px",
+										color: "var(--color-text-secondary)",
+										marginBottom: "4px",
+									})}
+								>
+									{t("communityEvents.color")}
+								</div>
+								<input
+									type="color"
+									aria-label={t("communityEvents.color")}
+									value={color}
+									onChange={(e) => setColor(e.target.value)}
+									className={css({
+										width: "100%",
+										height: "32px",
+										border: "none",
+										borderRadius: "6px",
+										cursor: "pointer",
+										backgroundColor: "transparent",
+									})}
+								/>
+							</div>
+							<div className={css({ flex: 1, minWidth: "100px" })}>
+								<div
+									className={css({
+										fontSize: "12px",
+										color: "var(--color-text-secondary)",
+										marginBottom: "4px",
+									})}
+								>
+									{t("communityEvents.requiredApprovals")}
+								</div>
+								<Input
+									value={String(requiredApprovals)}
+									onChange={(e) =>
+										setRequiredApprovals(Number(e.currentTarget.value) || 1)
+									}
+									type="number"
+									min={1}
+									size={SIZE.compact}
+								/>
+							</div>
+						</div>
 					</div>
-				</div>
-			)}
+				</ModalBody>
+				<ModalFooter>
+					<ModalButton kind={KIND.tertiary} onClick={() => setShowForm(false)}>
+						{t("communityEvents.cancel")}
+					</ModalButton>
+					<ModalButton onClick={handleCreate} isLoading={creating}>
+						{t("communityEvents.createBtn")}
+					</ModalButton>
+				</ModalFooter>
+			</Modal>
 
-			{events.length === 0 && !showForm && (
+			{events.length === 0 && (
 				<div
 					className={css({
-						fontSize: "13px",
-						color: "var(--color-text-secondary)",
+						textAlign: "center",
+						padding: "48px",
+						fontSize: "14px",
+						color: "var(--color-text-tertiary)",
 					})}
 				>
 					{t("communityEvents.empty")}
@@ -349,8 +335,7 @@ export default function CommunityEventsSection({ t }: Props) {
 
 			<div
 				className={css({
-					display: "flex",
-					flexDirection: "column",
+					display: "grid",
 					gap: "10px",
 				})}
 			>
@@ -361,9 +346,9 @@ export default function CommunityEventsSection({ t }: Props) {
 						<div
 							key={ev.slug_id}
 							className={css({
-								backgroundColor: "var(--color-bg-tertiary)",
+								backgroundColor: "var(--color-bg-secondary)",
 								borderRadius: "8px",
-								padding: "14px",
+								padding: "16px 20px",
 								border: "1px solid var(--color-bg-quaternary)",
 							})}
 						>
@@ -442,7 +427,7 @@ export default function CommunityEventsSection({ t }: Props) {
 								</div>
 								<Button
 									kind={KIND.tertiary}
-									size={SIZE.mini}
+									size={SIZE.compact}
 									onClick={() => setConfirmDeleteSlugId(ev.slug_id)}
 								>
 									<Trash2 size={14} />
@@ -475,7 +460,7 @@ export default function CommunityEventsSection({ t }: Props) {
 								>
 									<Button
 										kind={KIND.secondary}
-										size={SIZE.mini}
+										size={SIZE.compact}
 										onClick={() =>
 											window.open(getShareLink(ev.slug_id), "_blank")
 										}
@@ -487,7 +472,7 @@ export default function CommunityEventsSection({ t }: Props) {
 									</Button>
 									<Button
 										kind={KIND.secondary}
-										size={SIZE.mini}
+										size={SIZE.compact}
 										onClick={() => handleCopyLink(ev.slug_id)}
 									>
 										<Copy size={12} />
@@ -499,9 +484,9 @@ export default function CommunityEventsSection({ t }: Props) {
 							</div>
 							<div
 								className={css({
-									marginTop: "8px",
+									marginTop: "10px",
 									padding: "8px 10px",
-									backgroundColor: "var(--color-bg-secondary)",
+									backgroundColor: "var(--color-bg-tertiary)",
 									borderRadius: "6px",
 									border: "1px solid var(--color-bg-quaternary)",
 								})}
@@ -528,9 +513,9 @@ export default function CommunityEventsSection({ t }: Props) {
 
 							<div
 								className={css({
-									marginTop: "8px",
+									marginTop: "10px",
 									padding: "8px 10px",
-									backgroundColor: "var(--color-bg-secondary)",
+									backgroundColor: "var(--color-bg-tertiary)",
 									borderRadius: "6px",
 									border: "1px solid var(--color-bg-quaternary)",
 								})}
@@ -605,6 +590,6 @@ export default function CommunityEventsSection({ t }: Props) {
 				onConfirm={handleConfirmDelete}
 				onClose={() => setConfirmDeleteSlugId(null)}
 			/>
-		</div>
+		</>
 	);
 }
