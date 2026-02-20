@@ -519,6 +519,9 @@
 				"alreadyActive": { "type": "string" },
 				"mustBeFuture": { "type": "string" },
 				"minApprovals": { "type": "string" },
+				"fullNameRequired": { "type": "string" },
+				"fullNameInvalid": { "type": "string" },
+				"fullNameAlreadyApproved": { "type": "string" },
 				"emailAlreadyApproved": { "type": "string" }
 			},
 			"required": [
@@ -528,6 +531,9 @@
 				"alreadyActive",
 				"mustBeFuture",
 				"minApprovals",
+				"fullNameRequired",
+				"fullNameInvalid",
+				"fullNameAlreadyApproved",
 				"emailAlreadyApproved"
 			],
 			"additionalProperties": false

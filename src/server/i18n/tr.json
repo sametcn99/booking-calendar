@@ -139,6 +139,9 @@
 		"alreadyActive": "Bu etkinlik zaten aktif",
 		"mustBeFuture": "Etkinlik gelecekte olmalıdır",
 		"minApprovals": "En az 1 onay gereklidir",
+		"fullNameRequired": "Ad soyad zorunludur",
+		"fullNameInvalid": "Lütfen ad ve soyadınızı birlikte girin",
+		"fullNameAlreadyApproved": "Bu ad soyad bu etkinlik için zaten onay vermiş",
 		"emailAlreadyApproved": "Bu e-posta bu etkinlik için zaten onay vermiş"
 	}
 }

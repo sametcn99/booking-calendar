@@ -37,6 +37,9 @@ export class CommunityEventEntity {
 	@Column({ type: "text", default: "[]" })
 	approver_emails_json!: string;
 
+	@Column({ type: "text", default: "[]" })
+	approvals_json!: string;
+
 	@Column({ type: "text", default: "pending" })
 	status!: string; // pending | active | canceled
 

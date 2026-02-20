@@ -8,6 +8,9 @@ import { useParams } from "react-router-dom";
 import { type ApiCommunityEvent, api } from "../../api";
 import { useI18n } from "../../context/I18nContext";
 
+const normalizeApproverName = (value: string) =>
+	value.trim().replace(/\s+/g, " ").toLowerCase();
+
 export default function CommunityEventApprovalPage() {
 	const [css] = useStyletron();
 	const { slugId } = useParams<{ slugId: string }>();
@@ -16,7 +19,7 @@ export default function CommunityEventApprovalPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [approving, setApproving] = useState(false);
 	const [approved, setApproved] = useState(false);
-	const [approverEmail, setApproverEmail] = useState("");
+	const [approverName, setApproverName] = useState("");
 	const [alreadyApprovedLocal, setAlreadyApprovedLocal] = useState(false);
 
 	const getStorageKey = useCallback(
@@ -52,23 +55,22 @@ export default function CommunityEventApprovalPage() {
 
 	useEffect(() => {
 		const stored = getStoredApprovers();
-		if (stored.includes("anonymous")) {
+		if (approverName && stored.includes(normalizeApproverName(approverName))) {
 			setAlreadyApprovedLocal(true);
+			return;
 		}
-	}, [getStoredApprovers]);
+		setAlreadyApprovedLocal(false);
+	}, [approverName, getStoredApprovers]);
 
 	const handleApprove = async () => {
 		if (!slugId) return;
-		const normalizedEmail = approverEmail.trim().toLowerCase();
-		if (normalizedEmail.length > 0) {
-			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!emailRegex.test(normalizedEmail)) {
-				toaster.negative(t("communityEvents.invalidEmail"), {});
-				return;
-			}
+		const normalizedName = normalizeApproverName(approverName);
+		if (normalizedName.length < 3 || !normalizedName.includes(" ")) {
+			toaster.negative(t("communityEvents.fullNameInvalid"), {});
+			return;
 		}
 
-		const approvalId = normalizedEmail || "anonymous";
+		const approvalId = normalizedName;
 		if (getStoredApprovers().includes(approvalId)) {
 			setAlreadyApprovedLocal(true);
 			toaster.negative(t("communityEvents.alreadyApprovedLocal"), {});
@@ -78,7 +80,7 @@ export default function CommunityEventApprovalPage() {
 		setApproving(true);
 		try {
 			const r = await api.approveCommunityEvent(slugId, {
-				email: normalizedEmail || undefined,
+				full_name: approverName.trim().replace(/\s+/g, " "),
 			});
 			setEvent(r.data);
 			setApproved(true);
@@ -88,6 +90,7 @@ export default function CommunityEventApprovalPage() {
 				localStorage.setItem(key, JSON.stringify([...stored, approvalId]));
 			}
 			setAlreadyApprovedLocal(true);
+			setApproverName("");
 		} catch (e) {
 			toaster.negative(e instanceof Error ? e.message : t("common.error"), {});
 		} finally {
@@ -337,13 +340,13 @@ export default function CommunityEventApprovalPage() {
 							marginBottom: "6px",
 						})}
 					>
-						{t("communityEvents.approverEmail")}
+						{t("communityEvents.approverFullName")}
 					</div>
 					<Input
-						value={approverEmail}
-						onChange={(e) => setApproverEmail(e.currentTarget.value)}
-						placeholder={t("communityEvents.approverEmailPlaceholder")}
-						type="email"
+						value={approverName}
+						onChange={(e) => setApproverName(e.currentTarget.value)}
+						placeholder={t("communityEvents.approverFullNamePlaceholder")}
+						type="text"
 						size={SIZE.compact}
 					/>
 				</div>

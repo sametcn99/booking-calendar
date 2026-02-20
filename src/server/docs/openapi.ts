@@ -115,6 +115,11 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						slug_id: { type: "string" },
 						required_approvals: { type: "integer" },
 						current_approvals: { type: "integer" },
+						approvals_json: {
+							type: "string",
+							description:
+								"JSON array of approval records [{ full_name, email?, approved_at }]",
+						},
 						status: {
 							type: "string",
 							enum: ["pending", "active", "canceled"],
@@ -529,6 +534,21 @@ export function createOpenApiDocument(): Record<string, unknown> {
 							schema: { type: "string" },
 						},
 					],
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: {
+									type: "object",
+									required: ["full_name"],
+									properties: {
+										full_name: { type: "string" },
+										email: { type: "string" },
+									},
+								},
+							},
+						},
+					},
 					responses: {
 						"200": {
 							description: "Approval recorded",

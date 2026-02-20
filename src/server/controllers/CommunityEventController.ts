@@ -54,10 +54,10 @@ export class CommunityEventController {
 
 	async approve(
 		slugId: string,
-		body: { email?: string },
+		body: { full_name?: string; email?: string },
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
-			const event = await this.service.approve(slugId, body.email);
+			const event = await this.service.approve(slugId, body);
 			return { status: 200, body: { success: true, data: event } };
 		} catch (err: unknown) {
 			return {

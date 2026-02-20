@@ -1,6 +1,12 @@
 import { AppDataSource } from "../db/data-source";
 import { CommunityEventEntity } from "../entities/CommunityEventEntity";
 
+interface CommunityEventApprovalRecord {
+	full_name: string;
+	email?: string;
+	approved_at: string;
+}
+
 export class CommunityEventRepository {
 	private repo() {
 		return AppDataSource.getRepository(CommunityEventEntity);
@@ -35,6 +41,7 @@ export class CommunityEventRepository {
 			color: input.color ?? null,
 			required_approvals: input.required_approvals,
 			current_approvals: 0,
+			approvals_json: "[]",
 			status: "pending",
 			slug_id: input.slug_id,
 		});
@@ -43,12 +50,13 @@ export class CommunityEventRepository {
 
 	async incrementApproval(
 		id: number,
-		approverEmail?: string,
+		input: { full_name: string; email?: string },
 	): Promise<CommunityEventEntity | null> {
 		const event = await this.findById(id);
 		if (!event) return null;
 
-		const normalizedEmail = approverEmail?.trim().toLowerCase();
+		const normalizedEmail = input.email?.trim().toLowerCase();
+		const normalizedName = input.full_name.trim();
 		const approverEmails: string[] = (() => {
 			try {
 				const parsed = JSON.parse(event.approver_emails_json);
@@ -58,11 +66,47 @@ export class CommunityEventRepository {
 			}
 		})();
 
-		if (normalizedEmail && approverEmails.includes(normalizedEmail)) {
+		const approvalRecords: CommunityEventApprovalRecord[] = (() => {
+			try {
+				const parsed = JSON.parse(event.approvals_json);
+				if (!Array.isArray(parsed)) return [];
+				return parsed.filter(
+					(value): value is CommunityEventApprovalRecord =>
+						typeof value === "object" &&
+						value !== null &&
+						typeof (value as Record<string, unknown>).full_name === "string" &&
+						typeof (value as Record<string, unknown>).approved_at === "string",
+				);
+			} catch {
+				return [];
+			}
+		})();
+
+		if (
+			normalizedEmail &&
+			approvalRecords.some((record) => record.email === normalizedEmail)
+		) {
+			return event;
+		}
+
+		if (
+			approvalRecords.some(
+				(record) =>
+					record.full_name.trim().toLowerCase() ===
+					normalizedName.toLowerCase(),
+			)
+		) {
 			return event;
 		}
 
 		event.current_approvals += 1;
+		approvalRecords.push({
+			full_name: normalizedName,
+			email: normalizedEmail,
+			approved_at: new Date().toISOString(),
+		});
+		event.approvals_json = JSON.stringify(approvalRecords);
+
 		if (normalizedEmail) {
 			approverEmails.push(normalizedEmail);
 			event.approver_emails_json = JSON.stringify(approverEmails);

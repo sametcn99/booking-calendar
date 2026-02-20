@@ -70,6 +70,7 @@ export interface ApiCommunityEvent {
 	required_approvals: number;
 	current_approvals: number;
 	approver_emails_json: string;
+	approvals_json: string;
 	status: string;
 	created_at: string;
 }
@@ -425,12 +426,15 @@ export const api = {
 	getPublicCommunityEvent: (slugId: string) =>
 		request<ApiResponse<ApiCommunityEvent>>(`/public/community/${slugId}`),
 
-	approveCommunityEvent: (slugId: string, data?: { email?: string }) =>
+	approveCommunityEvent: (
+		slugId: string,
+		data: { full_name: string; email?: string },
+	) =>
 		request<ApiResponse<ApiCommunityEvent>>(
 			`/public/community/${slugId}/approve`,
 			{
 				method: "POST",
-				body: JSON.stringify(data ?? {}),
+				body: JSON.stringify(data),
 			},
 		),
 };

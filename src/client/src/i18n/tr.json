@@ -325,11 +325,16 @@
 		"approveTitle": "Topluluk Etkinlik Onayı",
 		"approveBtn": "Onayla",
 		"approved": "Onayınız kaydedildi!",
+		"approverFullName": "Ad Soyad *",
+		"approverFullNamePlaceholder": "Adınızı ve soyadınızı yazın",
+		"fullNameInvalid": "Lütfen ad ve soyadınızı tek alanda girin",
 		"approverEmail": "E-posta adresiniz (isteğe bağlı)",
 		"approverEmailPlaceholder": "ornek@alanadi.com",
 		"invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
 		"alreadyApprovedLocal": "Bu tarayıcıdan bu etkinliğe zaten onay verdiniz.",
 		"eventInfo": "Etkinlik Detayları",
-		"approvalProgress": "Onay Durumu"
+		"approvalProgress": "Onay Durumu",
+		"approversDetail": "Onay Verenler",
+		"noApproversYet": "Henüz onay kaydı yok"
 	}
 }

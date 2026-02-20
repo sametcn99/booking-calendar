@@ -154,7 +154,7 @@ export class CommunityEventService {
 		return event;
 	}
 
-	async approve(slugId: string, email?: string) {
+	async approve(slugId: string, input: { full_name?: string; email?: string }) {
 		const event = await this.repo.findBySlugId(slugId);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
@@ -166,26 +166,58 @@ export class CommunityEventService {
 			throw new Error(t("communityEvent.alreadyActive"));
 		}
 
-		const normalizedEmail = email?.trim().toLowerCase();
+		const normalizedName = input.full_name?.trim();
+		if (!normalizedName) {
+			throw new Error(t("communityEvent.fullNameRequired"));
+		}
+
+		if (normalizedName.length < 3 || !normalizedName.includes(" ")) {
+			throw new Error(t("communityEvent.fullNameInvalid"));
+		}
+
+		const normalizedEmail = input.email?.trim().toLowerCase();
 		if (normalizedEmail) {
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			if (!emailRegex.test(normalizedEmail)) {
 				throw new Error(t("general.invalidEmail"));
 			}
+		}
 
-			const existingApprovers = this.parseApproverEmails(
-				event.approver_emails_json,
-			);
-			if (existingApprovers.includes(normalizedEmail)) {
-				throw new Error(t("communityEvent.emailAlreadyApproved"));
+		const existingApprovals = (() => {
+			try {
+				const parsed = JSON.parse(event.approvals_json);
+				if (!Array.isArray(parsed)) return [];
+				return parsed.filter(
+					(value): value is { full_name: string; email?: string } =>
+						typeof value === "object" &&
+						value !== null &&
+						typeof (value as Record<string, unknown>).full_name === "string",
+				);
+			} catch {
+				return [];
 			}
+		})();
+
+		const hasName = existingApprovals.some(
+			(value) =>
+				value.full_name.trim().toLowerCase() === normalizedName.toLowerCase(),
+		);
+		if (hasName) {
+			throw new Error(t("communityEvent.fullNameAlreadyApproved"));
+		}
+
+		if (
+			normalizedEmail &&
+			existingApprovals.some((value) => value.email === normalizedEmail)
+		) {
+			throw new Error(t("communityEvent.emailAlreadyApproved"));
 		}
 
 		const wasPending = event.status === "pending";
-		const updated = await this.repo.incrementApproval(
-			event.id,
-			normalizedEmail,
-		);
+		const updated = await this.repo.incrementApproval(event.id, {
+			full_name: normalizedName,
+			email: normalizedEmail,
+		});
 		if (!updated) {
 			throw new Error(t("communityEvent.notFound"));
 		}

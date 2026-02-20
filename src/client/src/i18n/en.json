@@ -325,11 +325,16 @@
 		"approveTitle": "Community Event Approval",
 		"approveBtn": "Approve",
 		"approved": "Your approval has been recorded!",
+		"approverFullName": "Full Name *",
+		"approverFullNamePlaceholder": "Enter your full name",
+		"fullNameInvalid": "Please enter your first and last name in one field",
 		"approverEmail": "Your email (optional)",
 		"approverEmailPlaceholder": "name@domain.com",
 		"invalidEmail": "Please enter a valid email address",
 		"alreadyApprovedLocal": "You have already approved this event from this browser.",
 		"eventInfo": "Event Details",
-		"approvalProgress": "Approval Progress"
+		"approvalProgress": "Approval Progress",
+		"approversDetail": "Approvers",
+		"noApproversYet": "No approvals yet"
 	}
 }

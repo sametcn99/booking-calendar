@@ -1024,12 +1024,17 @@
 				"approveTitle": { "type": "string" },
 				"approveBtn": { "type": "string" },
 				"approved": { "type": "string" },
+				"approverFullName": { "type": "string" },
+				"approverFullNamePlaceholder": { "type": "string" },
+				"fullNameInvalid": { "type": "string" },
 				"approverEmail": { "type": "string" },
 				"approverEmailPlaceholder": { "type": "string" },
 				"invalidEmail": { "type": "string" },
 				"alreadyApprovedLocal": { "type": "string" },
 				"eventInfo": { "type": "string" },
-				"approvalProgress": { "type": "string" }
+				"approvalProgress": { "type": "string" },
+				"approversDetail": { "type": "string" },
+				"noApproversYet": { "type": "string" }
 			},
 			"required": [
 				"title",
@@ -1061,12 +1066,17 @@
 				"approveTitle",
 				"approveBtn",
 				"approved",
+				"approverFullName",
+				"approverFullNamePlaceholder",
+				"fullNameInvalid",
 				"approverEmail",
 				"approverEmailPlaceholder",
 				"invalidEmail",
 				"alreadyApprovedLocal",
 				"eventInfo",
-				"approvalProgress"
+				"approvalProgress",
+				"approversDetail",
+				"noApproversYet"
 			],
 			"additionalProperties": false
 		}

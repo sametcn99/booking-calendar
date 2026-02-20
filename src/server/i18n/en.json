@@ -139,6 +139,9 @@
 		"alreadyActive": "This event is already active",
 		"mustBeFuture": "Event must be in the future",
 		"minApprovals": "At least 1 approval is required",
+		"fullNameRequired": "Full name is required",
+		"fullNameInvalid": "Please enter your first and last name",
+		"fullNameAlreadyApproved": "This full name has already approved this event",
 		"emailAlreadyApproved": "This email has already approved this event"
 	}
 }
