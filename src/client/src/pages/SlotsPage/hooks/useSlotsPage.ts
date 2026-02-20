@@ -1,5 +1,5 @@
 import { toaster } from "baseui/toast";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "../../../api";
 
 export interface Slot {
@@ -11,6 +11,8 @@ export interface Slot {
 	created_at: string;
 }
 
+export type SlotStatusFilter = "all" | "active" | "inactive";
+
 function getErrorMessage(error: unknown, fallback: string): string {
 	if (error instanceof Error) return error.message;
 	return fallback;
@@ -18,6 +20,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 export function useSlotsPage(t: (key: string) => string) {
 	const [slots, setSlots] = useState<Slot[]>([]);
+	const [statusFilter, setStatusFilter] = useState<SlotStatusFilter>("all");
 	const [modalOpen, setModalOpen] = useState(false);
 	const [startAt, setStartAt] = useState("");
 	const [endAt, setEndAt] = useState("");
@@ -107,20 +110,37 @@ export function useSlotsPage(t: (key: string) => string) {
 		[loadSlots, t],
 	);
 
+	const filteredSlots = useMemo(() => {
+		return slots.filter((slot) => {
+			if (statusFilter === "active") {
+				return Boolean(slot.is_active);
+			}
+
+			if (statusFilter === "inactive") {
+				return !slot.is_active;
+			}
+
+			return true;
+		});
+	}, [slots, statusFilter]);
+
 	return {
 		endAt,
 		handleCreate,
 		handleDelete,
 		handleRename,
 		handleToggle,
+		filteredSlots,
 		loading,
 		modalOpen,
 		setEndAt,
 		setModalOpen,
+		setStatusFilter,
 		setSlotName,
 		setStartAt,
 		slotName,
 		slots,
 		startAt,
+		statusFilter,
 	};
 }

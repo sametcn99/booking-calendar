@@ -53,6 +53,9 @@
 		"invalidEmail": "Invalid email format",
 		"adminEmailRequiredForEmailNotifications": "Set an admin email before enabling email notifications",
 		"smtpConnectionFailed": "SMTP connection test failed. Check your mail server settings",
+		"invalidWebhookUrl": "Webhook URL must be https, or http on localhost",
+		"webhookSecretTooShort": "Webhook secret must be at least 16 characters",
+		"webhookRequiresUrlAndSecret": "Webhook requires both URL and secret when enabled",
 		"isActiveRequired": "is_active is required",
 		"invalidLanguage": "Invalid language. Supported: en, tr",
 		"invalidRequest": "Invalid request"

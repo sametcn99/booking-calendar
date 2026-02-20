@@ -9,7 +9,8 @@ import { useDashboardPage } from "./hooks/useDashboardPage";
 export default function DashboardPage() {
 	const [_css] = useStyletron();
 	const { t } = useI18n();
-	const { cards, slots, appointments, plannerEvents } = useDashboardPage({ t });
+	const { cards, slots, appointments, plannerEvents, communityEvents } =
+		useDashboardPage({ t });
 
 	return (
 		<div>
@@ -26,6 +27,7 @@ export default function DashboardPage() {
 				slots={slots}
 				appointments={appointments}
 				plannerEvents={plannerEvents}
+				communityEvents={communityEvents}
 			/>
 		</div>
 	);

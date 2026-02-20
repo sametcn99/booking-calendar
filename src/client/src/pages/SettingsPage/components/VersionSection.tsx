@@ -30,6 +30,12 @@ export default function VersionSection({
 		? versionInfo.latest_release_version
 		: t("settings.versionNoRelease");
 	const releaseUrl = versionInfo?.latest_release_url ?? undefined;
+	const githubRepoUrl = "https://github.com/sametcn99/booking-calendar";
+	const supportUrl = "https://sametcc.me/support";
+
+	const openExternalUrl = (url: string) => {
+		window.open(url, "_blank", "noopener,noreferrer");
+	};
 
 	return (
 		<div
@@ -81,17 +87,37 @@ export default function VersionSection({
 				</div>
 			</div>
 
-			{versionInfo?.update_available && releaseUrl ? (
+			<div
+				className={css({
+					display: "flex",
+					flexWrap: "wrap",
+					gap: "8px",
+				})}
+			>
+				{versionInfo?.update_available && releaseUrl ? (
+					<Button
+						kind={KIND.secondary}
+						size={SIZE.compact}
+						onClick={() => openExternalUrl(releaseUrl)}
+					>
+						{t("settings.openLatestRelease")}
+					</Button>
+				) : null}
 				<Button
 					kind={KIND.secondary}
 					size={SIZE.compact}
-					onClick={() =>
-						window.open(releaseUrl, "_blank", "noopener,noreferrer")
-					}
+					onClick={() => openExternalUrl(githubRepoUrl)}
 				>
-					{t("settings.openLatestRelease")}
+					{t("settings.openGithubRepository")}
 				</Button>
-			) : null}
+				<Button
+					kind={KIND.secondary}
+					size={SIZE.compact}
+					onClick={() => openExternalUrl(supportUrl)}
+				>
+					{t("settings.openSupportPage")}
+				</Button>
+			</div>
 		</div>
 	);
 }

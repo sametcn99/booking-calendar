@@ -9,6 +9,7 @@ import ICSExportSection from "./components/ICSExportSection";
 import NotificationSettingSection from "./components/NotificationSettingSection";
 import ThemeColorsSection from "./components/ThemeColorsSection";
 import VersionSection from "./components/VersionSection";
+import WebhookSettingsSection from "./components/WebhookSettingsSection";
 import { useSettingsPage } from "./hooks/useSettingsPage";
 
 export default function SettingsPage() {
@@ -27,21 +28,33 @@ export default function SettingsPage() {
 		handleToggleCalendarSharing,
 		handleToggleEmailNotifications,
 		handleTogglePushNotifications,
+		handleSaveWebhookSettings,
+		handleSendWebhookTest,
+		handleWebhookEnabledChange,
 		isPasswordSectionOpen,
 		mustChangePassword,
 		newPassword,
 		pushNotificationsEnabled,
+		testingWebhook,
+		webhookEnabled,
+		webhookHasSecret,
+		webhookSecret,
+		webhookUrl,
 		loadingVersionInfo,
 		savingAdminEmail,
 		savingCalendarSharing,
 		savingEmailNotifications,
 		savingLanguage,
 		savingPushNotifications,
+		savingWebhook,
+		savedAdminEmail,
 		setAdminEmail,
 		setConfirmPassword,
 		setCurrentPassword,
 		setIsPasswordSectionOpen,
 		setNewPassword,
+		setWebhookSecret,
+		setWebhookUrl,
 		versionInfo,
 	} = useSettingsPage({ t, setLanguage });
 
@@ -134,6 +147,7 @@ export default function SettingsPage() {
 								},
 								{ id: "push", label: t("settings.pushNotifications") },
 								{ id: "email", label: t("settings.emailNotifications") },
+								{ id: "webhook", label: t("settings.webhook") },
 								{ id: "version", label: t("settings.version") },
 								{ id: "theme-colors", label: t("settings.themeColors") },
 								{ id: "ics", label: t("settings.icsExport") },
@@ -202,6 +216,7 @@ export default function SettingsPage() {
 					<section id="admin-email">
 						<AdminEmailSection
 							adminEmail={adminEmail}
+							savedAdminEmail={savedAdminEmail}
 							onSubmit={handleSaveAdminEmail}
 							savingAdminEmail={savingAdminEmail}
 							setAdminEmail={setAdminEmail}
@@ -249,6 +264,24 @@ export default function SettingsPage() {
 							enabledKey="settings.emailNotificationsEnabled"
 							disabledKey="settings.emailNotificationsDisabled"
 							disabledDescriptionKey="settings.emailNotificationsRequiresAdminEmail"
+							surface="list"
+						/>
+					</section>
+
+					<section id="webhook">
+						<WebhookSettingsSection
+							enabled={webhookEnabled}
+							url={webhookUrl}
+							secret={webhookSecret}
+							hasSecret={webhookHasSecret}
+							saving={savingWebhook}
+							testing={testingWebhook}
+							onEnabledChange={handleWebhookEnabledChange}
+							onUrlChange={setWebhookUrl}
+							onSecretChange={setWebhookSecret}
+							onSubmit={handleSaveWebhookSettings}
+							onSendTest={handleSendWebhookTest}
+							t={t}
 							surface="list"
 						/>
 					</section>

@@ -134,6 +134,15 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						enabled: { type: "boolean" },
 					},
 				},
+				WebhookSettingsData: {
+					type: "object",
+					required: ["enabled", "url", "has_secret"],
+					properties: {
+						enabled: { type: "boolean" },
+						url: { type: "string" },
+						has_secret: { type: "boolean" },
+					},
+				},
 				LoginData: {
 					type: "object",
 					required: ["token", "must_change_password"],
@@ -416,7 +425,7 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					tags: ["Public"],
 					summary: "Get shared calendar data",
 					description:
-						"Returns all slots, appointments, and planner events if sharing is enabled.",
+						"Returns all slots, appointments, planner events, and community events if sharing is enabled.",
 					responses: {
 						"200": {
 							description: "Calendar data",
@@ -443,6 +452,12 @@ export function createOpenApiDocument(): Record<string, unknown> {
 														type: "array",
 														items: {
 															$ref: "#/components/schemas/PlannerEvent",
+														},
+													},
+													community_events: {
+														type: "array",
+														items: {
+															$ref: "#/components/schemas/CommunityEvent",
 														},
 													},
 												},
@@ -982,6 +997,63 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						},
 					},
 					responses: { "200": { description: "Setting updated" } },
+				},
+			},
+			"/api/admin/settings/webhook": {
+				get: {
+					tags: ["Admin Settings"],
+					summary: "Get webhook notification settings",
+					security: [{ BearerAuth: [] }],
+					responses: {
+						"200": {
+							description: "Webhook settings retrieved",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: {
+												$ref: "#/components/schemas/WebhookSettingsData",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				put: {
+					tags: ["Admin Settings"],
+					summary: "Set webhook notification settings",
+					security: [{ BearerAuth: [] }],
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: {
+									type: "object",
+									required: ["enabled"],
+									properties: {
+										enabled: { type: "boolean" },
+										url: { type: "string" },
+										secret: { type: "string" },
+									},
+								},
+							},
+						},
+					},
+					responses: { "200": { description: "Webhook settings updated" } },
+				},
+			},
+			"/api/admin/settings/webhook/test": {
+				post: {
+					tags: ["Admin Settings"],
+					summary: "Send test webhook event",
+					security: [{ BearerAuth: [] }],
+					responses: {
+						"200": { description: "Test event sent" },
+					},
 				},
 			},
 			"/api/admin/export/ics": {

@@ -1,6 +1,7 @@
 import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import { useI18n } from "../../context/I18nContext";
 import CreateSlotModal from "./components/CreateSlotModal";
+import SlotsFilterSection from "./components/SlotsFilterSection";
 import SlotsHeader from "./components/SlotsHeader";
 import SlotsListSection from "./components/SlotsListSection";
 import { useSlotsPage } from "./hooks/useSlotsPage";
@@ -9,6 +10,7 @@ export default function SlotsPage() {
 	const { t, locale } = useI18n();
 	const {
 		endAt,
+		filteredSlots,
 		handleCreate,
 		handleDelete,
 		handleRename,
@@ -17,11 +19,12 @@ export default function SlotsPage() {
 		modalOpen,
 		setEndAt,
 		setModalOpen,
+		setStatusFilter,
 		setSlotName,
 		setStartAt,
 		slotName,
-		slots,
 		startAt,
+		statusFilter,
 	} = useSlotsPage(t);
 
 	const formatDate = (d: string) =>
@@ -36,8 +39,14 @@ export default function SlotsPage() {
 
 			<SlotsHeader onAddClick={() => setModalOpen(true)} t={t} />
 
+			<SlotsFilterSection
+				statusFilter={statusFilter}
+				onChange={setStatusFilter}
+				t={t}
+			/>
+
 			<SlotsListSection
-				slots={slots}
+				slots={filteredSlots}
 				formatDate={formatDate}
 				onToggle={handleToggle}
 				onRename={handleRename}

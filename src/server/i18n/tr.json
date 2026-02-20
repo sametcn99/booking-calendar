@@ -53,6 +53,9 @@
 		"invalidEmail": "Geçersiz e-posta formatı",
 		"adminEmailRequiredForEmailNotifications": "E-posta bildirimlerini açmadan önce admin e-postası kaydedin",
 		"smtpConnectionFailed": "SMTP bağlantı testi başarısız oldu. E-posta sunucu ayarlarını kontrol edin",
+		"invalidWebhookUrl": "Webhook URL'i https olmalı, localhost için http kabul edilir",
+		"webhookSecretTooShort": "Webhook gizli anahtarı en az 16 karakter olmalıdır",
+		"webhookRequiresUrlAndSecret": "Webhook etkinleştirildiğinde URL ve gizli anahtar birlikte zorunludur",
 		"isActiveRequired": "is_active gereklidir",
 		"invalidLanguage": "Geçersiz dil. Desteklenen: en, tr",
 		"invalidRequest": "Geçersiz istek"

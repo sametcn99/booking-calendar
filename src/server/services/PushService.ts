@@ -3,9 +3,11 @@ import { config } from "../config";
 import { AppDataSource } from "../db/data-source";
 import { PushSubscriptionEntity } from "../entities/PushSubscriptionEntity";
 import { t } from "../i18n";
+import { WebhookService } from "./WebhookService";
 
 export class PushService {
 	private isConfigured = false;
+	private webhookService = new WebhookService();
 
 	constructor() {
 		if (config.vapid?.publicKey && config.vapid.privateKey) {
@@ -58,37 +60,57 @@ export class PushService {
 		url?: string;
 		tag?: string;
 	}): Promise<void> {
-		if (!this.isConfigured) return;
-
 		const repo = this.getRepo();
-		const subscriptions = await repo.find();
-		if (subscriptions.length === 0) return;
+		const subscriptions = this.isConfigured ? await repo.find() : [];
 
-		const payloadString = JSON.stringify(payload);
-		console.log(`Sending push notification to ${subscriptions.length} clients`);
+		let deliveredCount = 0;
+		let failedCount = 0;
 
-		const promises = subscriptions.map(async (sub) => {
-			const pushSub = {
-				endpoint: sub.endpoint,
-				keys: {
-					p256dh: sub.p256dh,
-					auth: sub.auth,
-				},
-			};
+		if (subscriptions.length > 0) {
+			const payloadString = JSON.stringify(payload);
+			console.log(
+				`Sending push notification to ${subscriptions.length} clients`,
+			);
 
-			try {
-				await webpush.sendNotification(pushSub, payloadString);
-			} catch (error) {
-				const err = error as { statusCode?: number; message?: string };
-				console.error(
-					`Error sending push to ${sub.endpoint}: ${err.statusCode} ${err.message}`,
-				);
-				if (err.statusCode === 410 || err.statusCode === 404) {
-					await repo.remove(sub);
+			const promises = subscriptions.map(async (sub) => {
+				const pushSub = {
+					endpoint: sub.endpoint,
+					keys: {
+						p256dh: sub.p256dh,
+						auth: sub.auth,
+					},
+				};
+
+				try {
+					await webpush.sendNotification(pushSub, payloadString);
+					deliveredCount += 1;
+				} catch (error) {
+					failedCount += 1;
+					const err = error as { statusCode?: number; message?: string };
+					console.error(
+						`Error sending push to ${sub.endpoint}: ${err.statusCode} ${err.message}`,
+					);
+					if (err.statusCode === 410 || err.statusCode === 404) {
+						await repo.remove(sub);
+					}
 				}
-			}
-		});
+			});
 
-		await Promise.all(promises);
+			await Promise.all(promises);
+		}
+
+		try {
+			await this.webhookService.sendEvent("push.notification", {
+				notification: payload,
+				metrics: {
+					push_configured: this.isConfigured,
+					targeted_subscriptions: subscriptions.length,
+					delivered: deliveredCount,
+					failed: failedCount,
+				},
+			});
+		} catch (error) {
+			console.error("Failed to mirror push notification to webhook:", error);
+		}
 	}
 }

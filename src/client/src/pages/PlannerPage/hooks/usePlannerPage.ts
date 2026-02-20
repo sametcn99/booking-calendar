@@ -1,5 +1,5 @@
 import { toaster } from "baseui/toast";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { type ApiPlannerEvent, api } from "../../../api";
 import { APP_COLORS } from "../../../theme";
 
@@ -15,6 +15,8 @@ export interface PlannerFormState {
 	endAt: string;
 	color: string;
 }
+
+export type PlannerStatusFilter = "all" | "upcoming" | "ongoing" | "past";
 
 const emptyForm: PlannerFormState = {
 	title: "",
@@ -32,6 +34,7 @@ export function usePlannerPage(t: (key: string) => string) {
 	);
 	const [form, setForm] = useState<PlannerFormState>(emptyForm);
 	const [loading, setLoading] = useState(false);
+	const [statusFilter, setStatusFilter] = useState<PlannerStatusFilter>("all");
 
 	const loadEvents = useCallback(async () => {
 		try {
@@ -118,9 +121,33 @@ export function usePlannerPage(t: (key: string) => string) {
 		[],
 	);
 
+	const filteredEvents = useMemo(() => {
+		const now = Date.now();
+
+		return events.filter((event) => {
+			const startAt = new Date(event.start_at).getTime();
+			const endAt = new Date(event.end_at).getTime();
+
+			if (statusFilter === "upcoming") {
+				return startAt > now;
+			}
+
+			if (statusFilter === "ongoing") {
+				return startAt <= now && endAt >= now;
+			}
+
+			if (statusFilter === "past") {
+				return endAt < now;
+			}
+
+			return true;
+		});
+	}, [events, statusFilter]);
+
 	return {
 		editingEvent,
 		events,
+		filteredEvents,
 		form,
 		handleDelete,
 		handleSave,
@@ -129,6 +156,8 @@ export function usePlannerPage(t: (key: string) => string) {
 		openCreate,
 		openEdit,
 		setModalOpen,
+		setStatusFilter,
+		statusFilter,
 		updateForm,
 	};
 }

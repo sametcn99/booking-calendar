@@ -20,11 +20,13 @@ export const handlePublicCalendarRoutes: PublicRouteHandler = async (args) => {
 		);
 	}
 
-	const [slotsResult, appointmentsResult, plannerResult] = await Promise.all([
-		args.slotController.getAllSlots(),
-		args.appointmentController.getAllAppointments(),
-		args.plannerController.getAllEvents(),
-	]);
+	const [slotsResult, appointmentsResult, plannerResult, communityResult] =
+		await Promise.all([
+			args.slotController.getAllSlots(),
+			args.appointmentController.getAllAppointments(),
+			args.plannerController.getAllEvents(),
+			args.communityEventController.getAllEvents(),
+		]);
 	return jsonResponse(
 		200,
 		{
@@ -33,6 +35,7 @@ export const handlePublicCalendarRoutes: PublicRouteHandler = async (args) => {
 				slots: slotsResult.body.data,
 				appointments: appointmentsResult.body.data,
 				planner_events: plannerResult.body.data,
+				community_events: communityResult.body.data,
 			},
 		},
 		corsHeaders,

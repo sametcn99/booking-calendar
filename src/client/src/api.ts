@@ -93,6 +93,12 @@ export interface ApiVersionInfo {
 	update_available: boolean;
 }
 
+export interface ApiWebhookSettings {
+	enabled: boolean;
+	url: string;
+	has_secret: boolean;
+}
+
 async function parseApiResponse<T>(response: Response): Promise<T> {
 	const text = await response.text();
 	const parsed = text ? (JSON.parse(text) as Record<string, unknown>) : {};
@@ -404,6 +410,7 @@ export const api = {
 				slots: ApiSlot[];
 				appointments: ApiAppointment[];
 				planner_events: ApiPlannerEvent[];
+				community_events: ApiCommunityEvent[];
 			};
 		}>("/public/calendar"),
 
@@ -433,6 +440,32 @@ export const api = {
 			{
 				method: "PUT",
 				body: JSON.stringify({ enabled }),
+			},
+		),
+
+	getWebhookSettings: () =>
+		request<{ success: boolean; data: ApiWebhookSettings }>(
+			"/admin/settings/webhook",
+		).then((r) => r.data),
+
+	setWebhookSettings: (input: {
+		enabled: boolean;
+		url: string;
+		secret?: string;
+	}) =>
+		request<{ success: boolean; data: ApiWebhookSettings }>(
+			"/admin/settings/webhook",
+			{
+				method: "PUT",
+				body: JSON.stringify(input),
+			},
+		).then((r) => r.data),
+
+	sendWebhookTest: () =>
+		request<{ success: boolean; data: { sent: boolean } }>(
+			"/admin/settings/webhook/test",
+			{
+				method: "POST",
 			},
 		),
 

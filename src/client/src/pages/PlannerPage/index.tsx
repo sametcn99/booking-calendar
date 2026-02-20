@@ -1,5 +1,5 @@
 import { useStyletron } from "baseui";
-import { Button } from "baseui/button";
+import { Button, KIND, SIZE } from "baseui/button";
 import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import { useI18n } from "../../context/I18nContext";
 import PlannerEventCard from "./components/PlannerEventCard";
@@ -11,7 +11,7 @@ export default function PlannerPage() {
 	const { t, locale } = useI18n();
 	const {
 		editingEvent,
-		events,
+		filteredEvents,
 		form,
 		handleDelete,
 		handleSave,
@@ -20,6 +20,8 @@ export default function PlannerPage() {
 		openCreate,
 		openEdit,
 		setModalOpen,
+		setStatusFilter,
+		statusFilter,
 		updateForm,
 	} = usePlannerPage(t);
 
@@ -69,7 +71,45 @@ export default function PlannerPage() {
 				<Button onClick={openCreate}>{t("planner.addEvent")}</Button>
 			</div>
 
-			{events.length === 0 ? (
+			<div
+				className={css({
+					display: "flex",
+					gap: "8px",
+					marginBottom: "20px",
+					flexWrap: "wrap",
+				})}
+			>
+				<Button
+					kind={statusFilter === "all" ? KIND.primary : KIND.secondary}
+					size={SIZE.compact}
+					onClick={() => setStatusFilter("all")}
+				>
+					{t("planner.all")}
+				</Button>
+				<Button
+					kind={statusFilter === "upcoming" ? KIND.primary : KIND.secondary}
+					size={SIZE.compact}
+					onClick={() => setStatusFilter("upcoming")}
+				>
+					{t("planner.upcoming")}
+				</Button>
+				<Button
+					kind={statusFilter === "ongoing" ? KIND.primary : KIND.secondary}
+					size={SIZE.compact}
+					onClick={() => setStatusFilter("ongoing")}
+				>
+					{t("planner.ongoing")}
+				</Button>
+				<Button
+					kind={statusFilter === "past" ? KIND.primary : KIND.secondary}
+					size={SIZE.compact}
+					onClick={() => setStatusFilter("past")}
+				>
+					{t("planner.past")}
+				</Button>
+			</div>
+
+			{filteredEvents.length === 0 ? (
 				<p
 					className={css({
 						color: "var(--color-text-muted)",
@@ -87,7 +127,7 @@ export default function PlannerPage() {
 						gap: "12px",
 					})}
 				>
-					{events.map((event) => (
+					{filteredEvents.map((event) => (
 						<PlannerEventCard
 							key={event.id}
 							event={event}

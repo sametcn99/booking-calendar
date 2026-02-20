@@ -40,6 +40,7 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 	const { markPasswordChanged, mustChangePassword } = useAuth();
 	const [savingLanguage, setSavingLanguage] = useState(false);
 	const [adminEmail, setAdminEmail] = useState("");
+	const [savedAdminEmail, setSavedAdminEmail] = useState("");
 	const [savingAdminEmail, setSavingAdminEmail] = useState(false);
 	const [calendarSharingEnabled, setCalendarSharingEnabled] = useState(false);
 	const [savingCalendarSharing, setSavingCalendarSharing] = useState(false);
@@ -50,6 +51,12 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		useState(false);
 	const [savingEmailNotifications, setSavingEmailNotifications] =
 		useState(false);
+	const [webhookEnabled, setWebhookEnabled] = useState(false);
+	const [webhookUrl, setWebhookUrl] = useState("");
+	const [webhookSecret, setWebhookSecret] = useState("");
+	const [webhookHasSecret, setWebhookHasSecret] = useState(false);
+	const [savingWebhook, setSavingWebhook] = useState(false);
+	const [testingWebhook, setTestingWebhook] = useState(false);
 	const [versionInfo, setVersionInfo] = useState<ApiVersionInfo | null>(null);
 	const [loadingVersionInfo, setLoadingVersionInfo] = useState(true);
 	const publicVapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
@@ -61,7 +68,10 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 	useEffect(() => {
 		api
 			.getAdminEmail()
-			.then((email) => setAdminEmail(email))
+			.then((email) => {
+				setAdminEmail(email);
+				setSavedAdminEmail(email);
+			})
 			.catch(() => {});
 	}, []);
 
@@ -83,6 +93,17 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		api
 			.getEmailNotifications()
 			.then((enabled) => setEmailNotificationsEnabled(enabled))
+			.catch(() => {});
+	}, []);
+
+	useEffect(() => {
+		api
+			.getWebhookSettings()
+			.then((settings) => {
+				setWebhookEnabled(settings.enabled);
+				setWebhookUrl(settings.url);
+				setWebhookHasSecret(settings.has_secret);
+			})
 			.catch(() => {});
 	}, []);
 
@@ -142,6 +163,7 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 			try {
 				const response = await api.setAdminEmail(adminEmail);
 				setAdminEmail(response.data.email);
+				setSavedAdminEmail(response.data.email);
 				toaster.positive(t("settings.adminEmailSaved"), {});
 			} catch (error: unknown) {
 				toaster.negative(getErrorMessage(error, t("common.error")), {});
@@ -250,8 +272,71 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		[adminEmail, t],
 	);
 
+	const handleSaveWebhookSettings = useCallback(
+		async (event: React.FormEvent) => {
+			event.preventDefault();
+			setSavingWebhook(true);
+			try {
+				const data = await api.setWebhookSettings({
+					enabled: webhookEnabled,
+					url: webhookUrl,
+					secret: webhookSecret.trim().length > 0 ? webhookSecret : undefined,
+				});
+				setWebhookEnabled(data.enabled);
+				setWebhookUrl(data.url);
+				setWebhookHasSecret(data.has_secret);
+				setWebhookSecret("");
+				toaster.positive(t("settings.webhookSaved"), {});
+			} catch (error: unknown) {
+				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} finally {
+				setSavingWebhook(false);
+			}
+		},
+		[webhookEnabled, webhookSecret, webhookUrl, t],
+	);
+
+	const handleWebhookEnabledChange = useCallback(
+		async (enabled: boolean) => {
+			if (enabled) {
+				setWebhookEnabled(true);
+				return;
+			}
+
+			setSavingWebhook(true);
+			try {
+				const data = await api.setWebhookSettings({
+					enabled: false,
+					url: webhookUrl,
+				});
+				setWebhookEnabled(data.enabled);
+				setWebhookUrl(data.url);
+				setWebhookHasSecret(data.has_secret);
+				toaster.positive(t("settings.webhookSaved"), {});
+			} catch (error: unknown) {
+				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} finally {
+				setSavingWebhook(false);
+			}
+		},
+		[t, webhookUrl],
+	);
+
+	const handleSendWebhookTest = useCallback(async () => {
+		setTestingWebhook(true);
+		try {
+			await api.sendWebhookTest();
+			toaster.positive(t("settings.webhookTestSent"), {});
+		} catch (error: unknown) {
+			toaster.negative(getErrorMessage(error, t("common.error")), {});
+		} finally {
+			setTestingWebhook(false);
+		}
+	}, [t]);
+
 	return {
 		adminEmail,
+		savedAdminEmail,
 		calendarSharingEnabled,
 		changingPassword,
 		confirmPassword,
@@ -263,21 +348,33 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		handleToggleCalendarSharing,
 		handleToggleEmailNotifications,
 		handleTogglePushNotifications,
+		handleSaveWebhookSettings,
+		handleSendWebhookTest,
+		handleWebhookEnabledChange,
 		isPasswordSectionOpen,
 		mustChangePassword,
 		newPassword,
 		pushNotificationsEnabled,
+		webhookEnabled,
+		webhookHasSecret,
+		webhookSecret,
+		webhookUrl,
 		savingAdminEmail,
 		savingCalendarSharing,
 		savingEmailNotifications,
 		savingLanguage,
 		savingPushNotifications,
+		savingWebhook,
+		testingWebhook,
 		loadingVersionInfo,
 		setAdminEmail,
 		setConfirmPassword,
 		setCurrentPassword,
 		setIsPasswordSectionOpen,
 		setNewPassword,
+		setWebhookEnabled,
+		setWebhookSecret,
+		setWebhookUrl,
 		versionInfo,
 	};
 }

@@ -4,11 +4,13 @@ import { CommunityEventRepository } from "../repositories/CommunityEventReposito
 import { SettingsRepository } from "../repositories/SettingsRepository";
 import { generateUniqueSlugId } from "../utils/slug";
 import { PushService } from "./PushService";
+import { WebhookService } from "./WebhookService";
 
 export class CommunityEventService {
 	private repo = new CommunityEventRepository();
 	private mailService = new MailService();
 	private pushService = new PushService();
+	private webhookService = new WebhookService();
 	private settingsRepo = new SettingsRepository();
 
 	private parseApproverEmails(raw: string): string[] {
@@ -95,11 +97,27 @@ export class CommunityEventService {
 	}
 
 	private async notifyApprovalReceived(
+		eventId: number,
+		eventSlugId: string,
 		eventTitle: string,
 		approvedBy: string,
 		currentApprovals: number,
 		requiredApprovals: number,
 	): Promise<void> {
+		this.webhookService
+			.sendEvent("community_event.approval_received", {
+				event_id: eventId,
+				event_slug_id: eventSlugId,
+				event_title: eventTitle,
+				approved_by: approvedBy,
+				current_approvals: currentApprovals,
+				required_approvals: requiredApprovals,
+				admin_url: "/admin/events",
+			})
+			.catch((err) =>
+				console.error("Failed to send community event approval webhook:", err),
+			);
+
 		const pushEnabled = await this.isPushEnabled();
 		if (!pushEnabled) {
 			return;
@@ -245,6 +263,8 @@ export class CommunityEventService {
 		}
 
 		await this.notifyApprovalReceived(
+			updated.id,
+			updated.slug_id,
 			updated.title,
 			normalizedName,
 			updated.current_approvals,

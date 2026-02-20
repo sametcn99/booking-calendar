@@ -4,7 +4,7 @@ import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../../context/I18nContext";
-import CommunityEventsSection from "../SettingsPage/components/CommunityEventsSection";
+import CommunityEventsSection from "./components/CommunityEventsSection";
 
 export default function EventsPage() {
 	const [css] = useStyletron();

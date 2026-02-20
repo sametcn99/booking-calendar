@@ -1,5 +1,9 @@
 import { setLanguage, t } from "../../i18n";
 import { SettingsRepository } from "../../repositories/SettingsRepository";
+import {
+	isValidWebhookUrl,
+	WebhookService,
+} from "../../services/WebhookService";
 import { parseThemeColorsFromUnknown } from "../../theme/appColors";
 import type { AdminRouteHandler } from "../types";
 import {
@@ -10,6 +14,7 @@ import {
 
 export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 	const { pathname, method, corsHeaders } = args;
+	const webhookService = new WebhookService();
 
 	if (pathname === "/api/admin/settings/language" && method === "PUT") {
 		const body = await parseJsonBody<{ language?: string }>(args.request);
@@ -174,6 +179,96 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 		return jsonResponse(
 			200,
 			{ success: true, data: { enabled: !!body.enabled } },
+			corsHeaders,
+		);
+	}
+
+	if (pathname === "/api/admin/settings/webhook" && method === "GET") {
+		const data = await webhookService.getPublicSettings();
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/webhook" && method === "PUT") {
+		const body = await parseJsonBody<{
+			enabled?: boolean;
+			url?: string;
+			secret?: string;
+		}>(args.request);
+
+		if (typeof body.enabled !== "boolean") {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidRequest") },
+				corsHeaders,
+			);
+		}
+
+		const current = await webhookService.getPublicSettings();
+		const normalizedUrl =
+			typeof body.url === "string" ? body.url.trim() : current.url;
+		const normalizedSecret =
+			typeof body.secret === "string" ? body.secret.trim() : "";
+		const willClearSecret =
+			typeof body.secret === "string" && normalizedSecret.length === 0;
+
+		if (normalizedUrl.length > 0 && !isValidWebhookUrl(normalizedUrl)) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidWebhookUrl") },
+				corsHeaders,
+			);
+		}
+
+		if (
+			normalizedSecret.length > 0 &&
+			!webhookService.isSecretStrong(normalizedSecret)
+		) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.webhookSecretTooShort") },
+				corsHeaders,
+			);
+		}
+
+		const hasSecretAfterUpdate =
+			normalizedSecret.length > 0 || (current.has_secret && !willClearSecret);
+
+		if (body.enabled && (!normalizedUrl || !hasSecretAfterUpdate)) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.webhookRequiresUrlAndSecret") },
+				corsHeaders,
+			);
+		}
+
+		const data = await webhookService.updateSettings({
+			enabled: body.enabled,
+			url: normalizedUrl,
+			secret: normalizedSecret,
+			clearSecret: willClearSecret,
+		});
+
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/webhook/test" && method === "POST") {
+		const ready = await webhookService.isEnabledAndConfigured();
+		if (!ready) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.webhookRequiresUrlAndSecret") },
+				corsHeaders,
+			);
+		}
+
+		await webhookService.sendEvent("webhook.test", {
+			triggered_by: args.user.username,
+			message: "Manual webhook test event",
+		});
+
+		return jsonResponse(
+			200,
+			{ success: true, data: { sent: true } },
 			corsHeaders,
 		);
 	}

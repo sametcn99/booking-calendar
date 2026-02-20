@@ -12,7 +12,12 @@ import {
 } from "baseui/modal";
 import { LabelMedium } from "baseui/typography";
 import { useMemo, useState } from "react";
-import type { ApiAppointment, ApiPlannerEvent, ApiSlot } from "../../../api";
+import type {
+	ApiAppointment,
+	ApiCommunityEvent,
+	ApiPlannerEvent,
+	ApiSlot,
+} from "../../../api";
 import { useI18n } from "../../../context/I18nContext";
 
 const locales = {
@@ -32,6 +37,7 @@ interface DashboardCalendarProps {
 	slots: ApiSlot[];
 	appointments: ApiAppointment[];
 	plannerEvents: ApiPlannerEvent[];
+	communityEvents: ApiCommunityEvent[];
 }
 
 interface CalendarEvent {
@@ -39,14 +45,15 @@ interface CalendarEvent {
 	title: string;
 	start: Date;
 	end: Date;
-	type: "slot" | "appointment" | "planner";
-	data?: ApiSlot | ApiAppointment | ApiPlannerEvent;
+	type: "slot" | "appointment" | "planner" | "community";
+	data?: ApiSlot | ApiAppointment | ApiPlannerEvent | ApiCommunityEvent;
 }
 
 export default function DashboardCalendar({
 	slots,
 	appointments,
 	plannerEvents,
+	communityEvents,
 }: DashboardCalendarProps) {
 	const [css, theme] = useStyletron();
 	const { language, t } = useI18n();
@@ -90,6 +97,14 @@ export default function DashboardCalendar({
 			type: "planner" as const,
 			data: ev,
 		})),
+		...communityEvents.map((ev) => ({
+			id: `community-${ev.id}`,
+			title: ev.title,
+			start: new Date(ev.start_at),
+			end: new Date(ev.end_at),
+			type: "community" as const,
+			data: ev,
+		})),
 	];
 
 	const eventStyleGetter = (event: CalendarEvent) => {
@@ -112,6 +127,28 @@ export default function DashboardCalendar({
 			return {
 				style: {
 					background: `linear-gradient(135deg, ${color}33, ${color}66)`,
+					color: "var(--color-text-on-primary)",
+					border: `1px solid ${color}`,
+					borderRadius: "8px",
+					padding: "2px 8px",
+					fontWeight: 600,
+				},
+			};
+		}
+
+		if (event.type === "community") {
+			const data = event.data as ApiCommunityEvent;
+			const statusColorMap: Record<string, string> = {
+				pending: "var(--color-warning)",
+				active: "var(--color-success)",
+				canceled: "var(--color-error)",
+			};
+			const color =
+				data.color || statusColorMap[data.status] || "var(--color-info)";
+
+			return {
+				style: {
+					background: `linear-gradient(135deg, ${color}2b, ${color}5c)`,
 					color: "var(--color-text-on-primary)",
 					border: `1px solid ${color}`,
 					borderRadius: "8px",
@@ -238,6 +275,19 @@ export default function DashboardCalendar({
 						})}
 					>
 						{t("planner.plannerLegend")}: {plannerEvents.length}
+					</div>
+					<div
+						className={css({
+							padding: "6px 10px",
+							borderRadius: "999px",
+							fontSize: "13px",
+							fontWeight: 600,
+							color: "var(--color-error)",
+							backgroundColor: "var(--color-error-bg)",
+							border: "1px solid var(--color-error)",
+						})}
+					>
+						{t("communityEvents.title")}: {communityEvents.length}
 					</div>
 				</div>
 			</div>
@@ -447,6 +497,30 @@ export default function DashboardCalendar({
 									{(selectedEvent.data as ApiPlannerEvent).description}
 								</p>
 							)}
+							<p>
+								<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
+								{selectedEvent.start.toLocaleString()} -{" "}
+								{selectedEvent.end.toLocaleString()}
+							</p>
+						</div>
+					)}
+					{selectedEvent?.type === "community" && (
+						<div>
+							<p>
+								<strong>{t("communityEvents.eventTitle")}:</strong>{" "}
+								{(selectedEvent.data as ApiCommunityEvent).title}
+							</p>
+							{(selectedEvent.data as ApiCommunityEvent).description && (
+								<p>
+									<strong>{t("communityEvents.description")}:</strong>{" "}
+									{(selectedEvent.data as ApiCommunityEvent).description}
+								</p>
+							)}
+							<p>
+								<strong>{t("communityEvents.approvals")}:</strong>{" "}
+								{(selectedEvent.data as ApiCommunityEvent).current_approvals} /{" "}
+								{(selectedEvent.data as ApiCommunityEvent).required_approvals}
+							</p>
 							<p>
 								<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
 								{selectedEvent.start.toLocaleString()} -{" "}

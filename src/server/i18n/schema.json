@@ -207,6 +207,15 @@
 				"smtpConnectionFailed": {
 					"type": "string"
 				},
+				"invalidWebhookUrl": {
+					"type": "string"
+				},
+				"webhookSecretTooShort": {
+					"type": "string"
+				},
+				"webhookRequiresUrlAndSecret": {
+					"type": "string"
+				},
 				"isActiveRequired": {
 					"type": "string"
 				},
@@ -226,6 +235,9 @@
 				"invalidEmail",
 				"adminEmailRequiredForEmailNotifications",
 				"smtpConnectionFailed",
+				"invalidWebhookUrl",
+				"webhookSecretTooShort",
+				"webhookRequiresUrlAndSecret",
 				"isActiveRequired",
 				"invalidLanguage",
 				"invalidRequest"

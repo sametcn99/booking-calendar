@@ -19,6 +19,7 @@ This project is specifically optimized for self-hosted deployments:
 - Public appointment detail pages with persistent shareable links
 - Community events with public approval links and approval progress
 - Calendar sharing controls, push/email notification toggles, and ICS export (all/range)
+- Admin-configurable webhook notifications with HMAC signatures and test delivery
 - Installable PWA (mobile and desktop)
 - IP-based rate limiting
 - Asynchronous email sending, so booking responses are not blocked
@@ -160,6 +161,32 @@ Then:
 1. Copy values into `.env`.
 2. Rebuild frontend/client image because `VITE_VAPID_PUBLIC_KEY` is embedded at build time.
 3. Restart app/container so backend reads `VAPID_PRIVATE_KEY`.
+
+## Webhook Notifications
+
+You can mirror all push notification events to an external webhook endpoint.
+
+Configure it from `Settings -> Webhook Notifications` in the admin panel:
+
+- Enable/disable webhook delivery
+- Set webhook URL (`https` required, `http` allowed only for localhost)
+- Set signing secret (minimum 16 chars)
+- Send a test webhook event
+
+Webhook deliveries include these security headers:
+
+- `X-BookingCalendar-Signature: sha256=<hmac>`
+- `X-BookingCalendar-Timestamp: <unix-seconds>`
+- `X-BookingCalendar-Event: <event-name>`
+- `X-BookingCalendar-Delivery-Id: <uuid>`
+
+Signature payload format:
+
+```text
+<timestamp>.<raw-json-body>
+```
+
+Compute and compare HMAC SHA-256 using your configured signing secret.
 
 ## Docker Production Setup Guide
 
