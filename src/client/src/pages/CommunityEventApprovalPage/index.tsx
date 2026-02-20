@@ -10,7 +10,7 @@ import { useI18n } from "../../context/I18nContext";
 
 export default function CommunityEventApprovalPage() {
 	const [css] = useStyletron();
-	const { token } = useParams<{ token: string }>();
+	const { slugId } = useParams<{ slugId: string }>();
 	const { t } = useI18n();
 	const [event, setEvent] = useState<ApiCommunityEvent | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -20,8 +20,8 @@ export default function CommunityEventApprovalPage() {
 	const [alreadyApprovedLocal, setAlreadyApprovedLocal] = useState(false);
 
 	const getStorageKey = useCallback(
-		() => (token ? `community_event_approved_${token}` : ""),
-		[token],
+		() => (slugId ? `community_event_approved_${slugId}` : ""),
+		[slugId],
 	);
 
 	const getStoredApprovers = useCallback((): string[] => {
@@ -39,12 +39,12 @@ export default function CommunityEventApprovalPage() {
 	}, [getStorageKey]);
 
 	const fetchEvent = useCallback(() => {
-		if (!token) return;
+		if (!slugId) return;
 		api
-			.getPublicCommunityEvent(token)
+			.getPublicCommunityEvent(slugId)
 			.then((r) => setEvent(r.data))
 			.catch(() => setError(t("common.error")));
-	}, [t, token]);
+	}, [slugId, t]);
 
 	useEffect(() => {
 		fetchEvent();
@@ -58,7 +58,7 @@ export default function CommunityEventApprovalPage() {
 	}, [getStoredApprovers]);
 
 	const handleApprove = async () => {
-		if (!token) return;
+		if (!slugId) return;
 		const normalizedEmail = approverEmail.trim().toLowerCase();
 		if (normalizedEmail.length > 0) {
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -77,7 +77,7 @@ export default function CommunityEventApprovalPage() {
 
 		setApproving(true);
 		try {
-			const r = await api.approveCommunityEvent(token, {
+			const r = await api.approveCommunityEvent(slugId, {
 				email: normalizedEmail || undefined,
 			});
 			setEvent(r.data);
@@ -148,7 +148,9 @@ export default function CommunityEventApprovalPage() {
 		canceled: t("communityEvents.statusCanceled"),
 	};
 
-	const shareLink = token ? `${window.location.origin}/community/${token}` : "";
+	const shareLink = slugId
+		? `${window.location.origin}/community/${slugId}`
+		: "";
 
 	const handleCopyLink = async () => {
 		if (!shareLink) return;

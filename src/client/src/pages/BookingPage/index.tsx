@@ -14,7 +14,7 @@ export default function BookingPage() {
 	const [css] = useStyletron();
 	const navigate = useNavigate();
 	const { t, locale } = useI18n();
-	const { token } = useParams<{ token: string }>();
+	const { slugId } = useParams<{ slugId: string }>();
 	const {
 		email,
 		handleSubmit,
@@ -36,7 +36,7 @@ export default function BookingPage() {
 		slots,
 		createdAppointmentToken,
 		valid,
-	} = useBookingPage(token, t);
+	} = useBookingPage(slugId, t);
 
 	useEffect(() => {
 		if (!createdAppointmentToken) return;
@@ -58,7 +58,7 @@ export default function BookingPage() {
 		return <BookingLoadingState message={t("booking.loading")} />;
 	}
 
-	// Invalid token
+	// Invalid slug id
 	if (!valid) {
 		return (
 			<BookingInvalidState

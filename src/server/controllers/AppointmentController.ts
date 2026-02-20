@@ -19,12 +19,12 @@ export class AppointmentController {
 		return { status: 200, body: { success: true, data: appointments } };
 	}
 
-	async getAppointmentByToken(
-		token: string,
+	async getAppointmentBySlugId(
+		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
 			const appointment =
-				await this.appointmentService.getAppointmentByToken(token);
+				await this.appointmentService.getAppointmentBySlugId(slugId);
 			return { status: 200, body: { success: true, data: appointment } };
 		} catch (err: unknown) {
 			const message = getErrorMessage(err);
@@ -36,7 +36,7 @@ export class AppointmentController {
 	}
 
 	async createAppointment(
-		token: string,
+		slugId: string,
 		body: {
 			slot_id?: number;
 			name?: string;
@@ -68,7 +68,7 @@ export class AppointmentController {
 
 		try {
 			const appointment = await this.appointmentService.createAppointment(
-				token,
+				slugId,
 				{
 					slot_id: body.slot_id,
 					name: body.name,
@@ -97,7 +97,7 @@ export class AppointmentController {
 		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
-			await this.appointmentService.deleteAppointmentByToken(slugId);
+			await this.appointmentService.deleteAppointmentBySlugId(slugId);
 			return { status: 200, body: { success: true } };
 		} catch (err: unknown) {
 			const message = getErrorMessage(err);
@@ -114,7 +114,7 @@ export class AppointmentController {
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
 			const appointment =
-				await this.appointmentService.cancelAppointmentByTokenForAdmin(slugId);
+				await this.appointmentService.cancelAppointmentBySlugIdForAdmin(slugId);
 			return { status: 200, body: { success: true, data: appointment } };
 		} catch (err: unknown) {
 			const message = getErrorMessage(err);
@@ -126,12 +126,12 @@ export class AppointmentController {
 		}
 	}
 
-	async cancelAppointmentByToken(
-		token: string,
+	async cancelAppointmentBySlugId(
+		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
 			const appointment =
-				await this.appointmentService.cancelAppointmentByToken(token);
+				await this.appointmentService.cancelAppointmentBySlugId(slugId);
 			return { status: 200, body: { success: true, data: appointment } };
 		} catch (err: unknown) {
 			const message = getErrorMessage(err);

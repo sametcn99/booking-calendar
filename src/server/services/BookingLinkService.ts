@@ -2,6 +2,7 @@ import { config } from "../config";
 import { t } from "../i18n";
 import { BookingLinkRepository } from "../repositories/BookingLinkRepository";
 import type { BookingLink } from "../types";
+import { generateUniqueSlugId } from "../utils/slug";
 
 export class BookingLinkService {
 	private linkRepo: BookingLinkRepository;
@@ -70,21 +71,10 @@ export class BookingLinkService {
 		return `${prefix} ${nextIndex}`;
 	}
 
-	private generateSlugId(length: number = 8): string {
-		const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
-		const bytes = crypto.getRandomValues(new Uint8Array(length));
-		return Array.from(bytes)
-			.map((value) => alphabet[value % alphabet.length])
-			.join("");
-	}
-
 	private async generateUniqueSlugId(): Promise<string> {
-		for (let attempt = 0; attempt < 10; attempt++) {
-			const candidate = this.generateSlugId();
+		return generateUniqueSlugId(async (candidate) => {
 			const existing = await this.linkRepo.findBySlug(candidate);
-			if (!existing) return candidate;
-		}
-
-		return `${this.generateSlugId(6)}${Date.now().toString(36).slice(-2)}`;
+			return Boolean(existing);
+		});
 	}
 }

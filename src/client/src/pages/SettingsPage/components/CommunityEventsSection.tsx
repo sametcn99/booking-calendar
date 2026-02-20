@@ -30,8 +30,8 @@ export default function CommunityEventsSection({ t }: Props) {
 	const [requiredApprovals, setRequiredApprovals] = useState(3);
 	const [creating, setCreating] = useState(false);
 
-	const getShareLink = (token: string) =>
-		`${window.location.origin}/community/${token}`;
+	const getShareLink = (slugId: string) =>
+		`${window.location.origin}/community/${slugId}`;
 
 	const fetchEvents = useCallback(() => {
 		api
@@ -89,8 +89,8 @@ export default function CommunityEventsSection({ t }: Props) {
 		}
 	};
 
-	const handleCopyLink = async (token: string) => {
-		const link = getShareLink(token);
+	const handleCopyLink = async (slugId: string) => {
+		const link = getShareLink(slugId);
 		await navigator.clipboard.writeText(link);
 		toaster.positive(t("communityEvents.copied"), {});
 	};

@@ -24,11 +24,11 @@ export default function App() {
 	return (
 		<Routes>
 			<Route path="/login" element={<LoginPage />} />
-			<Route path="/book/:token" element={<BookingPage />} />
-			<Route path="/appointment/:token" element={<AppointmentDetailPage />} />
+			<Route path="/book/:slugId" element={<BookingPage />} />
+			<Route path="/appointment/:slugId" element={<AppointmentDetailPage />} />
 			<Route path="/calendar" element={<PublicCalendarPage />} />
 			<Route
-				path="/community/:token"
+				path="/community/:slugId"
 				element={<CommunityEventApprovalPage />}
 			/>
 			<Route

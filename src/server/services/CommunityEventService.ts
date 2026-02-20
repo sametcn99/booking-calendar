@@ -2,6 +2,7 @@ import { t } from "../i18n";
 import { MailService } from "../mail/MailService";
 import { CommunityEventRepository } from "../repositories/CommunityEventRepository";
 import { SettingsRepository } from "../repositories/SettingsRepository";
+import { generateUniqueSlugId } from "../utils/slug";
 import { PushService } from "./PushService";
 
 export class CommunityEventService {
@@ -129,7 +130,10 @@ export class CommunityEventService {
 			throw new Error(t("communityEvent.minApprovals"));
 		}
 
-		const slugId = crypto.randomUUID();
+		const slugId = await generateUniqueSlugId(async (candidate) => {
+			const existing = await this.repo.findBySlugId(candidate);
+			return Boolean(existing);
+		});
 
 		return this.repo.create({
 			title: input.title,
@@ -142,16 +146,16 @@ export class CommunityEventService {
 		});
 	}
 
-	async getByShareToken(token: string) {
-		const event = await this.repo.findBySlugId(token);
+	async getBySlugId(slugId: string) {
+		const event = await this.repo.findBySlugId(slugId);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
 		}
 		return event;
 	}
 
-	async approve(token: string, email?: string) {
-		const event = await this.repo.findBySlugId(token);
+	async approve(slugId: string, email?: string) {
+		const event = await this.repo.findBySlugId(slugId);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
 		}
@@ -193,8 +197,8 @@ export class CommunityEventService {
 		return updated;
 	}
 
-	async deleteEventByToken(token: string) {
-		const event = await this.repo.findBySlugId(token);
+	async deleteEventBySlugId(slugId: string) {
+		const event = await this.repo.findBySlugId(slugId);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
 		}
@@ -202,7 +206,7 @@ export class CommunityEventService {
 			await this.repo.updateStatus(event.id, "canceled");
 			await this.notifyEventCanceled(event.id);
 		}
-		await this.repo.deleteBySlugId(token);
+		await this.repo.deleteBySlugId(slugId);
 	}
 
 	async cancelExpiredPending() {

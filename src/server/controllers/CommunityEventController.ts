@@ -38,11 +38,11 @@ export class CommunityEventController {
 		}
 	}
 
-	async getByShareToken(
-		token: string,
+	async getBySlugId(
+		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
-			const event = await this.service.getByShareToken(token);
+			const event = await this.service.getBySlugId(slugId);
 			return { status: 200, body: { success: true, data: event } };
 		} catch (err: unknown) {
 			return {
@@ -53,11 +53,11 @@ export class CommunityEventController {
 	}
 
 	async approve(
-		token: string,
+		slugId: string,
 		body: { email?: string },
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
-			const event = await this.service.approve(token, body.email);
+			const event = await this.service.approve(slugId, body.email);
 			return { status: 200, body: { success: true, data: event } };
 		} catch (err: unknown) {
 			return {
@@ -71,7 +71,7 @@ export class CommunityEventController {
 		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
-			await this.service.deleteEventByToken(slugId);
+			await this.service.deleteEventBySlugId(slugId);
 			return { status: 200, body: { success: true } };
 		} catch (err: unknown) {
 			return {

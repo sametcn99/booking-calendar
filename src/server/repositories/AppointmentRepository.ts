@@ -6,6 +6,7 @@ import type {
 	AppointmentWithSlot,
 	CreateAppointmentInput,
 } from "../types";
+import { generateUniqueSlugId } from "../utils/slug";
 
 export class AppointmentRepository {
 	private repo(manager?: EntityManager) {
@@ -27,7 +28,7 @@ export class AppointmentRepository {
 				"a.note as note",
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
-				"a.cancel_token as slug_id",
+				"a.slug_id as slug_id",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
@@ -51,7 +52,7 @@ export class AppointmentRepository {
 				"a.note as note",
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
-				"a.cancel_token as slug_id",
+				"a.slug_id as slug_id",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
@@ -108,6 +109,10 @@ export class AppointmentRepository {
 		manager?: EntityManager,
 	): Promise<Appointment> {
 		const repo = this.repo(manager);
+		const slugId = await generateUniqueSlugId(async (candidate) => {
+			const existing = await repo.findOne({ where: { slug_id: candidate } });
+			return Boolean(existing);
+		});
 		const created = repo.create({
 			slot_id: input.slot_id,
 			name: input.name,
@@ -116,7 +121,7 @@ export class AppointmentRepository {
 			note: input.note || null,
 			start_at: input.start_at,
 			end_at: input.end_at,
-			slug_id: crypto.randomUUID(),
+			slug_id: slugId,
 			canceled_at: null,
 			canceled_by: null,
 		});
@@ -150,12 +155,12 @@ export class AppointmentRepository {
 				"a.note as note",
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
-				"a.cancel_token as slug_id",
+				"a.slug_id as slug_id",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
 			])
-			.where("a.cancel_token = :slugId", { slugId })
+			.where("a.slug_id = :slugId", { slugId })
 			.getRawOne<AppointmentWithSlot>();
 
 		return row ?? null;

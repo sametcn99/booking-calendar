@@ -204,13 +204,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/book/{token}": {
+			"/api/public/book/{slugId}": {
 				get: {
 					tags: ["Public"],
-					summary: "Validate booking slug",
+					summary: "Validate booking slug id",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },
@@ -229,13 +229,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/book/{token}/slots": {
+			"/api/public/book/{slugId}/slots": {
 				get: {
 					tags: ["Public"],
-					summary: "Get available slots for booking slug",
+					summary: "Get available slots for booking slug id",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },
@@ -264,13 +264,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/book/{token}/appointments": {
+			"/api/public/book/{slugId}/appointments": {
 				post: {
 					tags: ["Public"],
-					summary: "Create appointment by booking slug",
+					summary: "Create appointment by booking slug id",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },
@@ -330,13 +330,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/appointment/{token}": {
+			"/api/public/appointment/{slugId}": {
 				get: {
 					tags: ["Public"],
-					summary: "Get appointment details by public token",
+					summary: "Get appointment details by public slug id",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },
@@ -368,13 +368,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/appointment/{token}/cancel": {
+			"/api/public/appointment/{slugId}/cancel": {
 				post: {
 					tags: ["Public"],
-					summary: "Cancel appointment by public token (JSON)",
+					summary: "Cancel appointment by public slug id (JSON)",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },
@@ -451,13 +451,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/appointments/cancel/{token}": {
+			"/api/public/appointments/cancel/{slugId}": {
 				get: {
 					tags: ["Public"],
-					summary: "Cancel appointment by token",
+					summary: "Cancel appointment by slug id",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },
@@ -479,13 +479,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/community/{token}": {
+			"/api/public/community/{slugId}": {
 				get: {
 					tags: ["Public"],
-					summary: "Get community event by share token",
+					summary: "Get community event by slug id",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },
@@ -517,13 +517,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/public/community/{token}/approve": {
+			"/api/public/community/{slugId}/approve": {
 				post: {
 					tags: ["Public"],
-					summary: "Approve a community event by share token",
+					summary: "Approve a community event by slug id",
 					parameters: [
 						{
-							name: "token",
+							name: "slugId",
 							in: "path",
 							required: true,
 							schema: { type: "string" },

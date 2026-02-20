@@ -195,14 +195,14 @@ export const api = {
 		}),
 
 	// Public
-	validateToken: (token: string) =>
-		request<ApiResponse<ApiBookingLink>>(`/public/book/${token}`),
+	validateToken: (slugId: string) =>
+		request<ApiResponse<ApiBookingLink>>(`/public/book/${slugId}`),
 
-	getAvailableSlots: (token: string) =>
-		request<ApiResponse<ApiPublicSlot[]>>(`/public/book/${token}/slots`),
+	getAvailableSlots: (slugId: string) =>
+		request<ApiResponse<ApiPublicSlot[]>>(`/public/book/${slugId}/slots`),
 
 	createAppointment: (
-		token: string,
+		slugId: string,
 		data: {
 			slot_id: number;
 			name: string;
@@ -213,17 +213,20 @@ export const api = {
 			end_at: string;
 		},
 	) =>
-		request<ApiResponse<ApiAppointment>>(`/public/book/${token}/appointments`, {
-			method: "POST",
-			body: JSON.stringify(data),
-		}),
-
-	getPublicAppointment: (token: string) =>
-		request<ApiResponse<ApiAppointment>>(`/public/appointment/${token}`),
-
-	cancelPublicAppointment: (token: string) =>
 		request<ApiResponse<ApiAppointment>>(
-			`/public/appointment/${token}/cancel`,
+			`/public/book/${slugId}/appointments`,
+			{
+				method: "POST",
+				body: JSON.stringify(data),
+			},
+		),
+
+	getPublicAppointment: (slugId: string) =>
+		request<ApiResponse<ApiAppointment>>(`/public/appointment/${slugId}`),
+
+	cancelPublicAppointment: (slugId: string) =>
+		request<ApiResponse<ApiAppointment>>(
+			`/public/appointment/${slugId}/cancel`,
 			{
 				method: "POST",
 			},
@@ -407,12 +410,12 @@ export const api = {
 		}),
 
 	// Public community event
-	getPublicCommunityEvent: (token: string) =>
-		request<ApiResponse<ApiCommunityEvent>>(`/public/community/${token}`),
+	getPublicCommunityEvent: (slugId: string) =>
+		request<ApiResponse<ApiCommunityEvent>>(`/public/community/${slugId}`),
 
-	approveCommunityEvent: (token: string, data?: { email?: string }) =>
+	approveCommunityEvent: (slugId: string, data?: { email?: string }) =>
 		request<ApiResponse<ApiCommunityEvent>>(
-			`/public/community/${token}/approve`,
+			`/public/community/${slugId}/approve`,
 			{
 				method: "POST",
 				body: JSON.stringify(data ?? {}),

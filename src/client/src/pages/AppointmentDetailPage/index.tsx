@@ -10,26 +10,26 @@ import { useI18n } from "../../context/I18nContext";
 export default function AppointmentDetailPage() {
 	const [css] = useStyletron();
 	const { t, locale } = useI18n();
-	const { token } = useParams<{ token: string }>();
+	const { slugId } = useParams<{ slugId: string }>();
 	const [appointment, setAppointment] = useState<ApiAppointment | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [canceling, setCanceling] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const appointmentLink = useMemo(() => {
-		if (!token) return "";
-		return `${window.location.origin}/appointment/${token}`;
-	}, [token]);
+		if (!slugId) return "";
+		return `${window.location.origin}/appointment/${slugId}`;
+	}, [slugId]);
 
 	const load = useCallback(async () => {
-		if (!token) {
+		if (!slugId) {
 			setError(t("booking.invalidMessage"));
 			setLoading(false);
 			return;
 		}
 
 		try {
-			const result = await api.getPublicAppointment(token);
+			const result = await api.getPublicAppointment(slugId);
 			setAppointment(result.data);
 			setError(null);
 		} catch (err: unknown) {
@@ -37,17 +37,17 @@ export default function AppointmentDetailPage() {
 		} finally {
 			setLoading(false);
 		}
-	}, [t, token]);
+	}, [slugId, t]);
 
 	useEffect(() => {
 		load();
 	}, [load]);
 
 	const handleCancel = async () => {
-		if (!token || !appointment || appointment.canceled_at) return;
+		if (!slugId || !appointment || appointment.canceled_at) return;
 		setCanceling(true);
 		try {
-			const result = await api.cancelPublicAppointment(token);
+			const result = await api.cancelPublicAppointment(slugId);
 			setAppointment(result.data);
 			toaster.positive(t("appointments.appointmentCanceled"), {});
 		} catch (err: unknown) {

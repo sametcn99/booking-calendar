@@ -230,33 +230,33 @@ const _server = Bun.serve({
 			}
 		}
 
-		// Public API: Validate booking token
-		if (matchRoute(pathname, "/api/public/book/:token") && method === "GET") {
-			const token = extractRequiredPathParam(
+		// Public API: Validate booking slug id
+		if (matchRoute(pathname, "/api/public/book/:slugId") && method === "GET") {
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/book/:token",
+				"/api/public/book/:slugId",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
 					corsHeaders,
 				);
 			}
-			const result = await bookingLinkController.validateToken(token);
+			const result = await bookingLinkController.validateToken(slugId);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 
 		// Public API: Get available slots
 		if (
-			matchRoute(pathname, "/api/public/book/:token/slots") &&
+			matchRoute(pathname, "/api/public/book/:slugId/slots") &&
 			method === "GET"
 		) {
-			const token = extractRequiredPathParam(
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/book/:token/slots",
+				"/api/public/book/:slugId/slots",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
@@ -264,7 +264,8 @@ const _server = Bun.serve({
 				);
 			}
 			// Validate the token first
-			const validationResult = await bookingLinkController.validateToken(token);
+			const validationResult =
+				await bookingLinkController.validateToken(slugId);
 			if (validationResult.status !== 200) {
 				return jsonResponse(
 					validationResult.status,
@@ -284,14 +285,14 @@ const _server = Bun.serve({
 
 		// Public API: Create appointment
 		if (
-			matchRoute(pathname, "/api/public/book/:token/appointments") &&
+			matchRoute(pathname, "/api/public/book/:slugId/appointments") &&
 			method === "POST"
 		) {
-			const token = extractRequiredPathParam(
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/book/:token/appointments",
+				"/api/public/book/:slugId/appointments",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
@@ -307,7 +308,10 @@ const _server = Bun.serve({
 				start_at?: string;
 				end_at?: string;
 			}>(request);
-			const result = await appointmentController.createAppointment(token, body);
+			const result = await appointmentController.createAppointment(
+				slugId,
+				body,
+			);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 
@@ -342,16 +346,16 @@ const _server = Bun.serve({
 			);
 		}
 
-		// Public API: Get appointment detail by cancel token
+		// Public API: Get appointment detail by slug id
 		if (
-			matchRoute(pathname, "/api/public/appointment/:token") &&
+			matchRoute(pathname, "/api/public/appointment/:slugId") &&
 			method === "GET"
 		) {
-			const token = extractRequiredPathParam(
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/appointment/:token",
+				"/api/public/appointment/:slugId",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
@@ -359,20 +363,20 @@ const _server = Bun.serve({
 				);
 			}
 
-			const result = await appointmentController.getAppointmentByToken(token);
+			const result = await appointmentController.getAppointmentBySlugId(slugId);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 
-		// Public API: Cancel appointment by token (JSON)
+		// Public API: Cancel appointment by slug id (JSON)
 		if (
-			matchRoute(pathname, "/api/public/appointment/:token/cancel") &&
+			matchRoute(pathname, "/api/public/appointment/:slugId/cancel") &&
 			method === "POST"
 		) {
-			const token = extractRequiredPathParam(
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/appointment/:token/cancel",
+				"/api/public/appointment/:slugId/cancel",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
@@ -381,20 +385,20 @@ const _server = Bun.serve({
 			}
 
 			const result =
-				await appointmentController.cancelAppointmentByToken(token);
+				await appointmentController.cancelAppointmentBySlugId(slugId);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 
-		// Public API: Cancel appointment by token (from email button)
+		// Public API: Cancel appointment by slug id (from email button)
 		if (
-			matchRoute(pathname, "/api/public/appointments/cancel/:token") &&
+			matchRoute(pathname, "/api/public/appointments/cancel/:slugId") &&
 			method === "GET"
 		) {
-			const token = extractRequiredPathParam(
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/appointments/cancel/:token",
+				"/api/public/appointments/cancel/:slugId",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
@@ -403,7 +407,7 @@ const _server = Bun.serve({
 			}
 
 			const result =
-				await appointmentController.cancelAppointmentByToken(token);
+				await appointmentController.cancelAppointmentBySlugId(slugId);
 			if (result.status === 200) {
 				return new Response(
 					`<html><body style='font-family:Arial,sans-serif;padding:24px;background:#0a0a0a;color:#e0d6f0;'><h2>${t("cancelPage.successTitle")}</h2><p>${t("cancelPage.successMessage")}</p></body></html>`,
@@ -423,36 +427,36 @@ const _server = Bun.serve({
 			);
 		}
 
-		// Public API: View community event by share token
+		// Public API: View community event by slug id
 		if (
-			matchRoute(pathname, "/api/public/community/:token") &&
+			matchRoute(pathname, "/api/public/community/:slugId") &&
 			method === "GET"
 		) {
-			const token = extractRequiredPathParam(
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/community/:token",
+				"/api/public/community/:slugId",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
 					corsHeaders,
 				);
 			}
-			const result = await communityEventController.getByShareToken(token);
+			const result = await communityEventController.getBySlugId(slugId);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 
 		// Public API: Approve community event
 		if (
-			matchRoute(pathname, "/api/public/community/:token/approve") &&
+			matchRoute(pathname, "/api/public/community/:slugId/approve") &&
 			method === "POST"
 		) {
-			const token = extractRequiredPathParam(
+			const slugId = extractRequiredPathParam(
 				pathname,
-				"/api/public/community/:token/approve",
+				"/api/public/community/:slugId/approve",
 			);
-			if (!token) {
+			if (!slugId) {
 				return jsonResponse(
 					400,
 					{ success: false, error: t("general.invalidRoute") },
@@ -460,7 +464,7 @@ const _server = Bun.serve({
 				);
 			}
 			const body = await parseJsonBody<{ email?: string }>(request);
-			const result = await communityEventController.approve(token, body);
+			const result = await communityEventController.approve(slugId, body);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 

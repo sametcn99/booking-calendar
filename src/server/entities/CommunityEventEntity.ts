@@ -25,7 +25,7 @@ export class CommunityEventEntity {
 	@Column({ type: "text", nullable: true })
 	color!: string | null;
 
-	@Column({ type: "text", unique: true, name: "share_token" })
+	@Column({ type: "text", unique: true })
 	slug_id!: string;
 
 	@Column({ type: "integer", default: 3 })

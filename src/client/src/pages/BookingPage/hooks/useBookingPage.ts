@@ -92,7 +92,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function useBookingPage(
-	token: string | undefined,
+	slugId: string | undefined,
 	t: (key: string) => string,
 ) {
 	const [valid, setValid] = useState<boolean | null>(null);
@@ -119,24 +119,24 @@ export function useBookingPage(
 	}, [selectedSlotData]);
 
 	const validateAndLoad = useCallback(async () => {
-		if (!token) {
+		if (!slugId) {
 			setValid(false);
 			return;
 		}
 
 		try {
-			await api.validateToken(token);
+			await api.validateToken(slugId);
 			setValid(true);
-			const result = await api.getAvailableSlots(token);
+			const result = await api.getAvailableSlots(slugId);
 			setSlots(result.data);
 		} catch {
 			setValid(false);
 		}
-	}, [token]);
+	}, [slugId]);
 
 	useEffect(() => {
-		if (token) validateAndLoad();
-	}, [token, validateAndLoad]);
+		if (slugId) validateAndLoad();
+	}, [slugId, validateAndLoad]);
 
 	const selectSlot = useCallback(
 		(slot: Slot) => {
@@ -229,12 +229,12 @@ export function useBookingPage(
 
 			setLoading(true);
 			try {
-				if (!token) {
+				if (!slugId) {
 					setValid(false);
 					return;
 				}
 
-				const result = await api.createAppointment(token, {
+				const result = await api.createAppointment(slugId, {
 					slot_id: selectedSlot,
 					name,
 					email: email || undefined,
@@ -260,7 +260,7 @@ export function useBookingPage(
 			selectedSlotData,
 			selectedStartAt,
 			t,
-			token,
+			slugId,
 		],
 	);
 
