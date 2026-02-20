@@ -8,6 +8,7 @@ import { CommunityEventController } from "./controllers/CommunityEventController
 import { PlannerController } from "./controllers/PlannerController";
 import { PushController } from "./controllers/PushController";
 import { SlotController } from "./controllers/SlotController";
+import { VersionController } from "./controllers/VersionController";
 import { initializeDatabase } from "./db/database";
 import { createOpenApiDocument } from "./docs/openapi";
 import { renderScalarDocsPage } from "./docs/scalar";
@@ -33,6 +34,7 @@ const bookingLinkController = new BookingLinkController();
 const pushController = new PushController();
 const plannerController = new PlannerController();
 const communityEventController = new CommunityEventController();
+const versionController = new VersionController();
 const openApiDocument = createOpenApiDocument();
 
 // MIME types map
@@ -228,6 +230,11 @@ const _server = Bun.serve({
 					corsHeaders,
 				);
 			}
+		}
+
+		if (pathname === "/api/settings/version" && method === "GET") {
+			const result = await versionController.getVersionInfo();
+			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 
 		// Public API: Validate booking slug id

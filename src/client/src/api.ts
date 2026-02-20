@@ -81,6 +81,13 @@ export interface LoginResponseData {
 
 export type ApiThemeColors = AppColors;
 
+export interface ApiVersionInfo {
+	current_version: string;
+	latest_release_version: string | null;
+	latest_release_url: string | null;
+	update_available: boolean;
+}
+
 async function request<T>(
 	endpoint: string,
 	options: RequestInit = {},
@@ -237,6 +244,11 @@ export const api = {
 		request<{ success: boolean; data: { language: string } }>(
 			"/settings/language",
 		).then((r) => r.data.language),
+
+	getVersionInfo: () =>
+		request<{ success: boolean; data: ApiVersionInfo }>(
+			"/settings/version",
+		).then((r) => r.data),
 
 	setLanguage: (language: string) =>
 		request<{ success: boolean }>("/admin/settings/language", {

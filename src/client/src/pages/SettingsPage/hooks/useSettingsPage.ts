@@ -1,6 +1,6 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useState } from "react";
-import { api } from "../../../api";
+import { type ApiVersionInfo, api } from "../../../api";
 
 interface Params {
 	t: (key: string) => string;
@@ -31,6 +31,8 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		useState(false);
 	const [savingEmailNotifications, setSavingEmailNotifications] =
 		useState(false);
+	const [versionInfo, setVersionInfo] = useState<ApiVersionInfo | null>(null);
+	const [loadingVersionInfo, setLoadingVersionInfo] = useState(true);
 
 	useEffect(() => {
 		setMustChangePassword(
@@ -68,6 +70,14 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 			.getEmailNotifications()
 			.then((enabled) => setEmailNotificationsEnabled(enabled))
 			.catch(() => {});
+	}, []);
+
+	useEffect(() => {
+		api
+			.getVersionInfo()
+			.then((data) => setVersionInfo(data))
+			.catch(() => {})
+			.finally(() => setLoadingVersionInfo(false));
 	}, []);
 
 	const handleChangePassword = useCallback(
@@ -199,10 +209,12 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		savingEmailNotifications,
 		savingLanguage,
 		savingPushNotifications,
+		loadingVersionInfo,
 		setAdminEmail,
 		setConfirmPassword,
 		setCurrentPassword,
 		setIsPasswordSectionOpen,
 		setNewPassword,
+		versionInfo,
 	};
 }

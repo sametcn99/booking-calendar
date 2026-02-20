@@ -1,6 +1,26 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
+function readAppVersionFromPackageJson(): string {
+	const packageJsonPath = join(import.meta.dir, "..", "..", "package.json");
+	if (!existsSync(packageJsonPath)) {
+		console.warn("package.json not found, app version is undefined");
+		return "undefined";
+	}
+
+	try {
+		const content = readFileSync(packageJsonPath, "utf-8");
+		const parsed = JSON.parse(content) as { version?: unknown };
+		return typeof parsed.version === "string" &&
+			parsed.version.trim().length > 0
+			? parsed.version.trim()
+			: "undefined";
+	} catch {
+		console.warn("package.json could not be parsed, app version is undefined");
+		return "undefined";
+	}
+}
+
 function loadEnv(): void {
 	const envPath = join(import.meta.dir, "..", "..", ".env");
 	if (!existsSync(envPath)) {
@@ -27,6 +47,15 @@ export const config = {
 	port: parseInt(process.env.PORT || "3000", 10),
 	host: process.env.HOST || "0.0.0.0",
 	baseUrl: process.env.BASE_URL || "http://localhost:3000",
+
+	app: {
+		version: readAppVersionFromPackageJson(),
+	},
+
+	github: {
+		owner: process.env.GITHUB_REPO_OWNER || "sametcn99",
+		repo: process.env.GITHUB_REPO_NAME || "booking-calendar",
+	},
 
 	admin: {
 		username: process.env.ADMIN_USERNAME || "admin",

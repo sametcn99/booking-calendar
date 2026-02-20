@@ -8,6 +8,7 @@ import CalendarSharingSection from "./components/CalendarSharingSection";
 import ICSExportSection from "./components/ICSExportSection";
 import NotificationSettingSection from "./components/NotificationSettingSection";
 import ThemeColorsSection from "./components/ThemeColorsSection";
+import VersionSection from "./components/VersionSection";
 import { useSettingsPage } from "./hooks/useSettingsPage";
 
 export default function SettingsPage() {
@@ -30,6 +31,7 @@ export default function SettingsPage() {
 		mustChangePassword,
 		newPassword,
 		pushNotificationsEnabled,
+		loadingVersionInfo,
 		savingAdminEmail,
 		savingCalendarSharing,
 		savingEmailNotifications,
@@ -40,6 +42,7 @@ export default function SettingsPage() {
 		setCurrentPassword,
 		setIsPasswordSectionOpen,
 		setNewPassword,
+		versionInfo,
 	} = useSettingsPage({ t, setLanguage });
 
 	return (
@@ -131,6 +134,7 @@ export default function SettingsPage() {
 								},
 								{ id: "push", label: t("settings.pushNotifications") },
 								{ id: "email", label: t("settings.emailNotifications") },
+								{ id: "version", label: t("settings.version") },
 								{ id: "theme-colors", label: t("settings.themeColors") },
 								{ id: "ics", label: t("settings.icsExport") },
 							].map((item) => (
@@ -241,6 +245,15 @@ export default function SettingsPage() {
 							descriptionKey="settings.emailNotificationsDescription"
 							enabledKey="settings.emailNotificationsEnabled"
 							disabledKey="settings.emailNotificationsDisabled"
+							surface="list"
+						/>
+					</section>
+
+					<section id="version">
+						<VersionSection
+							t={t}
+							versionInfo={versionInfo}
+							loading={loadingVersionInfo}
 							surface="list"
 						/>
 					</section>
