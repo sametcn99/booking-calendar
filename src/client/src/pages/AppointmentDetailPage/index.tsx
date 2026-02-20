@@ -5,6 +5,7 @@ import { Copy } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { type ApiAppointment, api } from "../../api";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 import { useI18n } from "../../context/I18nContext";
 
 export default function AppointmentDetailPage() {
@@ -14,6 +15,7 @@ export default function AppointmentDetailPage() {
 	const [appointment, setAppointment] = useState<ApiAppointment | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [canceling, setCanceling] = useState(false);
+	const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const appointmentLink = useMemo(() => {
@@ -227,13 +229,27 @@ export default function AppointmentDetailPage() {
 					</div>
 				) : (
 					<Button
-						onClick={handleCancel}
+						onClick={() => setConfirmCancelOpen(true)}
 						isLoading={canceling}
 						overrides={{ BaseButton: { style: { width: "100%" } } }}
 					>
 						{t("appointments.cancelBtn")}
 					</Button>
 				)}
+
+				<ConfirmationDialog
+					isOpen={confirmCancelOpen}
+					title={t("common.confirmationTitle")}
+					message={t("common.confirmCancelMessage")}
+					confirmLabel={t("common.confirm")}
+					cancelLabel={t("common.cancel")}
+					onConfirm={async () => {
+						await handleCancel();
+						setConfirmCancelOpen(false);
+					}}
+					onClose={() => setConfirmCancelOpen(false)}
+					isLoading={canceling}
+				/>
 			</div>
 		</div>
 	);

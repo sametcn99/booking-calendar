@@ -133,44 +133,6 @@ export default function AdminLayout() {
 				>
 					<div
 						className={css({
-							fontSize: "20px",
-							fontWeight: 700,
-							color: "var(--color-accent-800)",
-							marginBottom: "32px",
-							textAlign: "center",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							minHeight: "40px",
-							flexShrink: 0,
-							"@media (max-width: 768px)": {
-								fontSize: "14px",
-							},
-						})}
-					>
-						<span
-							className={css({
-								"@media (max-width: 768px)": {
-									display: isExpanded ? "block" : "none",
-								},
-							})}
-						>
-							{t("app.title")}
-						</span>
-						<span
-							className={css({
-								display: "none",
-								"@media (max-width: 768px)": {
-									display: isExpanded ? "none" : "block",
-								},
-							})}
-						>
-							{t("app.titleShort")}
-						</span>
-					</div>
-
-					<div
-						className={css({
 							display: "flex",
 							flexDirection: "column",
 							gap: "8px",

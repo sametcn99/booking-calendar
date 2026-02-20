@@ -94,6 +94,7 @@ export default function PlannerPage() {
 							formatDate={formatDate}
 							onEdit={openEdit}
 							onDelete={handleDelete}
+							t={t}
 						/>
 					))}
 				</div>

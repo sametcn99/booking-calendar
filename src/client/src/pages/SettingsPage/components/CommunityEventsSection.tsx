@@ -6,6 +6,7 @@ import { toaster } from "baseui/toast";
 import { Copy, ExternalLink, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { type ApiCommunityEvent, api } from "../../../api";
+import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import { APP_COLORS } from "../../../theme";
 
 interface Props {
@@ -29,6 +30,9 @@ export default function CommunityEventsSection({ t }: Props) {
 	const [color, setColor] = useState<string>(APP_COLORS.accent800);
 	const [requiredApprovals, setRequiredApprovals] = useState(3);
 	const [creating, setCreating] = useState(false);
+	const [confirmDeleteSlugId, setConfirmDeleteSlugId] = useState<string | null>(
+		null,
+	);
 
 	const getShareLink = (slugId: string) =>
 		`${window.location.origin}/community/${slugId}`;
@@ -87,6 +91,12 @@ export default function CommunityEventsSection({ t }: Props) {
 		} catch (e) {
 			toaster.negative(e instanceof Error ? e.message : t("common.error"), {});
 		}
+	};
+
+	const handleConfirmDelete = async () => {
+		if (!confirmDeleteSlugId) return;
+		await handleDelete(confirmDeleteSlugId);
+		setConfirmDeleteSlugId(null);
 	};
 
 	const handleCopyLink = async (slugId: string) => {
@@ -406,7 +416,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							<Button
 								kind={KIND.tertiary}
 								size={SIZE.mini}
-								onClick={() => handleDelete(ev.slug_id)}
+								onClick={() => setConfirmDeleteSlugId(ev.slug_id)}
 							>
 								<Trash2 size={14} />
 							</Button>
@@ -491,6 +501,16 @@ export default function CommunityEventsSection({ t }: Props) {
 					</div>
 				))}
 			</div>
+
+			<ConfirmationDialog
+				isOpen={Boolean(confirmDeleteSlugId)}
+				title={t("common.confirmationTitle")}
+				message={t("common.confirmDeleteMessage")}
+				confirmLabel={t("common.confirm")}
+				cancelLabel={t("common.cancel")}
+				onConfirm={handleConfirmDelete}
+				onClose={() => setConfirmDeleteSlugId(null)}
+			/>
 		</div>
 	);
 }

@@ -959,9 +959,35 @@
 			"properties": {
 				"error": {
 					"type": "string"
+				},
+				"confirmationTitle": {
+					"type": "string"
+				},
+				"confirmDeleteMessage": {
+					"type": "string"
+				},
+				"confirmDisableMessage": {
+					"type": "string"
+				},
+				"confirmCancelMessage": {
+					"type": "string"
+				},
+				"confirm": {
+					"type": "string"
+				},
+				"cancel": {
+					"type": "string"
 				}
 			},
-			"required": ["error"],
+			"required": [
+				"error",
+				"confirmationTitle",
+				"confirmDeleteMessage",
+				"confirmDisableMessage",
+				"confirmCancelMessage",
+				"confirm",
+				"cancel"
+			],
 			"additionalProperties": false
 		},
 		"communityEvents": {

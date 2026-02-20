@@ -286,7 +286,13 @@
 		"plannerLegend": "Planlayıcı Etkinlikleri"
 	},
 	"common": {
-		"error": "Bir hata oluştu"
+		"error": "Bir hata oluştu",
+		"confirmationTitle": "Lütfen onaylayın",
+		"confirmDeleteMessage": "Bu öğeyi silmek istediğinize emin misiniz?",
+		"confirmDisableMessage": "Bu öğeyi devre dışı bırakmak istediğinize emin misiniz?",
+		"confirmCancelMessage": "Bu randevuyu iptal etmek istediğinize emin misiniz?",
+		"confirm": "Onayla",
+		"cancel": "İptal"
 	},
 	"communityEvents": {
 		"title": "Topluluk Etkinlikleri",

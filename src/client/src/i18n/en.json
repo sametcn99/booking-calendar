@@ -286,7 +286,13 @@
 		"plannerLegend": "Planner Events"
 	},
 	"common": {
-		"error": "An error occurred"
+		"error": "An error occurred",
+		"confirmationTitle": "Please confirm",
+		"confirmDeleteMessage": "Are you sure you want to delete this item?",
+		"confirmDisableMessage": "Are you sure you want to disable this item?",
+		"confirmCancelMessage": "Are you sure you want to cancel this appointment?",
+		"confirm": "Confirm",
+		"cancel": "Cancel"
 	},
 	"communityEvents": {
 		"title": "Community Events",
