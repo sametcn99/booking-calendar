@@ -14,8 +14,8 @@ export class CommunityEventRepository {
 		return this.repo().findOneBy({ id });
 	}
 
-	async findByShareToken(token: string): Promise<CommunityEventEntity | null> {
-		return this.repo().findOneBy({ share_token: token });
+	async findBySlugId(slugId: string): Promise<CommunityEventEntity | null> {
+		return this.repo().findOneBy({ slug_id: slugId });
 	}
 
 	async create(input: {
@@ -25,7 +25,7 @@ export class CommunityEventRepository {
 		end_at: string;
 		color?: string;
 		required_approvals: number;
-		share_token: string;
+		slug_id: string;
 	}): Promise<CommunityEventEntity> {
 		const entity = this.repo().create({
 			title: input.title,
@@ -36,7 +36,7 @@ export class CommunityEventRepository {
 			required_approvals: input.required_approvals,
 			current_approvals: 0,
 			status: "pending",
-			share_token: input.share_token,
+			slug_id: input.slug_id,
 		});
 		return this.repo().save(entity);
 	}
@@ -85,6 +85,11 @@ export class CommunityEventRepository {
 
 	async delete(id: number): Promise<boolean> {
 		const result = await this.repo().delete(id);
+		return !!result.affected;
+	}
+
+	async deleteBySlugId(slugId: string): Promise<boolean> {
+		const result = await this.repo().delete({ slug_id: slugId });
 		return !!result.affected;
 	}
 

@@ -5,8 +5,8 @@ import AppointmentCard from "./AppointmentCard";
 interface Props {
 	appointments: Appointment[];
 	formatDate: (d: string) => string;
-	onCancel: (id: number) => void;
-	onDelete: (id: number) => void;
+	onCancel: (slugId: string) => void;
+	onDelete: (slugId: string) => void;
 	isPastAppointment: (appointment: Appointment) => boolean;
 	canDeleteAppointment: (appointment: Appointment) => boolean;
 	t: (key: string) => string;

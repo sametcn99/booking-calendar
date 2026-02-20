@@ -11,7 +11,7 @@
 		"start": "NODE_ENV=production bun run src/server/index.ts",
 		"db:init": "bun run src/server/db/init.ts",
 		"generate-vapid-keys": "bun run src/server/generate-vapid-keys.ts",
-		"check": "bunx biome check --write --unsafe"
+		"check": "bunx biome check --write --unsafe && bunx tsc --noEmit"
 	},
 	"dependencies": {
 		"@types/web-push": "^3.6.4",

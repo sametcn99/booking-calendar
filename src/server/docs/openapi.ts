@@ -71,7 +71,7 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						note: { type: ["string", "null"] },
 						start_at: { type: "string", format: "date-time" },
 						end_at: { type: "string", format: "date-time" },
-						cancel_token: { type: ["string", "null"] },
+						slug_id: { type: ["string", "null"] },
 						canceled_at: { type: ["string", "null"], format: "date-time" },
 						canceled_by: { type: ["string", "null"] },
 						created_at: { type: "string", format: "date-time" },
@@ -112,7 +112,7 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						start_at: { type: "string", format: "date-time" },
 						end_at: { type: "string", format: "date-time" },
 						color: { type: ["string", "null"] },
-						share_token: { type: "string" },
+						slug_id: { type: "string" },
 						required_approvals: { type: "integer" },
 						current_approvals: { type: "integer" },
 						status: {
@@ -710,33 +710,33 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					responses: { "200": { description: "Appointments listed" } },
 				},
 			},
-			"/api/admin/appointments/{id}": {
+			"/api/admin/appointments/{slugId}": {
 				delete: {
 					tags: ["Admin Appointments"],
-					summary: "Delete appointment",
+					summary: "Delete appointment by slug",
 					security: [{ BearerAuth: [] }],
 					parameters: [
 						{
-							name: "id",
+							name: "slugId",
 							in: "path",
 							required: true,
-							schema: { type: "integer" },
+							schema: { type: "string" },
 						},
 					],
 					responses: { "200": { description: "Appointment deleted" } },
 				},
 			},
-			"/api/admin/appointments/{id}/cancel": {
+			"/api/admin/appointments/{slugId}/cancel": {
 				patch: {
 					tags: ["Admin Appointments"],
-					summary: "Cancel appointment",
+					summary: "Cancel appointment by slug",
 					security: [{ BearerAuth: [] }],
 					parameters: [
 						{
-							name: "id",
+							name: "slugId",
 							in: "path",
 							required: true,
-							schema: { type: "integer" },
+							schema: { type: "string" },
 						},
 					],
 					responses: { "200": { description: "Appointment canceled" } },
@@ -1069,17 +1069,17 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
-			"/api/admin/community-events/{id}": {
+			"/api/admin/community-events/{slugId}": {
 				delete: {
 					tags: ["Admin Community"],
-					summary: "Delete community event",
+					summary: "Delete community event by slug",
 					security: [{ BearerAuth: [] }],
 					parameters: [
 						{
-							name: "id",
+							name: "slugId",
 							in: "path",
 							required: true,
-							schema: { type: "integer" },
+							schema: { type: "string" },
 						},
 					],
 					responses: {

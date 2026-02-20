@@ -243,7 +243,7 @@ export function useBookingPage(
 					start_at: startIso,
 					end_at: endIso,
 				});
-				setCreatedAppointmentToken(result.data.cancel_token);
+				setCreatedAppointmentToken(result.data.slug_id);
 			} catch (err: unknown) {
 				toaster.negative(getErrorMessage(err, t("common.error")), {});
 			} finally {

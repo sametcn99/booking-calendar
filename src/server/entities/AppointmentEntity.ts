@@ -34,8 +34,8 @@ export class AppointmentEntity {
 	@Column({ type: "text", nullable: true })
 	end_at!: string | null;
 
-	@Column({ type: "text", nullable: true, unique: true })
-	cancel_token!: string | null;
+	@Column({ type: "text", nullable: true, unique: true, name: "cancel_token" })
+	slug_id!: string | null;
 
 	@Column({ type: "text", nullable: true })
 	canceled_at!: string | null;

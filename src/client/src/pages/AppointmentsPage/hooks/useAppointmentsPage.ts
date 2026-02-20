@@ -11,7 +11,7 @@ export interface Appointment {
 	note: string | null;
 	start_at: string;
 	end_at: string;
-	cancel_token: string | null;
+	slug_id: string | null;
 	canceled_at: string | null;
 	canceled_by: string | null;
 	created_at: string;
@@ -51,9 +51,9 @@ export function useAppointmentsPage(t: (key: string) => string) {
 	}, [loadAppointments]);
 
 	const handleCancel = useCallback(
-		async (id: number) => {
+		async (slugId: string) => {
 			try {
-				await api.cancelAppointment(id);
+				await api.cancelAppointment(slugId);
 				toaster.positive(t("appointments.appointmentCanceled"), {});
 				await loadAppointments();
 			} catch (err: unknown) {
@@ -64,9 +64,9 @@ export function useAppointmentsPage(t: (key: string) => string) {
 	);
 
 	const handleDelete = useCallback(
-		async (id: number) => {
+		async (slugId: string) => {
 			try {
-				await api.deleteAppointment(id);
+				await api.deleteAppointment(slugId);
 				toaster.positive(t("appointments.appointmentDeleted"), {});
 				await loadAppointments();
 			} catch (err: unknown) {

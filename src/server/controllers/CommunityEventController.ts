@@ -68,10 +68,10 @@ export class CommunityEventController {
 	}
 
 	async deleteEvent(
-		id: number,
+		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
-			await this.service.deleteEvent(id);
+			await this.service.deleteEventByToken(slugId);
 			return { status: 200, body: { success: true } };
 		} catch (err: unknown) {
 			return {

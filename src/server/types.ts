@@ -34,7 +34,7 @@ export interface Appointment {
 	note: string | null;
 	start_at: string;
 	end_at: string;
-	cancel_token: string | null;
+	slug_id: string | null;
 	canceled_at: string | null;
 	canceled_by: string | null;
 	created_at: string;

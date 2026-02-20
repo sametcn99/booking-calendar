@@ -543,24 +543,40 @@ const _server = Bun.serve({
 			}
 
 			if (
-				matchRoute(pathname, "/api/admin/appointments/:id") &&
+				matchRoute(pathname, "/api/admin/appointments/:slugId") &&
 				method === "DELETE"
 			) {
-				const id = Number(
-					extractPathParam(pathname, "/api/admin/appointments/:id"),
+				const slugId = extractPathParam(
+					pathname,
+					"/api/admin/appointments/:slugId",
 				);
-				const result = await appointmentController.deleteAppointment(id);
+				if (!slugId) {
+					return jsonResponse(
+						400,
+						{ success: false, error: t("general.invalidRoute") },
+						corsHeaders,
+					);
+				}
+				const result = await appointmentController.deleteAppointment(slugId);
 				return jsonResponse(result.status, result.body, corsHeaders);
 			}
 
 			if (
-				matchRoute(pathname, "/api/admin/appointments/:id/cancel") &&
+				matchRoute(pathname, "/api/admin/appointments/:slugId/cancel") &&
 				method === "PATCH"
 			) {
-				const id = Number(
-					extractPathParam(pathname, "/api/admin/appointments/:id/cancel"),
+				const slugId = extractPathParam(
+					pathname,
+					"/api/admin/appointments/:slugId/cancel",
 				);
-				const result = await appointmentController.cancelAppointment(id);
+				if (!slugId) {
+					return jsonResponse(
+						400,
+						{ success: false, error: t("general.invalidRoute") },
+						corsHeaders,
+					);
+				}
+				const result = await appointmentController.cancelAppointment(slugId);
 				return jsonResponse(result.status, result.body, corsHeaders);
 			}
 
@@ -953,13 +969,21 @@ const _server = Bun.serve({
 			}
 
 			if (
-				matchRoute(pathname, "/api/admin/community-events/:id") &&
+				matchRoute(pathname, "/api/admin/community-events/:slugId") &&
 				method === "DELETE"
 			) {
-				const id = Number(
-					extractPathParam(pathname, "/api/admin/community-events/:id"),
+				const slugId = extractPathParam(
+					pathname,
+					"/api/admin/community-events/:slugId",
 				);
-				const result = await communityEventController.deleteEvent(id);
+				if (!slugId) {
+					return jsonResponse(
+						400,
+						{ success: false, error: t("general.invalidRoute") },
+						corsHeaders,
+					);
+				}
+				const result = await communityEventController.deleteEvent(slugId);
 				return jsonResponse(result.status, result.body, corsHeaders);
 			}
 

@@ -129,7 +129,7 @@ export class CommunityEventService {
 			throw new Error(t("communityEvent.minApprovals"));
 		}
 
-		const shareToken = crypto.randomUUID();
+		const slugId = crypto.randomUUID();
 
 		return this.repo.create({
 			title: input.title,
@@ -138,12 +138,12 @@ export class CommunityEventService {
 			end_at: input.end_at,
 			color: input.color,
 			required_approvals: requiredApprovals,
-			share_token: shareToken,
+			slug_id: slugId,
 		});
 	}
 
 	async getByShareToken(token: string) {
-		const event = await this.repo.findByShareToken(token);
+		const event = await this.repo.findBySlugId(token);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
 		}
@@ -151,7 +151,7 @@ export class CommunityEventService {
 	}
 
 	async approve(token: string, email?: string) {
-		const event = await this.repo.findByShareToken(token);
+		const event = await this.repo.findBySlugId(token);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
 		}
@@ -193,8 +193,8 @@ export class CommunityEventService {
 		return updated;
 	}
 
-	async deleteEvent(id: number) {
-		const event = await this.repo.findById(id);
+	async deleteEventByToken(token: string) {
+		const event = await this.repo.findBySlugId(token);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
 		}
@@ -202,7 +202,7 @@ export class CommunityEventService {
 			await this.repo.updateStatus(event.id, "canceled");
 			await this.notifyEventCanceled(event.id);
 		}
-		await this.repo.delete(id);
+		await this.repo.deleteBySlugId(token);
 	}
 
 	async cancelExpiredPending() {

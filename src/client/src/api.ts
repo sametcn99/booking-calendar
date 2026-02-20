@@ -34,7 +34,7 @@ export interface ApiAppointment {
 	note: string | null;
 	start_at: string;
 	end_at: string;
-	cancel_token: string | null;
+	slug_id: string | null;
 	canceled_at: string | null;
 	canceled_by: string | null;
 	created_at: string;
@@ -66,7 +66,7 @@ export interface ApiCommunityEvent {
 	start_at: string;
 	end_at: string;
 	color: string | null;
-	share_token: string;
+	slug_id: string;
 	required_approvals: number;
 	current_approvals: number;
 	approver_emails_json: string;
@@ -156,15 +156,18 @@ export const api = {
 	getAppointments: () =>
 		request<ApiResponse<ApiAppointment[]>>("/admin/appointments"),
 
-	deleteAppointment: (id: number) =>
-		request<{ success: boolean }>(`/admin/appointments/${id}`, {
+	deleteAppointment: (slugId: string) =>
+		request<{ success: boolean }>(`/admin/appointments/${slugId}`, {
 			method: "DELETE",
 		}),
 
-	cancelAppointment: (id: number) =>
-		request<ApiResponse<ApiAppointment>>(`/admin/appointments/${id}/cancel`, {
-			method: "PATCH",
-		}),
+	cancelAppointment: (slugId: string) =>
+		request<ApiResponse<ApiAppointment>>(
+			`/admin/appointments/${slugId}/cancel`,
+			{
+				method: "PATCH",
+			},
+		),
 
 	// Admin - Links
 	getLinks: () => request<ApiResponse<ApiBookingLink[]>>("/admin/links"),
@@ -398,8 +401,8 @@ export const api = {
 			body: JSON.stringify(data),
 		}),
 
-	deleteCommunityEvent: (id: number) =>
-		request<{ success: boolean }>(`/admin/community-events/${id}`, {
+	deleteCommunityEvent: (slugId: string) =>
+		request<{ success: boolean }>(`/admin/community-events/${slugId}`, {
 			method: "DELETE",
 		}),
 

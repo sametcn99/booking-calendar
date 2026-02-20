@@ -61,7 +61,7 @@ export default function CommunityEventsSection({ t }: Props) {
 			});
 			toaster.positive(t("communityEvents.created"), {});
 			toaster.info(
-				`${t("communityEvents.shareLink")}: ${getShareLink(created.data.share_token)}`,
+				`${t("communityEvents.shareLink")}: ${getShareLink(created.data.slug_id)}`,
 				{},
 			);
 			setTitle("");
@@ -79,9 +79,9 @@ export default function CommunityEventsSection({ t }: Props) {
 		}
 	};
 
-	const handleDelete = async (id: number) => {
+	const handleDelete = async (slugId: string) => {
 		try {
-			await api.deleteCommunityEvent(id);
+			await api.deleteCommunityEvent(slugId);
 			toaster.positive(t("communityEvents.deleted"), {});
 			fetchEvents();
 		} catch (e) {
@@ -322,7 +322,7 @@ export default function CommunityEventsSection({ t }: Props) {
 			>
 				{events.map((ev) => (
 					<div
-						key={ev.id}
+						key={ev.slug_id}
 						className={css({
 							backgroundColor: "var(--color-bg-tertiary)",
 							borderRadius: "8px",
@@ -406,7 +406,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							<Button
 								kind={KIND.tertiary}
 								size={SIZE.mini}
-								onClick={() => handleDelete(ev.id)}
+								onClick={() => handleDelete(ev.slug_id)}
 							>
 								<Trash2 size={14} />
 							</Button>
@@ -440,7 +440,7 @@ export default function CommunityEventsSection({ t }: Props) {
 									kind={KIND.secondary}
 									size={SIZE.mini}
 									onClick={() =>
-										window.open(getShareLink(ev.share_token), "_blank")
+										window.open(getShareLink(ev.slug_id), "_blank")
 									}
 								>
 									<ExternalLink size={12} />
@@ -451,7 +451,7 @@ export default function CommunityEventsSection({ t }: Props) {
 								<Button
 									kind={KIND.secondary}
 									size={SIZE.mini}
-									onClick={() => handleCopyLink(ev.share_token)}
+									onClick={() => handleCopyLink(ev.slug_id)}
 								>
 									<Copy size={12} />
 									<span className={css({ marginLeft: "4px" })}>
@@ -485,7 +485,7 @@ export default function CommunityEventsSection({ t }: Props) {
 									wordBreak: "break-all",
 								})}
 							>
-								{getShareLink(ev.share_token)}
+								{getShareLink(ev.slug_id)}
 							</code>
 						</div>
 					</div>

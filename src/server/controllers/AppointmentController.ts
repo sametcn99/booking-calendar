@@ -94,10 +94,10 @@ export class AppointmentController {
 	}
 
 	async deleteAppointment(
-		id: number,
+		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
-			await this.appointmentService.deleteAppointment(id);
+			await this.appointmentService.deleteAppointmentByToken(slugId);
 			return { status: 200, body: { success: true } };
 		} catch (err: unknown) {
 			const message = getErrorMessage(err);
@@ -110,11 +110,11 @@ export class AppointmentController {
 	}
 
 	async cancelAppointment(
-		id: number,
+		slugId: string,
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
 			const appointment =
-				await this.appointmentService.cancelAppointmentById(id);
+				await this.appointmentService.cancelAppointmentByTokenForAdmin(slugId);
 			return { status: 200, body: { success: true, data: appointment } };
 		} catch (err: unknown) {
 			const message = getErrorMessage(err);

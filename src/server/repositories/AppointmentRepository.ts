@@ -27,7 +27,7 @@ export class AppointmentRepository {
 				"a.note as note",
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
-				"a.cancel_token as cancel_token",
+				"a.cancel_token as slug_id",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
@@ -51,7 +51,7 @@ export class AppointmentRepository {
 				"a.note as note",
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
-				"a.cancel_token as cancel_token",
+				"a.cancel_token as slug_id",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
@@ -116,7 +116,7 @@ export class AppointmentRepository {
 			note: input.note || null,
 			start_at: input.start_at,
 			end_at: input.end_at,
-			cancel_token: crypto.randomUUID(),
+			slug_id: crypto.randomUUID(),
 			canceled_at: null,
 			canceled_by: null,
 		});
@@ -130,14 +130,14 @@ export class AppointmentRepository {
 			note: saved.note,
 			start_at: saved.start_at || input.start_at,
 			end_at: saved.end_at || input.end_at,
-			cancel_token: saved.cancel_token,
+			slug_id: saved.slug_id,
 			canceled_at: saved.canceled_at,
 			canceled_by: saved.canceled_by,
 			created_at: saved.created_at,
 		};
 	}
 
-	async findByCancelToken(token: string): Promise<AppointmentWithSlot | null> {
+	async findBySlugId(slugId: string): Promise<AppointmentWithSlot | null> {
 		const row = await this.repo()
 			.createQueryBuilder("a")
 			.leftJoin("availability_slots", "s", "s.id = a.slot_id")
@@ -150,12 +150,12 @@ export class AppointmentRepository {
 				"a.note as note",
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
-				"a.cancel_token as cancel_token",
+				"a.cancel_token as slug_id",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
 			])
-			.where("a.cancel_token = :token", { token })
+			.where("a.cancel_token = :slugId", { slugId })
 			.getRawOne<AppointmentWithSlot>();
 
 		return row ?? null;
@@ -172,8 +172,27 @@ export class AppointmentRepository {
 		return this.findById(id);
 	}
 
+	async markCancelledBySlugId(
+		slugId: string,
+		canceledBy: "admin" | "guest",
+	): Promise<AppointmentWithSlot | null> {
+		await this.repo().update(
+			{ slug_id: slugId },
+			{
+				canceled_at: new Date().toISOString(),
+				canceled_by: canceledBy,
+			},
+		);
+		return this.findBySlugId(slugId);
+	}
+
 	async delete(id: number): Promise<boolean> {
 		const result = await this.repo().delete(id);
+		return !!result.affected;
+	}
+
+	async deleteBySlugId(slugId: string): Promise<boolean> {
+		const result = await this.repo().delete({ slug_id: slugId });
 		return !!result.affected;
 	}
 }

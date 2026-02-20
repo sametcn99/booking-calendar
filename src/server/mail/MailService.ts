@@ -71,8 +71,8 @@ export class MailService {
 		const startDate = new Date(appointment.start_at);
 		const endDate = new Date(appointment.end_at);
 		const icsContent = generateICS(appointment);
-		const cancelUrl = appointment.cancel_token
-			? `${config.baseUrl}/api/public/appointments/cancel/${appointment.cancel_token}`
+		const cancelUrl = appointment.slug_id
+			? `${config.baseUrl}/api/public/appointments/cancel/${appointment.slug_id}`
 			: null;
 
 		const html = await this.renderTemplate("booking-confirmation", {
@@ -114,8 +114,8 @@ export class MailService {
 		const startDate = new Date(appointment.start_at);
 		const endDate = new Date(appointment.end_at);
 		const icsContent = generateICS(appointment);
-		const cancelUrl = appointment.cancel_token
-			? `${config.baseUrl}/api/public/appointments/cancel/${appointment.cancel_token}`
+		const cancelUrl = appointment.slug_id
+			? `${config.baseUrl}/api/public/appointments/cancel/${appointment.slug_id}`
 			: null;
 
 		const html = await this.renderTemplate("admin-notification", {

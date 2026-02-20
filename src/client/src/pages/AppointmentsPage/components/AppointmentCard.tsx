@@ -7,8 +7,8 @@ import type { Appointment } from "../hooks/useAppointmentsPage";
 interface Props {
 	appointment: Appointment;
 	formatDate: (date: string) => string;
-	onCancel: (id: number) => void;
-	onDelete: (id: number) => void;
+	onCancel: (slugId: string) => void;
+	onDelete: (slugId: string) => void;
 	isPast: boolean;
 	canDelete: boolean;
 	t: (key: string) => string;
@@ -24,8 +24,8 @@ export default function AppointmentCard({
 	t,
 }: Props) {
 	const [css] = useStyletron();
-	const appointmentLink = appointment.cancel_token
-		? `${window.location.origin}/appointment/${appointment.cancel_token}`
+	const appointmentLink = appointment.slug_id
+		? `${window.location.origin}/appointment/${appointment.slug_id}`
 		: null;
 
 	const handleCopyLink = async () => {
@@ -162,8 +162,8 @@ export default function AppointmentCard({
 					<Button
 						kind={KIND.secondary}
 						size={SIZE.compact}
-						onClick={() => onCancel(appointment.id)}
-						disabled={!!appointment.canceled_at}
+						onClick={() => appointment.slug_id && onCancel(appointment.slug_id)}
+						disabled={!!appointment.canceled_at || !appointment.slug_id}
 						overrides={{
 							BaseButton: {
 								style: {
@@ -179,8 +179,8 @@ export default function AppointmentCard({
 					<Button
 						kind={KIND.secondary}
 						size={SIZE.compact}
-						onClick={() => onDelete(appointment.id)}
-						disabled={!canDelete}
+						onClick={() => appointment.slug_id && onDelete(appointment.slug_id)}
+						disabled={!canDelete || !appointment.slug_id}
 						overrides={{
 							BaseButton: {
 								style: {

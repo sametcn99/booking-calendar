@@ -40,7 +40,7 @@ export class AppointmentService {
 	}
 
 	async getAppointmentByToken(token: string): Promise<AppointmentWithSlot> {
-		const appointment = await this.appointmentRepo.findByCancelToken(token);
+		const appointment = await this.appointmentRepo.findBySlugId(token);
 		if (!appointment) {
 			throw new Error(t("appointment.invalidCancelLink"));
 		}
@@ -142,8 +142,8 @@ export class AppointmentService {
 		return fullAppointment;
 	}
 
-	async deleteAppointment(id: number): Promise<boolean> {
-		const appointment = await this.appointmentRepo.findById(id);
+	async deleteAppointmentByToken(token: string): Promise<boolean> {
+		const appointment = await this.appointmentRepo.findBySlugId(token);
 		if (!appointment) throw new Error(t("appointment.notFound"));
 
 		const hasEnded = new Date(appointment.end_at).getTime() < Date.now();
@@ -152,17 +152,22 @@ export class AppointmentService {
 			throw new Error(t("appointment.deleteOnlyPastOrCanceled"));
 		}
 
-		return this.appointmentRepo.delete(id);
+		return this.appointmentRepo.deleteBySlugId(token);
 	}
 
-	async cancelAppointmentById(id: number): Promise<AppointmentWithSlot> {
-		const appointment = await this.appointmentRepo.findById(id);
+	async cancelAppointmentByTokenForAdmin(
+		token: string,
+	): Promise<AppointmentWithSlot> {
+		const appointment = await this.appointmentRepo.findBySlugId(token);
 		if (!appointment) throw new Error(t("appointment.notFound"));
 		if (appointment.canceled_at) {
 			throw new Error(t("appointment.alreadyCanceled"));
 		}
 
-		const canceled = await this.appointmentRepo.markCancelled(id, "admin");
+		const canceled = await this.appointmentRepo.markCancelledBySlugId(
+			token,
+			"admin",
+		);
 		if (!canceled) throw new Error(t("appointment.notFound"));
 
 		const emailEnabled = await this.isEmailEnabled();
@@ -191,14 +196,14 @@ export class AppointmentService {
 	}
 
 	async cancelAppointmentByToken(token: string): Promise<AppointmentWithSlot> {
-		const appointment = await this.appointmentRepo.findByCancelToken(token);
+		const appointment = await this.appointmentRepo.findBySlugId(token);
 		if (!appointment) throw new Error(t("appointment.invalidCancelLink"));
 		if (appointment.canceled_at) {
 			throw new Error(t("appointment.alreadyCanceled"));
 		}
 
-		const canceled = await this.appointmentRepo.markCancelled(
-			appointment.id,
+		const canceled = await this.appointmentRepo.markCancelledBySlugId(
+			token,
 			"guest",
 		);
 		if (!canceled) throw new Error(t("appointment.notFound"));
