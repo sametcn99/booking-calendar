@@ -488,6 +488,12 @@
 				"communityEventActivatedBody": {
 					"type": "string"
 				},
+				"communityEventApprovalTitle": {
+					"type": "string"
+				},
+				"communityEventApprovalBody": {
+					"type": "string"
+				},
 				"communityEventCanceledTitle": {
 					"type": "string"
 				},
@@ -505,6 +511,8 @@
 				"cancellationBody",
 				"communityEventActivatedTitle",
 				"communityEventActivatedBody",
+				"communityEventApprovalTitle",
+				"communityEventApprovalBody",
 				"communityEventCanceledTitle",
 				"communityEventCanceledBody"
 			],

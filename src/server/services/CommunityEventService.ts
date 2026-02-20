@@ -94,6 +94,28 @@ export class CommunityEventService {
 		}
 	}
 
+	private async notifyApprovalReceived(
+		eventTitle: string,
+		approvedBy: string,
+		currentApprovals: number,
+		requiredApprovals: number,
+	): Promise<void> {
+		const pushEnabled = await this.isPushEnabled();
+		if (!pushEnabled) {
+			return;
+		}
+
+		this.pushService
+			.sendToAll({
+				title: t("push.communityEventApprovalTitle"),
+				body: `${t("push.communityEventApprovalBody")} ${eventTitle} (${currentApprovals}/${requiredApprovals}) - ${approvedBy}`,
+				url: "/admin/events",
+			})
+			.catch((err) =>
+				console.error("Failed to send community event approval push:", err),
+			);
+	}
+
 	async getAllEvents() {
 		return this.repo.findAll();
 	}
@@ -221,6 +243,13 @@ export class CommunityEventService {
 		if (!updated) {
 			throw new Error(t("communityEvent.notFound"));
 		}
+
+		await this.notifyApprovalReceived(
+			updated.title,
+			normalizedName,
+			updated.current_approvals,
+			updated.required_approvals,
+		);
 
 		if (wasPending && updated.status === "active") {
 			await this.notifyEventActive(updated.id);

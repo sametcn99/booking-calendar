@@ -129,6 +129,8 @@
 		"cancellationBody": "Tarafından bir randevu iptal edildi:",
 		"communityEventActivatedTitle": "Topluluk Etkinliği Aktif",
 		"communityEventActivatedBody": "Gerekli onay sayısı tamamlandı:",
+		"communityEventApprovalTitle": "Topluluk Etkinliği Onayı",
+		"communityEventApprovalBody": "Yeni onay alındı:",
 		"communityEventCanceledTitle": "Topluluk Etkinliği İptal",
 		"communityEventCanceledBody": "Bir topluluk etkinliği iptal edildi:"
 	},

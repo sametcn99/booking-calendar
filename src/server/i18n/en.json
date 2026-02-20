@@ -129,6 +129,8 @@
 		"cancellationBody": "An appointment has been canceled by",
 		"communityEventActivatedTitle": "Community Event Active",
 		"communityEventActivatedBody": "Required approvals completed for:",
+		"communityEventApprovalTitle": "Community Event Approval",
+		"communityEventApprovalBody": "New approval received for:",
 		"communityEventCanceledTitle": "Community Event Canceled",
 		"communityEventCanceledBody": "A community event was canceled:"
 	},
