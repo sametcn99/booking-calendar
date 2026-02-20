@@ -23,6 +23,13 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	return outputArray;
 }
 
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+	return bytes.buffer.slice(
+		bytes.byteOffset,
+		bytes.byteOffset + bytes.byteLength,
+	) as ArrayBuffer;
+}
+
 export function useSettingsPage({ setLanguage, t }: Params) {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
@@ -202,9 +209,12 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 					if (existingSubscription) {
 						await api.subscribeToPush(existingSubscription);
 					} else {
+						const serverKey = toArrayBuffer(
+							urlBase64ToUint8Array(publicVapidKey),
+						);
 						const newSubscription = await registration.pushManager.subscribe({
 							userVisibleOnly: true,
-							applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+							applicationServerKey: serverKey,
 						});
 						await api.subscribeToPush(newSubscription);
 					}
