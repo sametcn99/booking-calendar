@@ -13,6 +13,7 @@ import { initializeDatabase } from "./db/database";
 import { createOpenApiDocument } from "./docs/openapi";
 import { renderScalarDocsPage } from "./docs/scalar";
 import { getLanguage, loadLanguageFromDB, setLanguage, t } from "./i18n";
+import { MailService } from "./mail/MailService";
 import { getAuthenticatedUser, isAuthenticated } from "./middleware/auth";
 import { checkRateLimit } from "./middleware/rateLimit";
 import { SettingsRepository } from "./repositories/SettingsRepository";
@@ -35,6 +36,7 @@ const pushController = new PushController();
 const plannerController = new PlannerController();
 const communityEventController = new CommunityEventController();
 const versionController = new VersionController();
+const mailService = new MailService();
 const openApiDocument = createOpenApiDocument();
 
 // MIME types map
@@ -657,6 +659,22 @@ const _server = Bun.serve({
 					);
 				}
 
+				if (email.length > 0) {
+					try {
+						await mailService.verifyConnection();
+					} catch (error) {
+						console.error(
+							"SMTP verify failed while saving admin email:",
+							error,
+						);
+						return jsonResponse(
+							400,
+							{ success: false, error: t("general.smtpConnectionFailed") },
+							corsHeaders,
+						);
+					}
+				}
+
 				const settingsRepo = new SettingsRepository();
 				await settingsRepo.set("admin_email", email);
 
@@ -805,6 +823,36 @@ const _server = Bun.serve({
 			) {
 				const body = await parseJsonBody<{ enabled?: boolean }>(request);
 				const settingsRepo = new SettingsRepository();
+
+				if (body.enabled) {
+					const adminEmail =
+						(await settingsRepo.get("admin_email"))?.trim() ?? "";
+					if (!adminEmail) {
+						return jsonResponse(
+							400,
+							{
+								success: false,
+								error: t("general.adminEmailRequiredForEmailNotifications"),
+							},
+							corsHeaders,
+						);
+					}
+
+					try {
+						await mailService.verifyConnection();
+					} catch (error) {
+						console.error(
+							"SMTP verify failed while enabling email notifications:",
+							error,
+						);
+						return jsonResponse(
+							400,
+							{ success: false, error: t("general.smtpConnectionFailed") },
+							corsHeaders,
+						);
+					}
+				}
+
 				await settingsRepo.set(
 					"email_notifications_enabled",
 					body.enabled ? "true" : "false",

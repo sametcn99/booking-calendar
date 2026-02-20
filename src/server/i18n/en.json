@@ -51,6 +51,8 @@
 		"notFound": "Not found",
 		"forbidden": "Forbidden",
 		"invalidEmail": "Invalid email format",
+		"adminEmailRequiredForEmailNotifications": "Set an admin email before enabling email notifications",
+		"smtpConnectionFailed": "SMTP connection test failed. Check your mail server settings",
 		"isActiveRequired": "is_active is required",
 		"invalidLanguage": "Invalid language. Supported: en, tr",
 		"invalidRequest": "Invalid request"

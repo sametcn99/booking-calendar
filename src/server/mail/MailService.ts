@@ -62,6 +62,10 @@ export class MailService {
 		return template({ ...commonContext, ...context });
 	}
 
+	async verifyConnection(): Promise<void> {
+		await this.transporter.verify();
+	}
+
 	async sendBookingConfirmation(
 		appointment: AppointmentWithSlot,
 	): Promise<void> {

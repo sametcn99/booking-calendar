@@ -201,6 +201,12 @@
 				"invalidEmail": {
 					"type": "string"
 				},
+				"adminEmailRequiredForEmailNotifications": {
+					"type": "string"
+				},
+				"smtpConnectionFailed": {
+					"type": "string"
+				},
 				"isActiveRequired": {
 					"type": "string"
 				},
@@ -218,6 +224,8 @@
 				"notFound",
 				"forbidden",
 				"invalidEmail",
+				"adminEmailRequiredForEmailNotifications",
+				"smtpConnectionFailed",
 				"isActiveRequired",
 				"invalidLanguage",
 				"invalidRequest"

@@ -226,6 +226,7 @@
 		"emailNotificationsDescription": "Randevular ve iptaller için e-posta bildirimlerini açın veya kapatın.",
 		"emailNotificationsEnabled": "E-posta bildirimleri etkin",
 		"emailNotificationsDisabled": "E-posta bildirimleri devre dışı",
+		"emailNotificationsRequiresAdminEmail": "E-posta bildirimlerini açmak için önce admin e-postası kaydedin.",
 		"emailNotificationsSaved": "E-posta bildirim ayarı kaydedildi",
 		"version": "Sürüm",
 		"versionDescription": "Mevcut uygulama sürümünüzü görün ve GitHub'da daha yeni bir release olup olmadığını kontrol edin.",

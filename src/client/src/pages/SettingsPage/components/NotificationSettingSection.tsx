@@ -5,11 +5,13 @@ interface Props {
 	enabled: boolean;
 	onToggle: (enabled: boolean) => void;
 	saving: boolean;
+	disabled?: boolean;
 	t: (key: string) => string;
 	titleKey: string;
 	descriptionKey: string;
 	enabledKey: string;
 	disabledKey: string;
+	disabledDescriptionKey?: string;
 	surface?: "card" | "list";
 }
 
@@ -17,11 +19,13 @@ export default function NotificationSettingSection({
 	enabled,
 	onToggle,
 	saving,
+	disabled = false,
 	t,
 	titleKey,
 	descriptionKey,
 	enabledKey,
 	disabledKey,
+	disabledDescriptionKey,
 	surface = "card",
 }: Props) {
 	const [css] = useStyletron();
@@ -60,10 +64,23 @@ export default function NotificationSettingSection({
 				checked={enabled}
 				onChange={(e) => onToggle(e.currentTarget.checked)}
 				checkmarkType={STYLE_TYPE.toggle_round}
-				disabled={saving}
+				disabled={saving || disabled}
 			>
 				{enabled ? t(enabledKey) : t(disabledKey)}
 			</Checkbox>
+
+			{disabled && disabledDescriptionKey ? (
+				<p
+					className={css({
+						fontSize: "12px",
+						color: "var(--color-warning)",
+						marginTop: "8px",
+						marginBottom: 0,
+					})}
+				>
+					{t(disabledDescriptionKey)}
+				</p>
+			) : null}
 		</div>
 	);
 }

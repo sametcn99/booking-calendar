@@ -234,6 +234,14 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 
 	const handleToggleEmailNotifications = useCallback(
 		async (enabled: boolean) => {
+			if (enabled && adminEmail.trim().length === 0) {
+				toaster.negative(
+					t("settings.emailNotificationsRequiresAdminEmail"),
+					{},
+				);
+				return;
+			}
+
 			setSavingEmailNotifications(true);
 			try {
 				await api.setEmailNotifications(enabled);
@@ -245,7 +253,7 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 				setSavingEmailNotifications(false);
 			}
 		},
-		[t],
+		[adminEmail, t],
 	);
 
 	return {

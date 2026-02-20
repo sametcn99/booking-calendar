@@ -226,6 +226,7 @@
 		"emailNotificationsDescription": "Enable or disable email notifications for bookings and cancellations.",
 		"emailNotificationsEnabled": "Email notifications are enabled",
 		"emailNotificationsDisabled": "Email notifications are disabled",
+		"emailNotificationsRequiresAdminEmail": "Set an admin email first to enable email notifications.",
 		"emailNotificationsSaved": "Email notification setting saved",
 		"version": "Version",
 		"versionDescription": "See your current app version and check if a newer GitHub release is available.",

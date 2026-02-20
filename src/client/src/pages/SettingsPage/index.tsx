@@ -240,11 +240,15 @@ export default function SettingsPage() {
 							enabled={emailNotificationsEnabled}
 							onToggle={handleToggleEmailNotifications}
 							saving={savingEmailNotifications}
+							disabled={
+								!emailNotificationsEnabled && adminEmail.trim().length === 0
+							}
 							t={t}
 							titleKey="settings.emailNotifications"
 							descriptionKey="settings.emailNotificationsDescription"
 							enabledKey="settings.emailNotificationsEnabled"
 							disabledKey="settings.emailNotificationsDisabled"
+							disabledDescriptionKey="settings.emailNotificationsRequiresAdminEmail"
 							surface="list"
 						/>
 					</section>
