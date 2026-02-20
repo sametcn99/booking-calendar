@@ -29,6 +29,7 @@ export default function VersionSection({
 	const latestVersionText = versionInfo?.latest_release_version
 		? versionInfo.latest_release_version
 		: t("settings.versionNoRelease");
+	const releaseUrl = versionInfo?.latest_release_url ?? undefined;
 
 	return (
 		<div
@@ -80,16 +81,12 @@ export default function VersionSection({
 				</div>
 			</div>
 
-			{versionInfo?.update_available && versionInfo.latest_release_url ? (
+			{versionInfo?.update_available && releaseUrl ? (
 				<Button
 					kind={KIND.secondary}
 					size={SIZE.compact}
 					onClick={() =>
-						window.open(
-							versionInfo.latest_release_url,
-							"_blank",
-							"noopener,noreferrer",
-						)
+						window.open(releaseUrl, "_blank", "noopener,noreferrer")
 					}
 				>
 					{t("settings.openLatestRelease")}
