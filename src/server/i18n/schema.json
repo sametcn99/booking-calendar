@@ -445,6 +445,26 @@
 				"cancellationBody"
 			],
 			"additionalProperties": false
+		},
+		"communityEvent": {
+			"type": "object",
+			"properties": {
+				"fieldsRequired": { "type": "string" },
+				"notFound": { "type": "string" },
+				"alreadyCanceled": { "type": "string" },
+				"alreadyActive": { "type": "string" },
+				"mustBeFuture": { "type": "string" },
+				"minApprovals": { "type": "string" }
+			},
+			"required": [
+				"fieldsRequired",
+				"notFound",
+				"alreadyCanceled",
+				"alreadyActive",
+				"mustBeFuture",
+				"minApprovals"
+			],
+			"additionalProperties": false
 		}
 	},
 	"required": [
@@ -456,7 +476,8 @@
 		"general",
 		"cancelPage",
 		"mail",
-		"push"
+		"push",
+		"communityEvent"
 	],
 	"additionalProperties": false
 }

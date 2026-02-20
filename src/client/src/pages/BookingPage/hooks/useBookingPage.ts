@@ -105,7 +105,9 @@ export function useBookingPage(
 	const [selectedStartAt, setSelectedStartAt] = useState("");
 	const [selectedEndAt, setSelectedEndAt] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [success, setSuccess] = useState(false);
+	const [createdAppointmentToken, setCreatedAppointmentToken] = useState<
+		string | null
+	>(null);
 
 	const selectedSlotData = useMemo(() => {
 		if (!selectedSlot) return null;
@@ -232,7 +234,7 @@ export function useBookingPage(
 					return;
 				}
 
-				await api.createAppointment(token, {
+				const result = await api.createAppointment(token, {
 					slot_id: selectedSlot,
 					name,
 					email: email || undefined,
@@ -241,7 +243,7 @@ export function useBookingPage(
 					start_at: startIso,
 					end_at: endIso,
 				});
-				setSuccess(true);
+				setCreatedAppointmentToken(result.data.cancel_token);
 			} catch (err: unknown) {
 				toaster.negative(getErrorMessage(err, t("common.error")), {});
 			} finally {
@@ -281,7 +283,7 @@ export function useBookingPage(
 		setSelectedEndAt: setSelectedEndAtSafe,
 		setSelectedStartAt: setSelectedStartAtSafe,
 		slots,
-		success,
+		createdAppointmentToken,
 		valid,
 	};
 }

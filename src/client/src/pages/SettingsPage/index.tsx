@@ -5,6 +5,8 @@ import AdminEmailSection from "../DashboardPage/components/AdminEmailSection";
 import LanguageSettingsSection from "../DashboardPage/components/LanguageSettingsSection";
 import PasswordSection from "../DashboardPage/components/PasswordSection";
 import CalendarSharingSection from "./components/CalendarSharingSection";
+import ICSExportSection from "./components/ICSExportSection";
+import NotificationSettingSection from "./components/NotificationSettingSection";
 import { useSettingsPage } from "./hooks/useSettingsPage";
 
 export default function SettingsPage() {
@@ -16,16 +18,22 @@ export default function SettingsPage() {
 		changingPassword,
 		confirmPassword,
 		currentPassword,
+		emailNotificationsEnabled,
 		handleChangePassword,
 		handleLanguageChange,
 		handleSaveAdminEmail,
 		handleToggleCalendarSharing,
+		handleToggleEmailNotifications,
+		handleTogglePushNotifications,
 		isPasswordSectionOpen,
 		mustChangePassword,
 		newPassword,
+		pushNotificationsEnabled,
 		savingAdminEmail,
 		savingCalendarSharing,
+		savingEmailNotifications,
 		savingLanguage,
+		savingPushNotifications,
 		setAdminEmail,
 		setConfirmPassword,
 		setCurrentPassword,
@@ -130,6 +138,57 @@ export default function SettingsPage() {
 						saving={savingCalendarSharing}
 						t={t}
 					/>
+				</div>
+
+				<div
+					className={css({
+						gridColumn: "1 / -1",
+						"@media screen and (min-width: 900px)": {
+							gridColumn: "1 / span 6",
+						},
+					})}
+				>
+					<NotificationSettingSection
+						enabled={pushNotificationsEnabled}
+						onToggle={handleTogglePushNotifications}
+						saving={savingPushNotifications}
+						t={t}
+						titleKey="settings.pushNotifications"
+						descriptionKey="settings.pushNotificationsDescription"
+						enabledKey="settings.pushNotificationsEnabled"
+						disabledKey="settings.pushNotificationsDisabled"
+					/>
+				</div>
+
+				<div
+					className={css({
+						gridColumn: "1 / -1",
+						"@media screen and (min-width: 900px)": {
+							gridColumn: "7 / -1",
+						},
+					})}
+				>
+					<NotificationSettingSection
+						enabled={emailNotificationsEnabled}
+						onToggle={handleToggleEmailNotifications}
+						saving={savingEmailNotifications}
+						t={t}
+						titleKey="settings.emailNotifications"
+						descriptionKey="settings.emailNotificationsDescription"
+						enabledKey="settings.emailNotificationsEnabled"
+						disabledKey="settings.emailNotificationsDisabled"
+					/>
+				</div>
+
+				<div
+					className={css({
+						gridColumn: "1 / -1",
+						"@media screen and (min-width: 900px)": {
+							gridColumn: "1 / span 6",
+						},
+					})}
+				>
+					<ICSExportSection t={t} />
 				</div>
 			</div>
 		</div>

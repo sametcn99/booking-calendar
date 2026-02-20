@@ -7,6 +7,7 @@ import { AdminCredentialEntity } from "../entities/AdminCredentialEntity";
 import { AppointmentEntity } from "../entities/AppointmentEntity";
 import { AvailabilitySlotEntity } from "../entities/AvailabilitySlotEntity";
 import { BookingLinkEntity } from "../entities/BookingLinkEntity";
+import { CommunityEventEntity } from "../entities/CommunityEventEntity";
 import { PlannerEventEntity } from "../entities/PlannerEventEntity";
 import { PushSubscriptionEntity } from "../entities/PushSubscriptionEntity";
 import { SettingsEntity } from "../entities/SettingsEntity";
@@ -29,6 +30,7 @@ export const AppDataSource = new DataSource({
 		SettingsEntity,
 		PushSubscriptionEntity,
 		PlannerEventEntity,
+		CommunityEventEntity,
 	],
 	logging: false,
 	sqlJsConfig: {

@@ -112,5 +112,13 @@
 		"newBookingBody": "A new appointment has been booked by",
 		"cancellationTitle": "Appointment Canceled",
 		"cancellationBody": "An appointment has been canceled by"
+	},
+	"communityEvent": {
+		"fieldsRequired": "Event title, start time, and end time are required",
+		"notFound": "Community event not found",
+		"alreadyCanceled": "This event has been canceled",
+		"alreadyActive": "This event is already active",
+		"mustBeFuture": "Event must be in the future",
+		"minApprovals": "At least 1 approval is required"
 	}
 }

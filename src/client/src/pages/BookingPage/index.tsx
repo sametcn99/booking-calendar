@@ -1,17 +1,18 @@
 import { useStyletron } from "baseui";
 import { PLACEMENT, ToasterContainer } from "baseui/toast";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useI18n } from "../../context/I18nContext";
 import BookingFormSection from "./components/BookingFormSection";
 import BookingHeader from "./components/BookingHeader";
 import BookingInvalidState from "./components/BookingInvalidState";
 import BookingLoadingState from "./components/BookingLoadingState";
 import BookingSlotsSection from "./components/BookingSlotsSection";
-import BookingSuccessState from "./components/BookingSuccessState";
 import { useBookingPage } from "./hooks/useBookingPage";
 
 export default function BookingPage() {
 	const [css] = useStyletron();
+	const navigate = useNavigate();
 	const { t, locale } = useI18n();
 	const { token } = useParams<{ token: string }>();
 	const {
@@ -33,9 +34,14 @@ export default function BookingPage() {
 		setSelectedEndAt,
 		setSelectedStartAt,
 		slots,
-		success,
+		createdAppointmentToken,
 		valid,
 	} = useBookingPage(token, t);
+
+	useEffect(() => {
+		if (!createdAppointmentToken) return;
+		navigate(`/appointment/${createdAppointmentToken}`, { replace: true });
+	}, [createdAppointmentToken, navigate]);
 
 	const formatDate = (d: string) =>
 		new Date(d).toLocaleString(locale, {
@@ -58,16 +64,6 @@ export default function BookingPage() {
 			<BookingInvalidState
 				title={t("booking.invalidTitle")}
 				message={t("booking.invalidMessage")}
-			/>
-		);
-	}
-
-	// Success state
-	if (success) {
-		return (
-			<BookingSuccessState
-				title={t("booking.successTitle")}
-				message={t("booking.successMessage")}
 			/>
 		);
 	}

@@ -24,6 +24,13 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 	const [savingAdminEmail, setSavingAdminEmail] = useState(false);
 	const [calendarSharingEnabled, setCalendarSharingEnabled] = useState(false);
 	const [savingCalendarSharing, setSavingCalendarSharing] = useState(false);
+	const [pushNotificationsEnabled, setPushNotificationsEnabled] =
+		useState(false);
+	const [savingPushNotifications, setSavingPushNotifications] = useState(false);
+	const [emailNotificationsEnabled, setEmailNotificationsEnabled] =
+		useState(false);
+	const [savingEmailNotifications, setSavingEmailNotifications] =
+		useState(false);
 
 	useEffect(() => {
 		setMustChangePassword(
@@ -46,6 +53,20 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		api
 			.getCalendarSharing()
 			.then((enabled) => setCalendarSharingEnabled(enabled))
+			.catch(() => {});
+	}, []);
+
+	useEffect(() => {
+		api
+			.getPushNotifications()
+			.then((enabled) => setPushNotificationsEnabled(enabled))
+			.catch(() => {});
+	}, []);
+
+	useEffect(() => {
+		api
+			.getEmailNotifications()
+			.then((enabled) => setEmailNotificationsEnabled(enabled))
 			.catch(() => {});
 	}, []);
 
@@ -124,22 +145,60 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		[t],
 	);
 
+	const handleTogglePushNotifications = useCallback(
+		async (enabled: boolean) => {
+			setSavingPushNotifications(true);
+			try {
+				await api.setPushNotifications(enabled);
+				setPushNotificationsEnabled(enabled);
+				toaster.positive(t("settings.pushNotificationsSaved"), {});
+			} catch (error: unknown) {
+				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} finally {
+				setSavingPushNotifications(false);
+			}
+		},
+		[t],
+	);
+
+	const handleToggleEmailNotifications = useCallback(
+		async (enabled: boolean) => {
+			setSavingEmailNotifications(true);
+			try {
+				await api.setEmailNotifications(enabled);
+				setEmailNotificationsEnabled(enabled);
+				toaster.positive(t("settings.emailNotificationsSaved"), {});
+			} catch (error: unknown) {
+				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} finally {
+				setSavingEmailNotifications(false);
+			}
+		},
+		[t],
+	);
+
 	return {
 		adminEmail,
 		calendarSharingEnabled,
 		changingPassword,
 		confirmPassword,
 		currentPassword,
+		emailNotificationsEnabled,
 		handleChangePassword,
 		handleLanguageChange,
 		handleSaveAdminEmail,
 		handleToggleCalendarSharing,
+		handleToggleEmailNotifications,
+		handleTogglePushNotifications,
 		isPasswordSectionOpen,
 		mustChangePassword,
 		newPassword,
+		pushNotificationsEnabled,
 		savingAdminEmail,
 		savingCalendarSharing,
+		savingEmailNotifications,
 		savingLanguage,
+		savingPushNotifications,
 		setAdminEmail,
 		setConfirmPassword,
 		setCurrentPassword,

@@ -112,5 +112,13 @@
 		"newBookingBody": "Tarafından yeni bir randevu alındı:",
 		"cancellationTitle": "Randevu İptal Edildi",
 		"cancellationBody": "Tarafından bir randevu iptal edildi:"
+	},
+	"communityEvent": {
+		"fieldsRequired": "Etkinlik başlığı, başlangıç ve bitiş zamanı gereklidir",
+		"notFound": "Topluluk etkinliği bulunamadı",
+		"alreadyCanceled": "Bu etkinlik iptal edilmiş",
+		"alreadyActive": "Bu etkinlik zaten aktif",
+		"mustBeFuture": "Etkinlik gelecekte olmalıdır",
+		"minApprovals": "En az 1 onay gereklidir"
 	}
 }

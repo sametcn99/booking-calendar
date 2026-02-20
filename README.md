@@ -16,6 +16,9 @@ This project is specifically optimized for self-hosted deployments:
 - Double-booking prevention with slot overlap checks
 - Email notifications with `.ics` calendar attachments
 - Token-based cancellation links in email
+- Public appointment detail pages with persistent shareable links
+- Community events with public approval links and approval progress
+- Calendar sharing controls, push/email notification toggles, and ICS export (all/range)
 - Installable PWA (mobile and desktop)
 - IP-based rate limiting
 - Asynchronous email sending, so booking responses are not blocked
@@ -261,70 +264,6 @@ Interactive API reference is available via Scalar:
 
 - Docs UI: `/docs`
 - OpenAPI spec: `/openapi.json`
-
-### Public
-
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/auth/login` | Admin login |
-| `GET` | `/api/settings/language` | Get active language setting |
-| `GET` | `/api/public/book/:token` | Validate booking token |
-| `GET` | `/api/public/book/:token/slots` | Get available slots |
-| `POST` | `/api/public/book/:token/appointments` | Create appointment |
-| `GET` | `/api/public/calendar` | View shared calendar (if enabled) |
-| `GET` | `/api/public/appointments/cancel/:token` | Cancel appointment by token |
-
-### Admin (Bearer token required)
-
-| Method | Path | Description |
-|---|---|---|
-| `PATCH` | `/api/admin/auth/change-password` | Change password |
-| `GET` | `/api/admin/slots` | List slots |
-| `POST` | `/api/admin/slots` | Create slot |
-| `PATCH` | `/api/admin/slots/:id` | Toggle slot active/inactive |
-| `PATCH` | `/api/admin/slots/:id/name` | Rename slot |
-| `DELETE` | `/api/admin/slots/:id` | Delete slot |
-| `GET` | `/api/admin/appointments` | List appointments |
-| `DELETE` | `/api/admin/appointments/:id` | Delete appointment |
-| `PATCH` | `/api/admin/appointments/:id/cancel` | Cancel appointment |
-| `GET` | `/api/admin/links` | List booking links |
-| `POST` | `/api/admin/links` | Create booking link |
-| `DELETE` | `/api/admin/links/:id` | Delete booking link |
-| `GET` | `/api/admin/settings/admin-email` | Get admin email setting |
-| `GET` | `/api/admin/settings/calendar-sharing` | Get calendar sharing status |
-| `PUT` | `/api/admin/settings/calendar-sharing` | Set calendar sharing status |
-| `PUT` | `/api/admin/settings/language` | Change application language |
-| `GET` | `/api/admin/planner` | List planner events |
-| `POST` | `/api/admin/planner` | Create planner event |
-| `PATCH` | `/api/admin/planner/:id` | Update planner event |
-| `DELETE` | `/api/admin/planner/:id` | Delete planner event |
-| `POST` | `/api/admin/push/subscribe` | Subscribe to push notifications |
-| `PUT` | `/api/admin/settings/language` | Change application language |
-
-## Project Structure
-
-```
-.
-├── src/
-│   ├── server/
-│   │   ├── index.ts
-│   │   ├── config.ts
-│   │   ├── controllers/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   ├── entities/
-│   │   ├── db/
-│   │   ├── mail/
-│   │   │   ├── MailService.ts
-│   │   │   ├── ics.ts
-│   │   │   └── templates/
-│   │   └── middleware/
-│   └── client/
-│       └── src/
-├── data/
-├── .env.example
-└── package.json
-```
 
 ## Troubleshooting
 

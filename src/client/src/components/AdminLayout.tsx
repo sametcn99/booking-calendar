@@ -9,6 +9,7 @@ import {
 	LayoutDashboard,
 	Link as LinkIcon,
 	LogOut,
+	Megaphone,
 	Settings,
 } from "lucide-react";
 import { useState } from "react";
@@ -34,6 +35,7 @@ export default function AdminLayout() {
 			icon: Calendar,
 		},
 		{ label: t("nav.links"), path: "/admin/links", icon: LinkIcon },
+		{ label: t("nav.events"), path: "/admin/events", icon: Megaphone },
 		{ label: t("nav.planner"), path: "/admin/planner", icon: CalendarPlus },
 		{ label: t("nav.settings"), path: "/admin/settings", icon: Settings },
 	];
@@ -172,7 +174,9 @@ export default function AdminLayout() {
 							flexDirection: "column",
 							gap: "8px",
 							flex: 1,
-							overflow: "hidden",
+							overflowY: "auto",
+							scrollbarWidth: "none",
+							"::-webkit-scrollbar": { display: "none" },
 						})}
 					>
 						{navItems.map((Item) => (

@@ -4,6 +4,7 @@ import { config } from "./config";
 import { AppointmentController } from "./controllers/AppointmentController";
 import { AuthController } from "./controllers/AuthController";
 import { BookingLinkController } from "./controllers/BookingLinkController";
+import { CommunityEventController } from "./controllers/CommunityEventController";
 import { PlannerController } from "./controllers/PlannerController";
 import { PushController } from "./controllers/PushController";
 import { SlotController } from "./controllers/SlotController";
@@ -28,6 +29,7 @@ const appointmentController = new AppointmentController();
 const bookingLinkController = new BookingLinkController();
 const pushController = new PushController();
 const plannerController = new PlannerController();
+const communityEventController = new CommunityEventController();
 const openApiDocument = createOpenApiDocument();
 
 // MIME types map
@@ -310,6 +312,49 @@ const _server = Bun.serve({
 			);
 		}
 
+		// Public API: Get appointment detail by cancel token
+		if (
+			matchRoute(pathname, "/api/public/appointment/:token") &&
+			method === "GET"
+		) {
+			const token = extractRequiredPathParam(
+				pathname,
+				"/api/public/appointment/:token",
+			);
+			if (!token) {
+				return jsonResponse(
+					400,
+					{ success: false, error: t("general.invalidRoute") },
+					corsHeaders,
+				);
+			}
+
+			const result = await appointmentController.getAppointmentByToken(token);
+			return jsonResponse(result.status, result.body, corsHeaders);
+		}
+
+		// Public API: Cancel appointment by token (JSON)
+		if (
+			matchRoute(pathname, "/api/public/appointment/:token/cancel") &&
+			method === "POST"
+		) {
+			const token = extractRequiredPathParam(
+				pathname,
+				"/api/public/appointment/:token/cancel",
+			);
+			if (!token) {
+				return jsonResponse(
+					400,
+					{ success: false, error: t("general.invalidRoute") },
+					corsHeaders,
+				);
+			}
+
+			const result =
+				await appointmentController.cancelAppointmentByToken(token);
+			return jsonResponse(result.status, result.body, corsHeaders);
+		}
+
 		// Public API: Cancel appointment by token (from email button)
 		if (
 			matchRoute(pathname, "/api/public/appointments/cancel/:token") &&
@@ -346,6 +391,46 @@ const _server = Bun.serve({
 					headers: { "Content-Type": "text/html", ...corsHeaders },
 				},
 			);
+		}
+
+		// Public API: View community event by share token
+		if (
+			matchRoute(pathname, "/api/public/community/:token") &&
+			method === "GET"
+		) {
+			const token = extractRequiredPathParam(
+				pathname,
+				"/api/public/community/:token",
+			);
+			if (!token) {
+				return jsonResponse(
+					400,
+					{ success: false, error: t("general.invalidRoute") },
+					corsHeaders,
+				);
+			}
+			const result = await communityEventController.getByShareToken(token);
+			return jsonResponse(result.status, result.body, corsHeaders);
+		}
+
+		// Public API: Approve community event
+		if (
+			matchRoute(pathname, "/api/public/community/:token/approve") &&
+			method === "POST"
+		) {
+			const token = extractRequiredPathParam(
+				pathname,
+				"/api/public/community/:token/approve",
+			);
+			if (!token) {
+				return jsonResponse(
+					400,
+					{ success: false, error: t("general.invalidRoute") },
+					corsHeaders,
+				);
+			}
+			const result = await communityEventController.approve(token);
+			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 
 		// --- Admin API (protected) ---
@@ -611,6 +696,204 @@ const _server = Bun.serve({
 				return jsonResponse(result.status, result.body, corsHeaders);
 			}
 
+			// Notification settings: push
+			if (
+				pathname === "/api/admin/settings/push-notifications" &&
+				method === "GET"
+			) {
+				const settingsRepo = new SettingsRepository();
+				const value = await settingsRepo.get("push_notifications_enabled");
+				return jsonResponse(
+					200,
+					{ success: true, data: { enabled: value !== "false" } },
+					corsHeaders,
+				);
+			}
+
+			if (
+				pathname === "/api/admin/settings/push-notifications" &&
+				method === "PUT"
+			) {
+				const body = await parseJsonBody<{ enabled?: boolean }>(request);
+				const settingsRepo = new SettingsRepository();
+				await settingsRepo.set(
+					"push_notifications_enabled",
+					body.enabled ? "true" : "false",
+				);
+				return jsonResponse(
+					200,
+					{ success: true, data: { enabled: !!body.enabled } },
+					corsHeaders,
+				);
+			}
+
+			// Notification settings: email
+			if (
+				pathname === "/api/admin/settings/email-notifications" &&
+				method === "GET"
+			) {
+				const settingsRepo = new SettingsRepository();
+				const value = await settingsRepo.get("email_notifications_enabled");
+				return jsonResponse(
+					200,
+					{ success: true, data: { enabled: value !== "false" } },
+					corsHeaders,
+				);
+			}
+
+			if (
+				pathname === "/api/admin/settings/email-notifications" &&
+				method === "PUT"
+			) {
+				const body = await parseJsonBody<{ enabled?: boolean }>(request);
+				const settingsRepo = new SettingsRepository();
+				await settingsRepo.set(
+					"email_notifications_enabled",
+					body.enabled ? "true" : "false",
+				);
+				return jsonResponse(
+					200,
+					{ success: true, data: { enabled: !!body.enabled } },
+					corsHeaders,
+				);
+			}
+
+			// ICS Export
+			if (pathname === "/api/admin/export/ics" && method === "GET") {
+				const from = url.searchParams.get("from");
+				const to = url.searchParams.get("to");
+
+				const [appointmentsResult, plannerResult] = await Promise.all([
+					appointmentController.getAllAppointments(),
+					plannerController.getAllEvents(),
+				]);
+
+				const appointments = (appointmentsResult.body.data || []) as Array<{
+					id: number;
+					name: string;
+					email?: string | null;
+					meeting_place?: string | null;
+					note?: string | null;
+					start_at: string;
+					end_at: string;
+					canceled_at?: string | null;
+				}>;
+				const plannerEvents = (plannerResult.body.data || []) as Array<{
+					id: number;
+					title: string;
+					description?: string | null;
+					start_at: string;
+					end_at: string;
+				}>;
+
+				const formatDate = (d: Date): string =>
+					d
+						.toISOString()
+						.replace(/[-:]/g, "")
+						.replace(/\.\d{3}/, "");
+
+				const now = formatDate(new Date());
+				const events: string[] = [];
+
+				for (const a of appointments) {
+					if (a.canceled_at) continue;
+					const start = new Date(a.start_at);
+					const end = new Date(a.end_at);
+					if (from && start < new Date(from)) continue;
+					if (to && end > new Date(to)) continue;
+					events.push(
+						[
+							"BEGIN:VEVENT",
+							`UID:appt-${a.id}@booking-calendar`,
+							`DTSTAMP:${now}`,
+							`DTSTART:${formatDate(start)}`,
+							`DTEND:${formatDate(end)}`,
+							`SUMMARY:${a.name}`,
+							`DESCRIPTION:${[
+								a.meeting_place ? `Meeting place: ${a.meeting_place}` : null,
+								a.note || null,
+							]
+								.filter(Boolean)
+								.join("\\n")}`,
+							"STATUS:CONFIRMED",
+							"END:VEVENT",
+						].join("\r\n"),
+					);
+				}
+
+				for (const p of plannerEvents) {
+					const start = new Date(p.start_at);
+					const end = new Date(p.end_at);
+					if (from && start < new Date(from)) continue;
+					if (to && end > new Date(to)) continue;
+					events.push(
+						[
+							"BEGIN:VEVENT",
+							`UID:planner-${p.id}@booking-calendar`,
+							`DTSTAMP:${now}`,
+							`DTSTART:${formatDate(start)}`,
+							`DTEND:${formatDate(end)}`,
+							`SUMMARY:${p.title}`,
+							p.description
+								? `DESCRIPTION:${p.description.replace(/\n/g, "\\n")}`
+								: "",
+							"STATUS:CONFIRMED",
+							"END:VEVENT",
+						]
+							.filter(Boolean)
+							.join("\r\n"),
+					);
+				}
+
+				const icsContent = [
+					"BEGIN:VCALENDAR",
+					"VERSION:2.0",
+					"PRODID:-//Booking Calendar//EN",
+					"CALSCALE:GREGORIAN",
+					...events,
+					"END:VCALENDAR",
+				].join("\r\n");
+
+				return new Response(icsContent, {
+					status: 200,
+					headers: {
+						"Content-Type": "text/calendar; charset=utf-8",
+						"Content-Disposition": "attachment; filename=calendar-export.ics",
+						...corsHeaders,
+					},
+				});
+			}
+
+			// Community Events
+			if (pathname === "/api/admin/community-events" && method === "GET") {
+				const result = await communityEventController.getAllEvents();
+				return jsonResponse(result.status, result.body, corsHeaders);
+			}
+
+			if (pathname === "/api/admin/community-events" && method === "POST") {
+				const body = await parseJsonBody<{
+					title?: string;
+					description?: string;
+					start_at?: string;
+					end_at?: string;
+					color?: string;
+					required_approvals?: number;
+				}>(request);
+				const result = await communityEventController.createEvent(body);
+				return jsonResponse(result.status, result.body, corsHeaders);
+			}
+
+			if (
+				matchRoute(pathname, "/api/admin/community-events/:id") &&
+				method === "DELETE"
+			) {
+				const id = Number(
+					extractPathParam(pathname, "/api/admin/community-events/:id"),
+				);
+				const result = await communityEventController.deleteEvent(id);
+				return jsonResponse(result.status, result.body, corsHeaders);
+			}
+
 			return jsonResponse(
 				404,
 				{ success: false, error: t("general.notFound") },
@@ -663,3 +946,12 @@ const _server = Bun.serve({
 });
 
 console.log(`Server running at http://${config.host}:${config.port}`);
+
+// Periodically cancel expired pending community events (every 60 seconds)
+setInterval(async () => {
+	try {
+		await communityEventController.cancelExpiredPending();
+	} catch (err) {
+		console.error("Failed to cancel expired community events:", err);
+	}
+}, 60_000);

@@ -1,5 +1,7 @@
 import { useStyletron } from "baseui";
 import { Button, KIND, SIZE } from "baseui/button";
+import { toaster } from "baseui/toast";
+import { Copy, ExternalLink } from "lucide-react";
 import type { Appointment } from "../hooks/useAppointmentsPage";
 
 interface Props {
@@ -22,6 +24,15 @@ export default function AppointmentCard({
 	t,
 }: Props) {
 	const [css] = useStyletron();
+	const appointmentLink = appointment.cancel_token
+		? `${window.location.origin}/appointment/${appointment.cancel_token}`
+		: null;
+
+	const handleCopyLink = async () => {
+		if (!appointmentLink) return;
+		await navigator.clipboard.writeText(appointmentLink);
+		toaster.positive(t("appointments.linkCopied"), {});
+	};
 
 	return (
 		<div
@@ -124,8 +135,30 @@ export default function AppointmentCard({
 						display: "flex",
 						gap: "8px",
 						alignItems: "center",
+						flexWrap: "wrap",
 					})}
 				>
+					{appointmentLink && (
+						<>
+							<Button
+								kind={KIND.secondary}
+								size={SIZE.compact}
+								onClick={() => window.open(appointmentLink, "_blank")}
+							>
+								<ExternalLink size={14} />
+								<span className={css({ marginLeft: "6px" })}>
+									{t("appointments.openLink")}
+								</span>
+							</Button>
+							<Button
+								kind={KIND.secondary}
+								size={SIZE.compact}
+								onClick={handleCopyLink}
+							>
+								<Copy size={14} />
+							</Button>
+						</>
+					)}
 					<Button
 						kind={KIND.secondary}
 						size={SIZE.compact}

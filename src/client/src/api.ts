@@ -57,6 +57,20 @@ export interface ApiPlannerEvent {
 	created_at: string;
 }
 
+export interface ApiCommunityEvent {
+	id: number;
+	title: string;
+	description: string | null;
+	start_at: string;
+	end_at: string;
+	color: string | null;
+	share_token: string;
+	required_approvals: number;
+	current_approvals: number;
+	status: string;
+	created_at: string;
+}
+
 export interface LoginResponseData {
 	token: string;
 	must_change_password: boolean;
@@ -196,6 +210,17 @@ export const api = {
 			body: JSON.stringify(data),
 		}),
 
+	getPublicAppointment: (token: string) =>
+		request<ApiResponse<ApiAppointment>>(`/public/appointment/${token}`),
+
+	cancelPublicAppointment: (token: string) =>
+		request<ApiResponse<ApiAppointment>>(
+			`/public/appointment/${token}/cancel`,
+			{
+				method: "POST",
+			},
+		),
+
 	// Language
 	getLanguage: () =>
 		request<{ success: boolean; data: { language: string } }>(
@@ -290,4 +315,76 @@ export const api = {
 				planner_events: ApiPlannerEvent[];
 			};
 		}>("/public/calendar"),
+
+	// Notification Settings
+	getPushNotifications: () =>
+		request<{ success: boolean; data: { enabled: boolean } }>(
+			"/admin/settings/push-notifications",
+		).then((r) => r.data.enabled),
+
+	setPushNotifications: (enabled: boolean) =>
+		request<{ success: boolean; data: { enabled: boolean } }>(
+			"/admin/settings/push-notifications",
+			{
+				method: "PUT",
+				body: JSON.stringify({ enabled }),
+			},
+		),
+
+	getEmailNotifications: () =>
+		request<{ success: boolean; data: { enabled: boolean } }>(
+			"/admin/settings/email-notifications",
+		).then((r) => r.data.enabled),
+
+	setEmailNotifications: (enabled: boolean) =>
+		request<{ success: boolean; data: { enabled: boolean } }>(
+			"/admin/settings/email-notifications",
+			{
+				method: "PUT",
+				body: JSON.stringify({ enabled }),
+			},
+		),
+
+	// ICS Export
+	getIcsExportUrl: (from?: string, to?: string) => {
+		const params = new URLSearchParams();
+		if (from) params.set("from", from);
+		if (to) params.set("to", to);
+		const query = params.toString();
+		return `${API_BASE}/admin/export/ics${query ? `?${query}` : ""}`;
+	},
+
+	// Community Events
+	getCommunityEvents: () =>
+		request<ApiResponse<ApiCommunityEvent[]>>("/admin/community-events"),
+
+	createCommunityEvent: (data: {
+		title: string;
+		description?: string;
+		start_at: string;
+		end_at: string;
+		color?: string;
+		required_approvals?: number;
+	}) =>
+		request<ApiResponse<ApiCommunityEvent>>("/admin/community-events", {
+			method: "POST",
+			body: JSON.stringify(data),
+		}),
+
+	deleteCommunityEvent: (id: number) =>
+		request<{ success: boolean }>(`/admin/community-events/${id}`, {
+			method: "DELETE",
+		}),
+
+	// Public community event
+	getPublicCommunityEvent: (token: string) =>
+		request<ApiResponse<ApiCommunityEvent>>(`/public/community/${token}`),
+
+	approveCommunityEvent: (token: string) =>
+		request<ApiResponse<ApiCommunityEvent>>(
+			`/public/community/${token}/approve`,
+			{
+				method: "POST",
+			},
+		),
 };

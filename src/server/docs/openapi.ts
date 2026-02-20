@@ -21,9 +21,15 @@ export function createOpenApiDocument(): Record<string, unknown> {
 			{ name: "Admin Links", description: "Admin booking-link management" },
 			{
 				name: "Admin Settings",
-				description: "Admin language and email settings",
+				description:
+					"Admin language, email, calendar sharing, and notification settings",
 			},
+			{ name: "Admin Export", description: "Admin export endpoints" },
 			{ name: "Admin Planner", description: "Admin planner event management" },
+			{
+				name: "Admin Community",
+				description: "Admin community event management",
+			},
 			{ name: "Admin Push", description: "Admin push notifications" },
 		],
 		components: {
@@ -95,6 +101,32 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						end_at: { type: "string", format: "date-time" },
 						color: { type: ["string", "null"] },
 						created_at: { type: "string", format: "date-time" },
+					},
+				},
+				CommunityEvent: {
+					type: "object",
+					properties: {
+						id: { type: "integer" },
+						title: { type: "string" },
+						description: { type: ["string", "null"] },
+						start_at: { type: "string", format: "date-time" },
+						end_at: { type: "string", format: "date-time" },
+						color: { type: ["string", "null"] },
+						share_token: { type: "string" },
+						required_approvals: { type: "integer" },
+						current_approvals: { type: "integer" },
+						status: {
+							type: "string",
+							enum: ["pending", "active", "canceled"],
+						},
+						created_at: { type: "string", format: "date-time" },
+					},
+				},
+				ToggleSettingData: {
+					type: "object",
+					required: ["enabled"],
+					properties: {
+						enabled: { type: "boolean" },
 					},
 				},
 				LoginData: {
@@ -298,6 +330,82 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					},
 				},
 			},
+			"/api/public/appointment/{token}": {
+				get: {
+					tags: ["Public"],
+					summary: "Get appointment details by public token",
+					parameters: [
+						{
+							name: "token",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+						},
+					],
+					responses: {
+						"200": {
+							description: "Appointment detail",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/Appointment" },
+										},
+									},
+								},
+							},
+						},
+						"404": {
+							description: "Appointment not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/ErrorResponse" },
+								},
+							},
+						},
+					},
+				},
+			},
+			"/api/public/appointment/{token}/cancel": {
+				post: {
+					tags: ["Public"],
+					summary: "Cancel appointment by public token (JSON)",
+					parameters: [
+						{
+							name: "token",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+						},
+					],
+					responses: {
+						"200": {
+							description: "Appointment canceled",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/Appointment" },
+										},
+									},
+								},
+							},
+						},
+						"400": {
+							description: "Cannot cancel appointment",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/ErrorResponse" },
+								},
+							},
+						},
+					},
+				},
+			},
 			"/api/public/calendar": {
 				get: {
 					tags: ["Public"],
@@ -366,6 +474,82 @@ export function createOpenApiDocument(): Record<string, unknown> {
 							description: "Returns failure HTML page",
 							content: {
 								"text/html": { schema: { type: "string" } },
+							},
+						},
+					},
+				},
+			},
+			"/api/public/community/{token}": {
+				get: {
+					tags: ["Public"],
+					summary: "Get community event by share token",
+					parameters: [
+						{
+							name: "token",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+						},
+					],
+					responses: {
+						"200": {
+							description: "Community event",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/CommunityEvent" },
+										},
+									},
+								},
+							},
+						},
+						"404": {
+							description: "Community event not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/ErrorResponse" },
+								},
+							},
+						},
+					},
+				},
+			},
+			"/api/public/community/{token}/approve": {
+				post: {
+					tags: ["Public"],
+					summary: "Approve a community event by share token",
+					parameters: [
+						{
+							name: "token",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+						},
+					],
+					responses: {
+						"200": {
+							description: "Approval recorded",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/CommunityEvent" },
+										},
+									},
+								},
+							},
+						},
+						"400": {
+							description: "Invalid approval action",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/ErrorResponse" },
+								},
 							},
 						},
 					},
@@ -704,6 +888,211 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						},
 					},
 					responses: { "200": { description: "Status updated" } },
+				},
+			},
+			"/api/admin/settings/push-notifications": {
+				get: {
+					tags: ["Admin Settings"],
+					summary: "Get push notification setting",
+					security: [{ BearerAuth: [] }],
+					responses: {
+						"200": {
+							description: "Setting retrieved",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/ToggleSettingData" },
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				put: {
+					tags: ["Admin Settings"],
+					summary: "Set push notification setting",
+					security: [{ BearerAuth: [] }],
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: { $ref: "#/components/schemas/ToggleSettingData" },
+							},
+						},
+					},
+					responses: { "200": { description: "Setting updated" } },
+				},
+			},
+			"/api/admin/settings/email-notifications": {
+				get: {
+					tags: ["Admin Settings"],
+					summary: "Get email notification setting",
+					security: [{ BearerAuth: [] }],
+					responses: {
+						"200": {
+							description: "Setting retrieved",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/ToggleSettingData" },
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				put: {
+					tags: ["Admin Settings"],
+					summary: "Set email notification setting",
+					security: [{ BearerAuth: [] }],
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: { $ref: "#/components/schemas/ToggleSettingData" },
+							},
+						},
+					},
+					responses: { "200": { description: "Setting updated" } },
+				},
+			},
+			"/api/admin/export/ics": {
+				get: {
+					tags: ["Admin Export"],
+					summary: "Export appointments and planner events as ICS",
+					security: [{ BearerAuth: [] }],
+					parameters: [
+						{
+							name: "from",
+							in: "query",
+							required: false,
+							schema: { type: "string", format: "date" },
+							description: "Filter start date (inclusive)",
+						},
+						{
+							name: "to",
+							in: "query",
+							required: false,
+							schema: { type: "string", format: "date" },
+							description: "Filter end date (inclusive)",
+						},
+					],
+					responses: {
+						"200": {
+							description: "ICS file",
+							content: {
+								"text/calendar": { schema: { type: "string" } },
+							},
+						},
+					},
+				},
+			},
+			"/api/admin/community-events": {
+				get: {
+					tags: ["Admin Community"],
+					summary: "List community events",
+					security: [{ BearerAuth: [] }],
+					responses: {
+						"200": {
+							description: "Community event list",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: {
+												type: "array",
+												items: { $ref: "#/components/schemas/CommunityEvent" },
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				post: {
+					tags: ["Admin Community"],
+					summary: "Create community event",
+					security: [{ BearerAuth: [] }],
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: {
+									type: "object",
+									required: ["title", "start_at", "end_at"],
+									properties: {
+										title: { type: "string" },
+										description: { type: "string" },
+										start_at: { type: "string", format: "date-time" },
+										end_at: { type: "string", format: "date-time" },
+										color: { type: "string" },
+										required_approvals: { type: "integer", minimum: 1 },
+									},
+								},
+							},
+						},
+					},
+					responses: {
+						"201": {
+							description: "Community event created",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/CommunityEvent" },
+										},
+									},
+								},
+							},
+						},
+						"400": {
+							description: "Validation error",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/ErrorResponse" },
+								},
+							},
+						},
+					},
+				},
+			},
+			"/api/admin/community-events/{id}": {
+				delete: {
+					tags: ["Admin Community"],
+					summary: "Delete community event",
+					security: [{ BearerAuth: [] }],
+					parameters: [
+						{
+							name: "id",
+							in: "path",
+							required: true,
+							schema: { type: "integer" },
+						},
+					],
+					responses: {
+						"200": { description: "Community event deleted" },
+						"404": {
+							description: "Community event not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/ErrorResponse" },
+								},
+							},
+						},
+					},
 				},
 			},
 			"/api/admin/planner": {

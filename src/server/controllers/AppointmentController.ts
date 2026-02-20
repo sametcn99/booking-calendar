@@ -19,6 +19,22 @@ export class AppointmentController {
 		return { status: 200, body: { success: true, data: appointments } };
 	}
 
+	async getAppointmentByToken(
+		token: string,
+	): Promise<{ status: number; body: ApiResponse }> {
+		try {
+			const appointment =
+				await this.appointmentService.getAppointmentByToken(token);
+			return { status: 200, body: { success: true, data: appointment } };
+		} catch (err: unknown) {
+			const message = getErrorMessage(err);
+			return {
+				status: 404,
+				body: { success: false, error: message },
+			};
+		}
+	}
+
 	async createAppointment(
 		token: string,
 		body: {

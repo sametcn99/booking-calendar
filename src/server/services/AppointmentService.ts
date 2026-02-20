@@ -3,6 +3,7 @@ import { t } from "../i18n";
 import { MailService } from "../mail/MailService";
 import { AppointmentRepository } from "../repositories/AppointmentRepository";
 import { BookingLinkRepository } from "../repositories/BookingLinkRepository";
+import { SettingsRepository } from "../repositories/SettingsRepository";
 import { SlotRepository } from "../repositories/SlotRepository";
 import type { AppointmentWithSlot, CreateAppointmentInput } from "../types";
 import { PushService } from "./PushService";
@@ -13,6 +14,7 @@ export class AppointmentService {
 	private linkRepo: BookingLinkRepository;
 	private mailService: MailService;
 	private pushService: PushService;
+	private settingsRepo: SettingsRepository;
 
 	constructor() {
 		this.appointmentRepo = new AppointmentRepository();
@@ -20,10 +22,30 @@ export class AppointmentService {
 		this.linkRepo = new BookingLinkRepository();
 		this.mailService = new MailService();
 		this.pushService = new PushService();
+		this.settingsRepo = new SettingsRepository();
+	}
+
+	private async isPushEnabled(): Promise<boolean> {
+		const value = await this.settingsRepo.get("push_notifications_enabled");
+		return value !== "false";
+	}
+
+	private async isEmailEnabled(): Promise<boolean> {
+		const value = await this.settingsRepo.get("email_notifications_enabled");
+		return value !== "false";
 	}
 
 	async getAllAppointments(): Promise<AppointmentWithSlot[]> {
 		return this.appointmentRepo.findAll();
+	}
+
+	async getAppointmentByToken(token: string): Promise<AppointmentWithSlot> {
+		const appointment = await this.appointmentRepo.findByCancelToken(token);
+		if (!appointment) {
+			throw new Error(t("appointment.invalidCancelLink"));
+		}
+
+		return appointment;
 	}
 
 	async createAppointment(
@@ -88,24 +110,34 @@ export class AppointmentService {
 		}
 
 		// Send emails asynchronously - do not block the response
-		if (fullAppointment.email) {
+		const emailEnabled = await this.isEmailEnabled();
+		if (emailEnabled) {
+			if (fullAppointment.email) {
+				this.mailService
+					.sendBookingConfirmation(fullAppointment)
+					.catch((err) =>
+						console.error("Failed to send confirmation email:", err),
+					);
+			}
 			this.mailService
-				.sendBookingConfirmation(fullAppointment)
+				.sendAdminNotification(fullAppointment)
 				.catch((err) =>
-					console.error("Failed to send confirmation email:", err),
+					console.error("Failed to send admin notification:", err),
 				);
 		}
-		this.mailService
-			.sendAdminNotification(fullAppointment)
-			.catch((err) => console.error("Failed to send admin notification:", err));
 
-		this.pushService
-			.sendToAll({
-				title: t("push.newBookingTitle"),
-				body: `${t("push.newBookingBody")} ${fullAppointment.name}`,
-				url: "/admin/appointments",
-			})
-			.catch((err) => console.error("Failed to send push notification:", err));
+		const pushEnabled = await this.isPushEnabled();
+		if (pushEnabled) {
+			this.pushService
+				.sendToAll({
+					title: t("push.newBookingTitle"),
+					body: `${t("push.newBookingBody")} ${fullAppointment.name}`,
+					url: "/admin/appointments",
+				})
+				.catch((err) =>
+					console.error("Failed to send push notification:", err),
+				);
+		}
 
 		return fullAppointment;
 	}
@@ -133,19 +165,27 @@ export class AppointmentService {
 		const canceled = await this.appointmentRepo.markCancelled(id, "admin");
 		if (!canceled) throw new Error(t("appointment.notFound"));
 
-		this.mailService
-			.sendCancellationNotifications(canceled)
-			.catch((err) =>
-				console.error("Failed to send cancellation notification:", err),
-			);
+		const emailEnabled = await this.isEmailEnabled();
+		if (emailEnabled) {
+			this.mailService
+				.sendCancellationNotifications(canceled)
+				.catch((err) =>
+					console.error("Failed to send cancellation notification:", err),
+				);
+		}
 
-		this.pushService
-			.sendToAll({
-				title: t("push.cancellationTitle"),
-				body: `${t("push.cancellationBody")} ${canceled.name}`,
-				url: "/admin/appointments",
-			})
-			.catch((err) => console.error("Failed to send push notification:", err));
+		const pushEnabled = await this.isPushEnabled();
+		if (pushEnabled) {
+			this.pushService
+				.sendToAll({
+					title: t("push.cancellationTitle"),
+					body: `${t("push.cancellationBody")} ${canceled.name}`,
+					url: "/admin/appointments",
+				})
+				.catch((err) =>
+					console.error("Failed to send push notification:", err),
+				);
+		}
 
 		return canceled;
 	}
@@ -163,19 +203,27 @@ export class AppointmentService {
 		);
 		if (!canceled) throw new Error(t("appointment.notFound"));
 
-		this.mailService
-			.sendCancellationNotifications(canceled)
-			.catch((err) =>
-				console.error("Failed to send cancellation notification:", err),
-			);
+		const emailEnabled = await this.isEmailEnabled();
+		if (emailEnabled) {
+			this.mailService
+				.sendCancellationNotifications(canceled)
+				.catch((err) =>
+					console.error("Failed to send cancellation notification:", err),
+				);
+		}
 
-		this.pushService
-			.sendToAll({
-				title: t("push.cancellationTitle"),
-				body: `${t("push.cancellationBody")} ${canceled.name}`,
-				url: "/admin/appointments",
-			})
-			.catch((err) => console.error("Failed to send push notification:", err));
+		const pushEnabled = await this.isPushEnabled();
+		if (pushEnabled) {
+			this.pushService
+				.sendToAll({
+					title: t("push.cancellationTitle"),
+					body: `${t("push.cancellationBody")} ${canceled.name}`,
+					url: "/admin/appointments",
+				})
+				.catch((err) =>
+					console.error("Failed to send push notification:", err),
+				);
+		}
 
 		return canceled;
 	}

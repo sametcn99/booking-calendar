@@ -1,9 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminLayout from "./components/AdminLayout";
 import { useAuth } from "./context/AuthContext";
+import AppointmentDetailPage from "./pages/AppointmentDetailPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import BookingPage from "./pages/BookingPage";
+import CommunityEventApprovalPage from "./pages/CommunityEventApprovalPage";
 import DashboardPage from "./pages/DashboardPage";
+import EventsPage from "./pages/EventsPage";
 import LinksPage from "./pages/LinksPage";
 import LoginPage from "./pages/LoginPage";
 import PlannerPage from "./pages/PlannerPage";
@@ -22,7 +25,12 @@ export default function App() {
 		<Routes>
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/book/:token" element={<BookingPage />} />
+			<Route path="/appointment/:token" element={<AppointmentDetailPage />} />
 			<Route path="/calendar" element={<PublicCalendarPage />} />
+			<Route
+				path="/community/:token"
+				element={<CommunityEventApprovalPage />}
+			/>
 			<Route
 				path="/admin"
 				element={
@@ -35,6 +43,7 @@ export default function App() {
 				<Route path="slots" element={<SlotsPage />} />
 				<Route path="appointments" element={<AppointmentsPage />} />
 				<Route path="links" element={<LinksPage />} />
+				<Route path="events" element={<EventsPage />} />
 				<Route path="planner" element={<PlannerPage />} />
 				<Route path="settings" element={<SettingsPage />} />
 			</Route>

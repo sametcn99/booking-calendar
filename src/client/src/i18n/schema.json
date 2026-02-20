@@ -30,6 +30,9 @@
 				"links": {
 					"type": "string"
 				},
+				"events": {
+					"type": "string"
+				},
 				"planner": {
 					"type": "string"
 				},
@@ -51,6 +54,7 @@
 				"slots",
 				"appointments",
 				"links",
+				"events",
 				"planner",
 				"settings",
 				"logout",
@@ -431,6 +435,21 @@
 				"meetingPlace": {
 					"type": "string"
 				},
+				"detailsTitle": {
+					"type": "string"
+				},
+				"publicLink": {
+					"type": "string"
+				},
+				"openLink": {
+					"type": "string"
+				},
+				"linkCopied": {
+					"type": "string"
+				},
+				"alreadyCanceled": {
+					"type": "string"
+				},
 				"cancelBtn": {
 					"type": "string"
 				},
@@ -457,6 +476,11 @@
 				"unknown",
 				"note",
 				"meetingPlace",
+				"detailsTitle",
+				"publicLink",
+				"openLink",
+				"linkCopied",
+				"alreadyCanceled",
 				"cancelBtn",
 				"deleteBtn",
 				"appointmentCanceled",
@@ -739,7 +763,24 @@
 				"calendarSharingSaved": { "type": "string" },
 				"publicCalendarLink": { "type": "string" },
 				"copyLink": { "type": "string" },
-				"copied": { "type": "string" }
+				"copied": { "type": "string" },
+				"pushNotifications": { "type": "string" },
+				"pushNotificationsDescription": { "type": "string" },
+				"pushNotificationsEnabled": { "type": "string" },
+				"pushNotificationsDisabled": { "type": "string" },
+				"pushNotificationsSaved": { "type": "string" },
+				"emailNotifications": { "type": "string" },
+				"emailNotificationsDescription": { "type": "string" },
+				"emailNotificationsEnabled": { "type": "string" },
+				"emailNotificationsDisabled": { "type": "string" },
+				"emailNotificationsSaved": { "type": "string" },
+				"icsExport": { "type": "string" },
+				"icsExportDescription": { "type": "string" },
+				"icsExportAll": { "type": "string" },
+				"icsExportRange": { "type": "string" },
+				"icsExportFrom": { "type": "string" },
+				"icsExportTo": { "type": "string" },
+				"icsExportDownload": { "type": "string" }
 			},
 			"required": [
 				"title",
@@ -770,7 +811,24 @@
 				"calendarSharingSaved",
 				"publicCalendarLink",
 				"copyLink",
-				"copied"
+				"copied",
+				"pushNotifications",
+				"pushNotificationsDescription",
+				"pushNotificationsEnabled",
+				"pushNotificationsDisabled",
+				"pushNotificationsSaved",
+				"emailNotifications",
+				"emailNotificationsDescription",
+				"emailNotificationsEnabled",
+				"emailNotificationsDisabled",
+				"emailNotificationsSaved",
+				"icsExport",
+				"icsExportDescription",
+				"icsExportAll",
+				"icsExportRange",
+				"icsExportFrom",
+				"icsExportTo",
+				"icsExportDownload"
 			],
 			"additionalProperties": false
 		},
@@ -835,6 +893,74 @@
 			},
 			"required": ["error"],
 			"additionalProperties": false
+		},
+		"communityEvents": {
+			"type": "object",
+			"properties": {
+				"title": { "type": "string" },
+				"create": { "type": "string" },
+				"empty": { "type": "string" },
+				"eventTitle": { "type": "string" },
+				"eventTitlePlaceholder": { "type": "string" },
+				"description": { "type": "string" },
+				"descriptionPlaceholder": { "type": "string" },
+				"startTime": { "type": "string" },
+				"endTime": { "type": "string" },
+				"color": { "type": "string" },
+				"requiredApprovals": { "type": "string" },
+				"cancel": { "type": "string" },
+				"createBtn": { "type": "string" },
+				"delete": { "type": "string" },
+				"created": { "type": "string" },
+				"deleted": { "type": "string" },
+				"fieldsRequired": { "type": "string" },
+				"shareLink": { "type": "string" },
+				"openLink": { "type": "string" },
+				"copyLink": { "type": "string" },
+				"copied": { "type": "string" },
+				"approvals": { "type": "string" },
+				"statusPending": { "type": "string" },
+				"statusActive": { "type": "string" },
+				"statusCanceled": { "type": "string" },
+				"approveTitle": { "type": "string" },
+				"approveBtn": { "type": "string" },
+				"approved": { "type": "string" },
+				"eventInfo": { "type": "string" },
+				"approvalProgress": { "type": "string" }
+			},
+			"required": [
+				"title",
+				"create",
+				"empty",
+				"eventTitle",
+				"eventTitlePlaceholder",
+				"description",
+				"descriptionPlaceholder",
+				"startTime",
+				"endTime",
+				"color",
+				"requiredApprovals",
+				"cancel",
+				"createBtn",
+				"delete",
+				"created",
+				"deleted",
+				"fieldsRequired",
+				"shareLink",
+				"openLink",
+				"copyLink",
+				"copied",
+				"approvals",
+				"statusPending",
+				"statusActive",
+				"statusCanceled",
+				"approveTitle",
+				"approveBtn",
+				"approved",
+				"eventInfo",
+				"approvalProgress"
+			],
+			"additionalProperties": false
 		}
 	},
 	"required": [
@@ -848,7 +974,8 @@
 		"booking",
 		"settings",
 		"planner",
-		"common"
+		"common",
+		"communityEvents"
 	],
 	"additionalProperties": false
 }
