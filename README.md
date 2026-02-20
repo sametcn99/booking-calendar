@@ -7,7 +7,7 @@ This project is specifically optimized for self-hosted deployments:
 - API and web app are served from a single process.
 - File-based database storage (SQLite/sql.js style) makes backup and migration simple.
 - Email notifications are sent using your own SMTP configuration.
-- It can be safely exposed to the internet behind a reverse proxy.
+- It runs in containers with a straightforward Docker Compose production flow.
 
 ## Key Features
 
@@ -161,68 +161,32 @@ Then:
 2. Rebuild frontend/client image because `VITE_VAPID_PUBLIC_KEY` is embedded at build time.
 3. Restart app/container so backend reads `VAPID_PRIVATE_KEY`.
 
-## Self-Hosted Production Setup Guide
+## Docker Production Setup Guide
 
-### 1) Build
+### 1) Configure `.env`
 
-```bash
-bun install
-cd src/client && bun install && bun run build && cd ../..
-```
-
-### 2) Configure `.env`
-
-- For better security, use `HOST=127.0.0.1` and expose via reverse proxy.
 - Set `BASE_URL` to your public domain.
 - Verify SMTP credentials and delivery.
+- Keep strong values for `ADMIN_PASSWORD` and `JWT_SECRET`.
 
-### 3) Run as a Service (systemd example)
-
-`/etc/systemd/system/booking-calendar.service`:
-
-```ini
-[Unit]
-Description=Booking Calendar
-After=network.target
-
-[Service]
-Type=simple
-WorkingDirectory=/opt/booking-calendar
-ExecStart=/usr/bin/bun run start
-Restart=always
-RestartSec=5
-User=www-data
-Environment=NODE_ENV=production
-
-[Install]
-WantedBy=multi-user.target
-```
+### 2) Build and start containers
 
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl enable booking-calendar
-sudo systemctl start booking-calendar
-sudo systemctl status booking-calendar
+docker compose up -d --build
 ```
 
-### 4) Reverse Proxy (Nginx example)
+### 3) Check runtime health
 
-```nginx
-server {
-    listen 80;
-    server_name book.example.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
+```bash
+docker compose ps
+docker compose logs -f server
 ```
 
-After that, add TLS using Let's Encrypt (`certbot`).
+### 4) Update after config changes
+
+```bash
+docker compose up -d --build
+```
 
 ## Security Checklist
 
@@ -246,7 +210,7 @@ Example:
 cp ./data/booking.db ./backups/booking-$(date +%F).db
 ```
 
-For restore: stop service, replace DB file with backup, start service again.
+For restore: stop containers, replace DB file with backup, then start containers again.
 
 ## Email System
 
@@ -279,8 +243,8 @@ Interactive API reference is available via Scalar:
 
 ### Frontend loads but API fails
 
-- Check reverse proxy forwarding rules for `/`.
-- Verify backend service status (`systemctl status`).
+- Verify container status (`docker compose ps`).
+- Inspect server logs (`docker compose logs server`).
 
 ## Usage Note
 
