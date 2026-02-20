@@ -14,7 +14,7 @@ export default function BookingHeader({ subtitle, title }: Props) {
 				className={css({
 					fontSize: "28px",
 					fontWeight: 700,
-					color: "#a78bfa",
+					color: "var(--color-accent-800)",
 					textAlign: "center",
 					marginBottom: "8px",
 				})}
@@ -24,7 +24,7 @@ export default function BookingHeader({ subtitle, title }: Props) {
 			<p
 				className={css({
 					textAlign: "center",
-					color: "#8b7aab",
+					color: "var(--color-text-tertiary)",
 					marginBottom: "32px",
 				})}
 			>

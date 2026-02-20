@@ -67,6 +67,7 @@ export interface ApiCommunityEvent {
 	share_token: string;
 	required_approvals: number;
 	current_approvals: number;
+	approver_emails_json: string;
 	status: string;
 	created_at: string;
 }
@@ -380,11 +381,12 @@ export const api = {
 	getPublicCommunityEvent: (token: string) =>
 		request<ApiResponse<ApiCommunityEvent>>(`/public/community/${token}`),
 
-	approveCommunityEvent: (token: string) =>
+	approveCommunityEvent: (token: string, data?: { email?: string }) =>
 		request<ApiResponse<ApiCommunityEvent>>(
 			`/public/community/${token}/approve`,
 			{
 				method: "POST",
+				body: JSON.stringify(data ?? {}),
 			},
 		),
 };

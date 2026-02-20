@@ -42,17 +42,17 @@ export default function ICSExportSection({ t, surface = "card" }: Props) {
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: isList ? "10px" : "12px",
 				padding: isList ? "18px" : "24px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<h2
 				className={css({
 					fontSize: "18px",
 					fontWeight: 700,
-					color: "#e0d6f0",
+					color: "var(--color-text-primary)",
 					marginBottom: "12px",
 				})}
 			>
@@ -61,7 +61,7 @@ export default function ICSExportSection({ t, surface = "card" }: Props) {
 			<div
 				className={css({
 					fontSize: "13px",
-					color: "#b8a9d4",
+					color: "var(--color-text-secondary)",
 					marginBottom: "14px",
 				})}
 			>
@@ -88,7 +88,7 @@ export default function ICSExportSection({ t, surface = "card" }: Props) {
 				className={css({
 					fontSize: "14px",
 					fontWeight: 600,
-					color: "#e0d6f0",
+					color: "var(--color-text-primary)",
 					marginBottom: "10px",
 				})}
 			>
@@ -106,7 +106,7 @@ export default function ICSExportSection({ t, surface = "card" }: Props) {
 					<div
 						className={css({
 							fontSize: "12px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "4px",
 						})}
 					>
@@ -123,7 +123,7 @@ export default function ICSExportSection({ t, surface = "card" }: Props) {
 					<div
 						className={css({
 							fontSize: "12px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "4px",
 						})}
 					>

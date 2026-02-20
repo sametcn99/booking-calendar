@@ -27,7 +27,7 @@ export default function BookingSlotsSection({
 				className={css({
 					fontSize: "16px",
 					fontWeight: 600,
-					color: "#e0d6f0",
+					color: "var(--color-text-primary)",
 					marginBottom: "12px",
 				})}
 			>
@@ -47,15 +47,15 @@ export default function BookingSlotsSection({
 						marginTop: "16px",
 						padding: "14px",
 						borderRadius: "10px",
-						border: "1px solid #3d1f6a",
-						backgroundColor: "#131021",
+						border: "1px solid var(--color-accent-300)",
+						backgroundColor: "var(--color-bg-secondary)",
 					})}
 				>
 					<div
 						className={css({
 							fontSize: "13px",
 							fontWeight: 600,
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "8px",
 						})}
 					>
@@ -63,7 +63,12 @@ export default function BookingSlotsSection({
 					</div>
 
 					{selectedSlotBusyIntervals.length === 0 ? (
-						<div className={css({ color: "#8b7aab", fontSize: "13px" })}>
+						<div
+							className={css({
+								color: "var(--color-text-tertiary)",
+								fontSize: "13px",
+							})}
+						>
 							{t("booking.noOccupiedTimes")}
 						</div>
 					) : (
@@ -71,7 +76,10 @@ export default function BookingSlotsSection({
 							{selectedSlotBusyIntervals.map((interval) => (
 								<div
 									key={`${interval.start_at}-${interval.end_at}`}
-									className={css({ color: "#e0d6f0", fontSize: "13px" })}
+									className={css({
+										color: "var(--color-text-primary)",
+										fontSize: "13px",
+									})}
 								>
 									{formatDate(interval.start_at)} -{" "}
 									{formatDate(interval.end_at)}

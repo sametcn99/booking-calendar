@@ -37,10 +37,10 @@ export default function AppointmentCard({
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: "8px",
 				padding: "20px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<div
@@ -57,7 +57,7 @@ export default function AppointmentCard({
 						className={css({
 							fontWeight: 700,
 							fontSize: "16px",
-							color: "#a78bfa",
+							color: "var(--color-accent-800)",
 							marginBottom: "4px",
 						})}
 					>
@@ -66,7 +66,7 @@ export default function AppointmentCard({
 					<div
 						className={css({
 							fontSize: "14px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "8px",
 						})}
 					>
@@ -75,7 +75,7 @@ export default function AppointmentCard({
 					<div
 						className={css({
 							fontSize: "14px",
-							color: "#e0d6f0",
+							color: "var(--color-text-primary)",
 						})}
 					>
 						{formatDate(appointment.start_at)} -{" "}
@@ -85,7 +85,7 @@ export default function AppointmentCard({
 						<div
 							className={css({
 								fontSize: "13px",
-								color: "#fbbf24",
+								color: "var(--color-warning-light)",
 								marginTop: "8px",
 								fontWeight: 600,
 							})}
@@ -97,7 +97,7 @@ export default function AppointmentCard({
 						<div
 							className={css({
 								fontSize: "13px",
-								color: "#fca5a5",
+								color: "var(--color-error-text)",
 								marginTop: "8px",
 								fontWeight: 600,
 							})}
@@ -110,7 +110,7 @@ export default function AppointmentCard({
 						<div
 							className={css({
 								fontSize: "13px",
-								color: "#8b7aab",
+								color: "var(--color-text-tertiary)",
 								marginTop: "8px",
 								fontStyle: "italic",
 							})}
@@ -122,7 +122,7 @@ export default function AppointmentCard({
 						<div
 							className={css({
 								fontSize: "13px",
-								color: "#8b7aab",
+								color: "var(--color-text-tertiary)",
 								marginTop: "6px",
 							})}
 						>
@@ -167,9 +167,9 @@ export default function AppointmentCard({
 						overrides={{
 							BaseButton: {
 								style: {
-									backgroundColor: "#3b1025",
-									color: "#fca5a5",
-									":hover": { backgroundColor: "#4d1530" },
+									backgroundColor: "var(--color-error-bg)",
+									color: "var(--color-error-text)",
+									":hover": { backgroundColor: "var(--color-error-hover)" },
 								},
 							},
 						}}
@@ -184,9 +184,11 @@ export default function AppointmentCard({
 						overrides={{
 							BaseButton: {
 								style: {
-									backgroundColor: "#2a1f14",
-									color: "#f9a66d",
-									":hover": { backgroundColor: "#3a2a1b" },
+									backgroundColor: "var(--color-warning-dark-bg)",
+									color: "var(--color-warning-light)",
+									":hover": {
+										backgroundColor: "var(--color-warning-dark-hover)",
+									},
 								},
 							},
 						}}

@@ -107,11 +107,12 @@ export default function DashboardCalendar({
 		}
 
 		if (event.type === "planner") {
-			const color = (event.data as ApiPlannerEvent)?.color || "#f59e0b";
+			const color =
+				(event.data as ApiPlannerEvent)?.color || "var(--color-warning)";
 			return {
 				style: {
 					background: `linear-gradient(135deg, ${color}33, ${color}66)`,
-					color: "#fff",
+					color: "var(--color-text-on-primary)",
 					border: `1px solid ${color}`,
 					borderRadius: "8px",
 					padding: "2px 8px",
@@ -149,13 +150,13 @@ export default function DashboardCalendar({
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				padding: "24px",
 				borderRadius: "12px",
 				boxShadow: theme.lighting.shadow500,
 				marginTop: "24px",
 				color: theme.colors.contentPrimary,
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<div
@@ -217,7 +218,7 @@ export default function DashboardCalendar({
 							borderRadius: "999px",
 							fontSize: "13px",
 							fontWeight: 600,
-							color: "#afb2ecff",
+							color: "var(--color-text-secondary)",
 							backgroundColor: theme.colors.accent700,
 							border: `1px solid ${theme.colors.accent}`,
 						})}
@@ -231,9 +232,9 @@ export default function DashboardCalendar({
 							borderRadius: "999px",
 							fontSize: "13px",
 							fontWeight: 600,
-							color: "#fbbf24",
-							backgroundColor: "rgba(245,158,11,0.2)",
-							border: "1px solid #f59e0b",
+							color: "var(--color-warning-light)",
+							backgroundColor: "var(--color-warning-bg)",
+							border: "1px solid var(--color-warning)",
 						})}
 					>
 						{t("planner.plannerLegend")}: {plannerEvents.length}
@@ -246,14 +247,14 @@ export default function DashboardCalendar({
           font-family: ${theme.typography.font400.fontFamily};
           border-radius: 12px;
           overflow: hidden;
-          background-color: #141414;
-          border: 1px solid #2a2a2a;
+          background-color: var(--color-bg-secondary);
+          border: 1px solid var(--color-bg-quaternary);
         }
         .rbc-toolbar {
           padding: 12px;
           margin-bottom: 0;
-          background-color: #141414;
-          border-bottom: 1px solid #2a2a2a;
+          background-color: var(--color-bg-secondary);
+          border-bottom: 1px solid var(--color-bg-quaternary);
         }
         .rbc-toolbar .rbc-toolbar-label {
           font-weight: 700;
@@ -262,17 +263,17 @@ export default function DashboardCalendar({
         }
         .rbc-toolbar button {
           color: ${theme.colors.contentPrimary};
-          border: 1px solid #4c1d95;
+          border: 1px solid var(--color-accent-300);
           border-radius: 8px;
-          background: #1e1e1e;
+          background: var(--color-bg-tertiary);
           padding: 8px 16px;
           font-weight: 600;
           transition: all 0.2s ease;
           cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          box-shadow: 0 2px 4px color-mix(in srgb, black 20%, transparent);
         }
         .rbc-toolbar button:hover {
-          background: #2a2a2a !important;
+          background: var(--color-bg-quaternary) !important;
           border-color: ${theme.colors.borderSelected} !important;
           color: ${theme.colors.contentAccent} !important;
           transform: translateY(-1px);
@@ -294,22 +295,22 @@ export default function DashboardCalendar({
         }
         .rbc-time-view {
           border-top: 0;
-          background-color: #141414;
+          background-color: var(--color-bg-secondary);
         }
         .rbc-time-header.rbc-overflowing {
-          border-right: 1px solid #2a2a2a;
+          border-right: 1px solid var(--color-bg-quaternary);
         }
         .rbc-time-header-content {
-          border-left: 1px solid #2a2a2a;
+          border-left: 1px solid var(--color-bg-quaternary);
         }
         .rbc-header {
           color: ${theme.colors.contentSecondary};
-          background: #141414;
+          background: var(--color-bg-secondary);
           padding: 10px 8px;
           font-size: 12px;
           letter-spacing: 0.02em;
           text-transform: uppercase;
-          border-bottom: 1px solid #2a2a2a;
+          border-bottom: 1px solid var(--color-bg-quaternary);
         }
         .rbc-label {
           padding: 0 5px;
@@ -318,14 +319,14 @@ export default function DashboardCalendar({
           font-weight: 500;
         }
         .rbc-time-content {
-          border-top: 1px solid #2a2a2a;
+          border-top: 1px solid var(--color-bg-quaternary);
         }
         .rbc-timeslot-group {
-          border-bottom: 1px solid #2a2a2a;
+          border-bottom: 1px solid var(--color-bg-quaternary);
           min-height: 48px;
         }
         .rbc-day-slot .rbc-time-slot {
-          border-top: 1px solid #2a2a2a;
+          border-top: 1px solid var(--color-bg-quaternary);
           opacity: 0.3;
         }
         .rbc-time-gutter .rbc-timeslot-group {
@@ -342,7 +343,7 @@ export default function DashboardCalendar({
           box-shadow: ${theme.lighting.shadow400};
         }
         .rbc-off-range-bg {
-          background-color: #0f0f0f;
+          background-color: var(--color-bg-off-range);
         }
         .rbc-time-header-gutter.rbc-header {
            border-right: none;
@@ -361,7 +362,7 @@ export default function DashboardCalendar({
         .rbc-agenda-table,
         .rbc-agenda-table td,
         .rbc-agenda-table th {
-          border-color: #2a2a2a !important;
+          border-color: var(--color-bg-quaternary) !important;
         }
       `}</style>
 

@@ -53,17 +53,17 @@ export function useDashboardPage({ t }: Params) {
 			{
 				label: t("dashboard.totalSlots"),
 				value: stats.slots,
-				color: "#7c3aed",
+				color: "var(--color-accent-600)",
 			},
 			{
 				label: t("dashboard.appointments"),
 				value: stats.appointments,
-				color: "#2dd4bf",
+				color: "var(--color-info)",
 			},
 			{
 				label: t("dashboard.bookingLinks"),
 				value: stats.links,
-				color: "#f59e0b",
+				color: "var(--color-warning)",
 			},
 		],
 		[stats, t],

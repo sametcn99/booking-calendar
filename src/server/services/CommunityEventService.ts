@@ -1,8 +1,97 @@
 import { t } from "../i18n";
+import { MailService } from "../mail/MailService";
 import { CommunityEventRepository } from "../repositories/CommunityEventRepository";
+import { SettingsRepository } from "../repositories/SettingsRepository";
+import { PushService } from "./PushService";
 
 export class CommunityEventService {
 	private repo = new CommunityEventRepository();
+	private mailService = new MailService();
+	private pushService = new PushService();
+	private settingsRepo = new SettingsRepository();
+
+	private parseApproverEmails(raw: string): string[] {
+		try {
+			const parsed = JSON.parse(raw);
+			if (!Array.isArray(parsed)) return [];
+			return parsed
+				.filter((email): email is string => typeof email === "string")
+				.map((email) => email.trim().toLowerCase())
+				.filter((email) => email.length > 0);
+		} catch {
+			return [];
+		}
+	}
+
+	private async isPushEnabled(): Promise<boolean> {
+		const value = await this.settingsRepo.get("push_notifications_enabled");
+		return value !== "false";
+	}
+
+	private async isEmailEnabled(): Promise<boolean> {
+		const value = await this.settingsRepo.get("email_notifications_enabled");
+		return value !== "false";
+	}
+
+	private async notifyEventActive(eventId: number): Promise<void> {
+		const latest = await this.repo.findById(eventId);
+		if (!latest) return;
+
+		const emailEnabled = await this.isEmailEnabled();
+		if (emailEnabled) {
+			this.mailService
+				.sendCommunityEventActivated(
+					latest,
+					this.parseApproverEmails(latest.approver_emails_json),
+				)
+				.catch((err) =>
+					console.error("Failed to send community event active emails:", err),
+				);
+		}
+
+		const pushEnabled = await this.isPushEnabled();
+		if (pushEnabled) {
+			this.pushService
+				.sendToAll({
+					title: t("push.communityEventActivatedTitle"),
+					body: `${t("push.communityEventActivatedBody")} ${latest.title}`,
+					url: "/admin/events",
+				})
+				.catch((err) =>
+					console.error("Failed to send community event active push:", err),
+				);
+		}
+	}
+
+	private async notifyEventCanceled(eventId: number): Promise<void> {
+		const latest = await this.repo.findById(eventId);
+		if (!latest) return;
+
+		const emailEnabled = await this.isEmailEnabled();
+		if (emailEnabled) {
+			this.mailService
+				.sendCommunityEventCanceled(
+					latest,
+					this.parseApproverEmails(latest.approver_emails_json),
+				)
+				.catch((err) =>
+					console.error("Failed to send community event canceled emails:", err),
+				);
+		}
+
+		const pushEnabled = await this.isPushEnabled();
+		if (pushEnabled) {
+			this.pushService
+				.sendToAll({
+					title: t("push.communityEventCanceledTitle"),
+					body: `${t("push.communityEventCanceledBody")} ${latest.title}`,
+					url: "/admin/events",
+				})
+				.catch((err) =>
+					console.error("Failed to send community event canceled push:", err),
+				);
+		}
+	}
 
 	async getAllEvents() {
 		return this.repo.findAll();
@@ -61,7 +150,7 @@ export class CommunityEventService {
 		return event;
 	}
 
-	async approve(token: string) {
+	async approve(token: string, email?: string) {
 		const event = await this.repo.findByShareToken(token);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
@@ -72,13 +161,46 @@ export class CommunityEventService {
 		if (event.status === "active") {
 			throw new Error(t("communityEvent.alreadyActive"));
 		}
-		return this.repo.incrementApproval(event.id);
+
+		const normalizedEmail = email?.trim().toLowerCase();
+		if (normalizedEmail) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(normalizedEmail)) {
+				throw new Error(t("general.invalidEmail"));
+			}
+
+			const existingApprovers = this.parseApproverEmails(
+				event.approver_emails_json,
+			);
+			if (existingApprovers.includes(normalizedEmail)) {
+				throw new Error(t("communityEvent.emailAlreadyApproved"));
+			}
+		}
+
+		const wasPending = event.status === "pending";
+		const updated = await this.repo.incrementApproval(
+			event.id,
+			normalizedEmail,
+		);
+		if (!updated) {
+			throw new Error(t("communityEvent.notFound"));
+		}
+
+		if (wasPending && updated.status === "active") {
+			await this.notifyEventActive(updated.id);
+		}
+
+		return updated;
 	}
 
 	async deleteEvent(id: number) {
 		const event = await this.repo.findById(id);
 		if (!event) {
 			throw new Error(t("communityEvent.notFound"));
+		}
+		if (event.status !== "canceled") {
+			await this.repo.updateStatus(event.id, "canceled");
+			await this.notifyEventCanceled(event.id);
 		}
 		await this.repo.delete(id);
 	}
@@ -87,6 +209,7 @@ export class CommunityEventService {
 		const expired = await this.repo.findExpiredPending();
 		for (const event of expired) {
 			await this.repo.updateStatus(event.id, "canceled");
+			await this.notifyEventCanceled(event.id);
 		}
 		return expired.length;
 	}

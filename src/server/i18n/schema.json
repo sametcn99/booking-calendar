@@ -400,14 +400,54 @@
 						"canceledByUser"
 					],
 					"additionalProperties": false
+				},
+				"communityEvent": {
+					"type": "object",
+					"properties": {
+						"titleLabel": { "type": "string" },
+						"startTime": { "type": "string" },
+						"endTime": { "type": "string" },
+						"approverActivatedSubject": { "type": "string" },
+						"approverActivatedMessage": { "type": "string" },
+						"adminActivatedSubject": { "type": "string" },
+						"adminActivatedMessage": { "type": "string" },
+						"approverCanceledSubject": { "type": "string" },
+						"approverCanceledMessage": { "type": "string" },
+						"adminCanceledSubject": { "type": "string" },
+						"adminCanceledMessage": { "type": "string" }
+					},
+					"required": [
+						"titleLabel",
+						"startTime",
+						"endTime",
+						"approverActivatedSubject",
+						"approverActivatedMessage",
+						"adminActivatedSubject",
+						"adminActivatedMessage",
+						"approverCanceledSubject",
+						"approverCanceledMessage",
+						"adminCanceledSubject",
+						"adminCanceledMessage"
+					],
+					"additionalProperties": false
 				}
 			},
 			"required": [
 				"common",
 				"confirmation",
 				"adminNotification",
-				"cancellation"
+				"cancellation",
+				"communityEvent"
 			],
+			"additionalProperties": false
+		},
+		"planner": {
+			"type": "object",
+			"properties": {
+				"fieldsRequired": { "type": "string" },
+				"notFound": { "type": "string" }
+			},
+			"required": ["fieldsRequired", "notFound"],
 			"additionalProperties": false
 		},
 		"push": {
@@ -433,6 +473,18 @@
 				},
 				"cancellationBody": {
 					"type": "string"
+				},
+				"communityEventActivatedTitle": {
+					"type": "string"
+				},
+				"communityEventActivatedBody": {
+					"type": "string"
+				},
+				"communityEventCanceledTitle": {
+					"type": "string"
+				},
+				"communityEventCanceledBody": {
+					"type": "string"
 				}
 			},
 			"required": [
@@ -442,7 +494,11 @@
 				"newBookingTitle",
 				"newBookingBody",
 				"cancellationTitle",
-				"cancellationBody"
+				"cancellationBody",
+				"communityEventActivatedTitle",
+				"communityEventActivatedBody",
+				"communityEventCanceledTitle",
+				"communityEventCanceledBody"
 			],
 			"additionalProperties": false
 		},
@@ -454,7 +510,8 @@
 				"alreadyCanceled": { "type": "string" },
 				"alreadyActive": { "type": "string" },
 				"mustBeFuture": { "type": "string" },
-				"minApprovals": { "type": "string" }
+				"minApprovals": { "type": "string" },
+				"emailAlreadyApproved": { "type": "string" }
 			},
 			"required": [
 				"fieldsRequired",
@@ -462,7 +519,8 @@
 				"alreadyCanceled",
 				"alreadyActive",
 				"mustBeFuture",
-				"minApprovals"
+				"minApprovals",
+				"emailAlreadyApproved"
 			],
 			"additionalProperties": false
 		}
@@ -476,6 +534,7 @@
 		"general",
 		"cancelPage",
 		"mail",
+		"planner",
 		"push",
 		"communityEvent"
 	],

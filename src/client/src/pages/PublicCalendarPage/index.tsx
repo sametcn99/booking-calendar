@@ -66,8 +66,8 @@ export default function PublicCalendarPage() {
 					justifyContent: "center",
 					alignItems: "center",
 					minHeight: "100vh",
-					backgroundColor: "#0a0a0a",
-					color: "#888",
+					backgroundColor: "var(--color-bg-primary)",
+					color: "var(--color-text-muted)",
 					fontSize: "18px",
 				})}
 			>
@@ -107,11 +107,12 @@ export default function PublicCalendarPage() {
 
 	const eventStyleGetter = (event: CalendarEvent) => {
 		if (event.type === "planner") {
-			const color = (event.data as ApiPlannerEvent).color || "#f59e0b";
+			const color =
+				(event.data as ApiPlannerEvent).color || "var(--color-warning)";
 			return {
 				style: {
 					background: `linear-gradient(135deg, ${color}33, ${color}66)`,
-					color: "#fff",
+					color: "var(--color-text-on-primary)",
 					border: `1px solid ${color}`,
 					borderRadius: "8px",
 					padding: "2px 8px",
@@ -122,17 +123,19 @@ export default function PublicCalendarPage() {
 
 		const styles: Record<string, React.CSSProperties> = {
 			slot: {
-				background: "linear-gradient(135deg, #16a34a20, #16a34a3d)",
-				color: "#4ade80",
-				border: "1px solid #22c55e",
+				background:
+					"linear-gradient(135deg, color-mix(in srgb, var(--color-success) 12%, transparent), color-mix(in srgb, var(--color-success) 24%, transparent))",
+				color: "var(--color-success-light)",
+				border: "1px solid var(--color-success)",
 				borderRadius: "8px",
 				padding: "2px 8px",
 				fontWeight: 600,
 			},
 			appointment: {
-				background: "linear-gradient(135deg, #7c3aedcc, #a78bfa)",
-				color: "#fff",
-				border: "1px solid #5b21b6",
+				background:
+					"linear-gradient(135deg, color-mix(in srgb, var(--color-accent-600) 80%, transparent), var(--color-accent-800))",
+				color: "var(--color-text-on-primary)",
+				border: "1px solid var(--color-accent-400)",
 				borderRadius: "8px",
 				padding: "2px 8px",
 				fontWeight: 600,
@@ -145,16 +148,16 @@ export default function PublicCalendarPage() {
 		<div
 			className={css({
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 				padding: "32px",
-				color: "#e0e0e0",
+				color: "var(--color-text-primary)",
 			})}
 		>
 			<h1
 				className={css({
 					fontSize: "28px",
 					fontWeight: 700,
-					color: "#e0d6f0",
+					color: "var(--color-text-primary)",
 					marginBottom: "24px",
 					textAlign: "center",
 				})}
@@ -163,27 +166,27 @@ export default function PublicCalendarPage() {
 			</h1>
 
 			<style>{`
-				.rbc-calendar { font-family: system-ui, sans-serif; border-radius: 12px; overflow: hidden; background-color: #141414; border: 1px solid #2a2a2a; }
-				.rbc-toolbar { padding: 12px; margin-bottom: 0; background-color: #141414; border-bottom: 1px solid #2a2a2a; }
-				.rbc-toolbar .rbc-toolbar-label { font-weight: 700; color: #e0e0e0; font-size: 1.1em; }
-				.rbc-toolbar button { color: #e0e0e0; border: 1px solid #4c1d95; border-radius: 8px; background: #1e1e1e; padding: 8px 16px; font-weight: 600; cursor: pointer; }
-				.rbc-toolbar button:hover { background: #2a2a2a !important; border-color: #7c3aed !important; }
-				.rbc-toolbar button:active, .rbc-toolbar button.rbc-active { background-color: #7c3aed !important; color: #fff !important; border-color: #7c3aed !important; }
-				.rbc-toolbar button:focus { background-color: #1e1e1e; color: #e0e0e0; }
-				.rbc-time-view { border-top: 0; background-color: #141414; }
-				.rbc-time-header.rbc-overflowing { border-right: 1px solid #2a2a2a; }
-				.rbc-time-header-content { border-left: 1px solid #2a2a2a; }
-				.rbc-header { color: #888; background: #141414; padding: 10px 8px; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #2a2a2a; }
-				.rbc-label { padding: 0 5px; color: #888; font-size: 11px; }
-				.rbc-time-content { border-top: 1px solid #2a2a2a; }
-				.rbc-timeslot-group { border-bottom: 1px solid #2a2a2a; min-height: 48px; }
-				.rbc-day-slot .rbc-time-slot { border-top: 1px solid #2a2a2a; opacity: 0.3; }
+				.rbc-calendar { font-family: system-ui, sans-serif; border-radius: 12px; overflow: hidden; background-color: var(--color-bg-secondary); border: 1px solid var(--color-bg-quaternary); }
+				.rbc-toolbar { padding: 12px; margin-bottom: 0; background-color: var(--color-bg-secondary); border-bottom: 1px solid var(--color-bg-quaternary); }
+				.rbc-toolbar .rbc-toolbar-label { font-weight: 700; color: var(--color-text-primary); font-size: 1.1em; }
+				.rbc-toolbar button { color: var(--color-text-primary); border: 1px solid var(--color-accent-300); border-radius: 8px; background: var(--color-bg-tertiary); padding: 8px 16px; font-weight: 600; cursor: pointer; }
+				.rbc-toolbar button:hover { background: var(--color-bg-quaternary) !important; border-color: var(--color-accent-600) !important; }
+				.rbc-toolbar button:active, .rbc-toolbar button.rbc-active { background-color: var(--color-accent-600) !important; color: var(--color-text-on-primary) !important; border-color: var(--color-accent-600) !important; }
+				.rbc-toolbar button:focus { background-color: var(--color-bg-tertiary); color: var(--color-text-primary); }
+				.rbc-time-view { border-top: 0; background-color: var(--color-bg-secondary); }
+				.rbc-time-header.rbc-overflowing { border-right: 1px solid var(--color-bg-quaternary); }
+				.rbc-time-header-content { border-left: 1px solid var(--color-bg-quaternary); }
+				.rbc-header { color: var(--color-text-muted); background: var(--color-bg-secondary); padding: 10px 8px; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--color-bg-quaternary); }
+				.rbc-label { padding: 0 5px; color: var(--color-text-muted); font-size: 11px; }
+				.rbc-time-content { border-top: 1px solid var(--color-bg-quaternary); }
+				.rbc-timeslot-group { border-bottom: 1px solid var(--color-bg-quaternary); min-height: 48px; }
+				.rbc-day-slot .rbc-time-slot { border-top: 1px solid var(--color-bg-quaternary); opacity: 0.3; }
 				.rbc-time-gutter .rbc-timeslot-group { border-color: transparent; }
-				.rbc-today { background-color: rgba(167,139,250,0.07); }
-				.rbc-current-time-indicator { background-color: #7c3aed; height: 2px; }
-				.rbc-off-range-bg { background-color: #0f0f0f; }
+				.rbc-today { background-color: color-mix(in srgb, var(--color-accent-800) 7%, transparent); }
+				.rbc-current-time-indicator { background-color: var(--color-accent-600); height: 2px; }
+				.rbc-off-range-bg { background-color: var(--color-bg-off-range); }
 				.rbc-time-header-gutter.rbc-header { border-right: none; }
-				.rbc-month-view, .rbc-month-row, .rbc-time-view, .rbc-time-header, .rbc-time-header-content, .rbc-time-content, .rbc-timeslot-group, .rbc-day-bg, .rbc-day-slot, .rbc-header, .rbc-agenda-view, .rbc-agenda-table, .rbc-agenda-table td, .rbc-agenda-table th { border-color: #2a2a2a !important; }
+				.rbc-month-view, .rbc-month-row, .rbc-time-view, .rbc-time-header, .rbc-time-header-content, .rbc-time-content, .rbc-timeslot-group, .rbc-day-bg, .rbc-day-slot, .rbc-header, .rbc-agenda-view, .rbc-agenda-table, .rbc-agenda-table td, .rbc-agenda-table th { border-color: var(--color-bg-quaternary) !important; }
 			`}</style>
 
 			<div

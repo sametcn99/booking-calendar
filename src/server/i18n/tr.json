@@ -98,6 +98,19 @@
 			"note": "Not",
 			"canceledByAdmin": "yönetici",
 			"canceledByUser": "randevu sahibi"
+		},
+		"communityEvent": {
+			"titleLabel": "Etkinlik",
+			"startTime": "Başlangıç Zamanı:",
+			"endTime": "Bitiş Zamanı:",
+			"approverActivatedSubject": "Topluluk etkinliği onaylandı",
+			"approverActivatedMessage": "Onay verdiğiniz topluluk etkinliği artık aktif.",
+			"adminActivatedSubject": "Topluluk etkinliği aktif oldu",
+			"adminActivatedMessage": "Bir topluluk etkinliği gerekli onay sayısına ulaştı ve aktif oldu.",
+			"approverCanceledSubject": "Topluluk etkinliği iptal edildi",
+			"approverCanceledMessage": "Onay verdiğiniz topluluk etkinliği iptal edildi.",
+			"adminCanceledSubject": "Topluluk etkinliği iptal edildi",
+			"adminCanceledMessage": "Bekleyen bir topluluk etkinliği iptal edildi."
 		}
 	},
 	"planner": {
@@ -111,7 +124,11 @@
 		"newBookingTitle": "Yeni Randevu",
 		"newBookingBody": "Tarafından yeni bir randevu alındı:",
 		"cancellationTitle": "Randevu İptal Edildi",
-		"cancellationBody": "Tarafından bir randevu iptal edildi:"
+		"cancellationBody": "Tarafından bir randevu iptal edildi:",
+		"communityEventActivatedTitle": "Topluluk Etkinliği Aktif",
+		"communityEventActivatedBody": "Gerekli onay sayısı tamamlandı:",
+		"communityEventCanceledTitle": "Topluluk Etkinliği İptal",
+		"communityEventCanceledBody": "Bir topluluk etkinliği iptal edildi:"
 	},
 	"communityEvent": {
 		"fieldsRequired": "Etkinlik başlığı, başlangıç ve bitiş zamanı gereklidir",
@@ -119,6 +136,7 @@
 		"alreadyCanceled": "Bu etkinlik iptal edilmiş",
 		"alreadyActive": "Bu etkinlik zaten aktif",
 		"mustBeFuture": "Etkinlik gelecekte olmalıdır",
-		"minApprovals": "En az 1 onay gereklidir"
+		"minApprovals": "En az 1 onay gereklidir",
+		"emailAlreadyApproved": "Bu e-posta bu etkinlik için zaten onay vermiş"
 	}
 }

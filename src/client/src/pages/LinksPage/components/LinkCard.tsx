@@ -24,10 +24,10 @@ export default function LinkCard({
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: "8px",
 				padding: "16px 20px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<div
@@ -44,7 +44,7 @@ export default function LinkCard({
 						className={css({
 							fontSize: "15px",
 							fontWeight: 600,
-							color: "#f1e9ff",
+							color: "var(--color-text-primary)",
 							marginBottom: "6px",
 						})}
 					>
@@ -53,7 +53,7 @@ export default function LinkCard({
 					<div
 						className={css({
 							fontSize: "13px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "4px",
 							wordBreak: "break-all",
 							fontFamily: "monospace",
@@ -64,7 +64,9 @@ export default function LinkCard({
 					<div
 						className={css({
 							fontSize: "12px",
-							color: expired ? "#fca5a5" : "#8b7aab",
+							color: expired
+								? "var(--color-error-text)"
+								: "var(--color-text-tertiary)",
 							marginBottom: "2px",
 						})}
 					>
@@ -75,7 +77,7 @@ export default function LinkCard({
 					<div
 						className={css({
 							fontSize: "12px",
-							color: "#8b7aab",
+							color: "var(--color-text-tertiary)",
 						})}
 					>
 						{t("links.slotCount")}: {link.allowed_slot_ids.length}
@@ -96,9 +98,9 @@ export default function LinkCard({
 						overrides={{
 							BaseButton: {
 								style: {
-									backgroundColor: "#3b1025",
-									color: "#fca5a5",
-									":hover": { backgroundColor: "#4d1530" },
+									backgroundColor: "var(--color-error-bg)",
+									color: "var(--color-error-text)",
+									":hover": { backgroundColor: "var(--color-error-hover)" },
 								},
 							},
 						}}

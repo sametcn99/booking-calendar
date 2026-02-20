@@ -30,7 +30,7 @@ export default function AppointmentsListSection({
 					className={css({
 						textAlign: "center",
 						padding: "48px",
-						color: "#8b7aab",
+						color: "var(--color-text-tertiary)",
 					})}
 				>
 					{t("appointments.empty")}

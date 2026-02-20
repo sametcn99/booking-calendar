@@ -15,7 +15,7 @@ export default function BookingInvalidState({ message, title }: Props) {
 				alignItems: "center",
 				justifyContent: "center",
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 				textAlign: "center",
 				padding: "24px",
 			})}
@@ -24,13 +24,15 @@ export default function BookingInvalidState({ message, title }: Props) {
 				<h1
 					className={css({
 						fontSize: "24px",
-						color: "#fca5a5",
+						color: "var(--color-error-text)",
 						marginBottom: "12px",
 					})}
 				>
 					{title}
 				</h1>
-				<p className={css({ color: "#8b7aab" })}>{message}</p>
+				<p className={css({ color: "var(--color-text-tertiary)" })}>
+					{message}
+				</p>
 			</div>
 		</div>
 	);

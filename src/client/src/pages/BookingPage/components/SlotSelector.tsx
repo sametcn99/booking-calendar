@@ -60,9 +60,9 @@ export default function SlotSelector({
 				className={css({
 					textAlign: "center",
 					padding: "32px",
-					backgroundColor: "#141414",
+					backgroundColor: "var(--color-bg-secondary)",
 					borderRadius: "8px",
-					color: "#8b7aab",
+					color: "var(--color-text-tertiary)",
 				})}
 			>
 				{t("booking.noSlots")}
@@ -81,27 +81,33 @@ export default function SlotSelector({
 						onClick={() => onSelect(slot)}
 						disabled={disabled}
 						className={css({
-							background: selectedSlot === slot.id ? "#4c1d95" : "#1e1e1e",
+							background:
+								selectedSlot === slot.id
+									? "var(--color-accent-300)"
+									: "var(--color-bg-tertiary)",
 							border:
 								selectedSlot === slot.id
-									? "2px solid #7c3aed"
-									: "1px solid #4c1d95",
+									? "2px solid var(--color-accent-600)"
+									: "1px solid var(--color-accent-300)",
 							borderRadius: "10px",
 							padding: "16px 18px",
-							color: disabled ? "#75678f" : "#e0d6f0",
+							color: disabled
+								? "var(--color-text-disabled)"
+								: "var(--color-text-primary)",
 							cursor: disabled ? "not-allowed" : "pointer",
 							opacity: disabled ? 0.7 : 1,
 							textAlign: "left",
 							fontSize: "15px",
 							transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-							boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+							boxShadow: "0 2px 4px color-mix(in srgb, black 10%, transparent)",
 							":hover": disabled
 								? {}
 								: {
-										backgroundColor: "#2a2a2a",
-										borderColor: "#7c3aed",
+										backgroundColor: "var(--color-bg-quaternary)",
+										borderColor: "var(--color-accent-600)",
 										transform: "translateY(-2px)",
-										boxShadow: "0 4px 12px rgba(124, 58, 237, 0.2)",
+										boxShadow:
+											"0 4px 12px color-mix(in srgb, var(--color-accent-600) 20%, transparent)",
 									},
 						})}
 					>
@@ -110,7 +116,9 @@ export default function SlotSelector({
 						</div>
 						<div
 							className={css({
-								color: disabled ? "#6d6282" : "#8b7aab",
+								color: disabled
+									? "var(--color-text-disabled-alt)"
+									: "var(--color-text-tertiary)",
 								fontSize: "13px",
 								marginTop: "2px",
 							})}
@@ -120,7 +128,7 @@ export default function SlotSelector({
 						{disabled && (
 							<div
 								className={css({
-									color: "#fca5a5",
+									color: "var(--color-error-text)",
 									fontSize: "12px",
 									marginTop: "8px",
 								})}

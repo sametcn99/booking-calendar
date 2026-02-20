@@ -3,6 +3,7 @@ import Handlebars from "handlebars";
 import type { Transporter } from "nodemailer";
 import nodemailer from "nodemailer";
 import { config } from "../config";
+import type { CommunityEventEntity } from "../entities/CommunityEventEntity";
 import { t } from "../i18n";
 import { SettingsRepository } from "../repositories/SettingsRepository";
 import type { AppointmentWithSlot } from "../types";
@@ -202,6 +203,94 @@ export class MailService {
 					to: adminEmail,
 					subject: `${t("mail.cancellation.subject")}: ${appointment.name}`,
 					html: baseHtml,
+				}),
+			);
+		}
+
+		await Promise.all(tasks);
+	}
+
+	async sendCommunityEventActivated(
+		event: CommunityEventEntity,
+		approverEmails: string[],
+	): Promise<void> {
+		if (!(await this.isMailServiceEnabled())) return;
+
+		const recipients = [
+			...new Set(approverEmails.map((email) => email.trim())),
+		].filter((email) => email.length > 0);
+		const adminEmail = await this.getAdminEmail();
+
+		const detailsHtml = `
+			<p><strong>${t("mail.communityEvent.titleLabel")}:</strong> ${event.title}</p>
+			<p><strong>${t("mail.communityEvent.startTime")}</strong> ${new Date(event.start_at).toLocaleString()}</p>
+			<p><strong>${t("mail.communityEvent.endTime")}</strong> ${new Date(event.end_at).toLocaleString()}</p>
+		`;
+
+		const tasks: Promise<unknown>[] = [];
+
+		if (recipients.length > 0) {
+			tasks.push(
+				this.transporter.sendMail({
+					from: config.smtp.from,
+					to: recipients.join(","),
+					subject: t("mail.communityEvent.approverActivatedSubject"),
+					html: `<p>${t("mail.communityEvent.approverActivatedMessage")}</p>${detailsHtml}`,
+				}),
+			);
+		}
+
+		if (adminEmail) {
+			tasks.push(
+				this.transporter.sendMail({
+					from: config.smtp.from,
+					to: adminEmail,
+					subject: `${t("mail.communityEvent.adminActivatedSubject")}: ${event.title}`,
+					html: `<p>${t("mail.communityEvent.adminActivatedMessage")}</p>${detailsHtml}`,
+				}),
+			);
+		}
+
+		await Promise.all(tasks);
+	}
+
+	async sendCommunityEventCanceled(
+		event: CommunityEventEntity,
+		approverEmails: string[],
+	): Promise<void> {
+		if (!(await this.isMailServiceEnabled())) return;
+
+		const recipients = [
+			...new Set(approverEmails.map((email) => email.trim())),
+		].filter((email) => email.length > 0);
+		const adminEmail = await this.getAdminEmail();
+
+		const detailsHtml = `
+			<p><strong>${t("mail.communityEvent.titleLabel")}:</strong> ${event.title}</p>
+			<p><strong>${t("mail.communityEvent.startTime")}</strong> ${new Date(event.start_at).toLocaleString()}</p>
+			<p><strong>${t("mail.communityEvent.endTime")}</strong> ${new Date(event.end_at).toLocaleString()}</p>
+		`;
+
+		const tasks: Promise<unknown>[] = [];
+
+		if (recipients.length > 0) {
+			tasks.push(
+				this.transporter.sendMail({
+					from: config.smtp.from,
+					to: recipients.join(","),
+					subject: t("mail.communityEvent.approverCanceledSubject"),
+					html: `<p>${t("mail.communityEvent.approverCanceledMessage")}</p>${detailsHtml}`,
+				}),
+			);
+		}
+
+		if (adminEmail) {
+			tasks.push(
+				this.transporter.sendMail({
+					from: config.smtp.from,
+					to: adminEmail,
+					subject: `${t("mail.communityEvent.adminCanceledSubject")}: ${event.title}`,
+					html: `<p>${t("mail.communityEvent.adminCanceledMessage")}</p>${detailsHtml}`,
 				}),
 			);
 		}

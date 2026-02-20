@@ -30,10 +30,10 @@ export default function SlotCard({
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: "8px",
 				padding: "16px 20px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "space-between",
@@ -69,7 +69,12 @@ export default function SlotCard({
 						{t("slots.saveName")}
 					</Button>
 				</div>
-				<div className={css({ fontWeight: 600, color: "#e0d6f0" })}>
+				<div
+					className={css({
+						fontWeight: 600,
+						color: "var(--color-text-primary)",
+					})}
+				>
 					{formatDate(slot.start_at)} - {formatDate(slot.end_at)}
 				</div>
 			</div>
@@ -85,12 +90,16 @@ export default function SlotCard({
 					overrides={{
 						Root: {
 							style: {
-								backgroundColor: slot.is_active ? "#1a3525" : "#3b1025",
+								backgroundColor: slot.is_active
+									? "var(--color-success-bg)"
+									: "var(--color-error-bg)",
 							},
 						},
 						Text: {
 							style: {
-								color: slot.is_active ? "#a7f3d0" : "#fca5a5",
+								color: slot.is_active
+									? "var(--color-success-text)"
+									: "var(--color-error-text)",
 							},
 						},
 					}}
@@ -111,9 +120,9 @@ export default function SlotCard({
 					overrides={{
 						BaseButton: {
 							style: {
-								backgroundColor: "#3b1025",
-								color: "#fca5a5",
-								":hover": { backgroundColor: "#4d1530" },
+								backgroundColor: "var(--color-error-bg)",
+								color: "var(--color-error-text)",
+								":hover": { backgroundColor: "var(--color-error-hover)" },
 							},
 						},
 					}}

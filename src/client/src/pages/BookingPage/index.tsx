@@ -72,7 +72,7 @@ export default function BookingPage() {
 		<div
 			className={css({
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 				padding: "24px",
 				display: "flex",
 				justifyContent: "center",

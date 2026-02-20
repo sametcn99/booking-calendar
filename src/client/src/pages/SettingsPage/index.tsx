@@ -54,7 +54,7 @@ export default function SettingsPage() {
 				className={css({
 					fontSize: "30px",
 					fontWeight: 700,
-					color: "#e0d6f0",
+					color: "var(--color-text-primary)",
 					marginBottom: "8px",
 				})}
 			>
@@ -62,12 +62,13 @@ export default function SettingsPage() {
 			</h1>
 			<p
 				className={css({
-					fontSize: "13px",
-					color: "#9ca3af",
+					fontSize: "14px",
+					lineHeight: 1.5,
+					color: "var(--color-text-subtle)",
 					marginBottom: "22px",
 				})}
 			>
-				{t("settings.title")}
+				{t("settings.description")}
 			</p>
 
 			<div
@@ -96,8 +97,8 @@ export default function SettingsPage() {
 						className={css({
 							padding: "14px",
 							borderRadius: "10px",
-							border: "1px solid #2a2a2a",
-							backgroundColor: "#141414",
+							border: "1px solid var(--color-bg-quaternary)",
+							backgroundColor: "var(--color-bg-secondary)",
 						})}
 					>
 						<div
@@ -106,7 +107,7 @@ export default function SettingsPage() {
 								textTransform: "uppercase",
 								letterSpacing: "0.04em",
 								fontWeight: 700,
-								color: "#9ca3af",
+								color: "var(--color-text-subtle)",
 								marginBottom: "10px",
 							})}
 						>
@@ -137,14 +138,14 @@ export default function SettingsPage() {
 									className={css({
 										fontSize: "13px",
 										fontWeight: 500,
-										color: "#c7cfdb",
+										color: "var(--color-text-secondary)",
 										padding: "7px 10px",
 										borderRadius: "8px",
 										border: "1px solid transparent",
 										textDecoration: "none",
 										":hover": {
-											backgroundColor: "#1e1e1e",
-											borderColor: "#2a2a2a",
+											backgroundColor: "var(--color-bg-tertiary)",
+											borderColor: "var(--color-bg-quaternary)",
 										},
 									})}
 								>

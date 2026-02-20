@@ -429,7 +429,8 @@ const _server = Bun.serve({
 					corsHeaders,
 				);
 			}
-			const result = await communityEventController.approve(token);
+			const body = await parseJsonBody<{ email?: string }>(request);
+			const result = await communityEventController.approve(token, body);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
 

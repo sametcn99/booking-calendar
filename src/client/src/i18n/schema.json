@@ -105,6 +105,9 @@
 				"title": {
 					"type": "string"
 				},
+				"description": {
+					"type": "string"
+				},
 				"calendar": {
 					"type": "object",
 					"properties": {
@@ -273,6 +276,7 @@
 			},
 			"required": [
 				"title",
+				"description",
 				"calendar",
 				"changePasswordWarning",
 				"totalSlots",
@@ -304,6 +308,9 @@
 			"type": "object",
 			"properties": {
 				"title": {
+					"type": "string"
+				},
+				"description": {
 					"type": "string"
 				},
 				"addSlot": {
@@ -372,6 +379,7 @@
 			},
 			"required": [
 				"title",
+				"description",
 				"addSlot",
 				"empty",
 				"name",
@@ -400,6 +408,9 @@
 			"type": "object",
 			"properties": {
 				"title": {
+					"type": "string"
+				},
+				"description": {
 					"type": "string"
 				},
 				"all": {
@@ -465,6 +476,7 @@
 			},
 			"required": [
 				"title",
+				"description",
 				"all",
 				"active",
 				"past",
@@ -492,6 +504,9 @@
 			"type": "object",
 			"properties": {
 				"title": {
+					"type": "string"
+				},
+				"description": {
 					"type": "string"
 				},
 				"create": {
@@ -578,6 +593,7 @@
 			},
 			"required": [
 				"title",
+				"description",
 				"create",
 				"empty",
 				"expired",
@@ -736,6 +752,7 @@
 			"type": "object",
 			"properties": {
 				"title": { "type": "string" },
+				"description": { "type": "string" },
 				"changePassword": { "type": "string" },
 				"passwordRequirements": { "type": "string" },
 				"currentPassword": { "type": "string" },
@@ -784,6 +801,7 @@
 			},
 			"required": [
 				"title",
+				"description",
 				"changePassword",
 				"passwordRequirements",
 				"currentPassword",
@@ -836,6 +854,7 @@
 			"type": "object",
 			"properties": {
 				"title": { "type": "string" },
+				"pageDescription": { "type": "string" },
 				"addEvent": { "type": "string" },
 				"empty": { "type": "string" },
 				"eventTitle": { "type": "string" },
@@ -860,6 +879,7 @@
 			},
 			"required": [
 				"title",
+				"pageDescription",
 				"addEvent",
 				"empty",
 				"eventTitle",
@@ -898,6 +918,7 @@
 			"type": "object",
 			"properties": {
 				"title": { "type": "string" },
+				"pageDescription": { "type": "string" },
 				"create": { "type": "string" },
 				"empty": { "type": "string" },
 				"eventTitle": { "type": "string" },
@@ -925,11 +946,16 @@
 				"approveTitle": { "type": "string" },
 				"approveBtn": { "type": "string" },
 				"approved": { "type": "string" },
+				"approverEmail": { "type": "string" },
+				"approverEmailPlaceholder": { "type": "string" },
+				"invalidEmail": { "type": "string" },
+				"alreadyApprovedLocal": { "type": "string" },
 				"eventInfo": { "type": "string" },
 				"approvalProgress": { "type": "string" }
 			},
 			"required": [
 				"title",
+				"pageDescription",
 				"create",
 				"empty",
 				"eventTitle",
@@ -957,6 +983,10 @@
 				"approveTitle",
 				"approveBtn",
 				"approved",
+				"approverEmail",
+				"approverEmailPlaceholder",
+				"invalidEmail",
+				"alreadyApprovedLocal",
 				"eventInfo",
 				"approvalProgress"
 			],

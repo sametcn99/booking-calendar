@@ -15,17 +15,17 @@ export default function BookingSuccessState({ message, title }: Props) {
 				alignItems: "center",
 				justifyContent: "center",
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 				textAlign: "center",
 				padding: "24px",
 			})}
 		>
 			<div
 				className={css({
-					backgroundColor: "#141414",
+					backgroundColor: "var(--color-bg-secondary)",
 					borderRadius: "12px",
 					padding: "48px",
-					border: "1px solid #2a2a2a",
+					border: "1px solid var(--color-bg-quaternary)",
 					maxWidth: "480px",
 				})}
 			>
@@ -34,7 +34,7 @@ export default function BookingSuccessState({ message, title }: Props) {
 						width: "64px",
 						height: "64px",
 						borderRadius: "50%",
-						backgroundColor: "#1a3525",
+						backgroundColor: "var(--color-success-bg)",
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
@@ -47,13 +47,20 @@ export default function BookingSuccessState({ message, title }: Props) {
 				<h1
 					className={css({
 						fontSize: "24px",
-						color: "#a7f3d0",
+						color: "var(--color-success-text)",
 						marginBottom: "12px",
 					})}
 				>
 					{title}
 				</h1>
-				<p className={css({ color: "#b8a9d4", fontSize: "14px" })}>{message}</p>
+				<p
+					className={css({
+						color: "var(--color-text-secondary)",
+						fontSize: "14px",
+					})}
+				>
+					{message}
+				</p>
 			</div>
 		</div>
 	);

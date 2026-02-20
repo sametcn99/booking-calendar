@@ -32,17 +32,17 @@ export default function CalendarSharingSection({
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: isList ? "10px" : "12px",
 				padding: isList ? "18px" : "24px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<h2
 				className={css({
 					fontSize: "18px",
 					fontWeight: 700,
-					color: "#e0d6f0",
+					color: "var(--color-text-primary)",
 					marginBottom: "12px",
 				})}
 			>
@@ -51,7 +51,7 @@ export default function CalendarSharingSection({
 			<div
 				className={css({
 					fontSize: "13px",
-					color: "#b8a9d4",
+					color: "var(--color-text-secondary)",
 					marginBottom: "14px",
 				})}
 			>
@@ -74,15 +74,15 @@ export default function CalendarSharingSection({
 					className={css({
 						marginTop: "16px",
 						padding: "12px 16px",
-						backgroundColor: "#1e1e1e",
+						backgroundColor: "var(--color-bg-tertiary)",
 						borderRadius: "8px",
-						border: "1px solid #2a2a2a",
+						border: "1px solid var(--color-bg-quaternary)",
 					})}
 				>
 					<div
 						className={css({
 							fontSize: "13px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "8px",
 						})}
 					>
@@ -99,7 +99,7 @@ export default function CalendarSharingSection({
 							className={css({
 								flex: 1,
 								fontSize: "13px",
-								color: "#a78bfa",
+								color: "var(--color-accent-800)",
 								wordBreak: "break-all",
 							})}
 						>

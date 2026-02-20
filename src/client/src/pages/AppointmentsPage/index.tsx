@@ -29,7 +29,10 @@ export default function AppointmentsPage() {
 		<div>
 			<ToasterContainer placement={PLACEMENT.bottomRight} />
 
-			<AppointmentsHeader title={t("appointments.title")} />
+			<AppointmentsHeader
+				title={t("appointments.title")}
+				description={t("appointments.description")}
+			/>
 
 			<AppointmentsFilterSection
 				statusFilter={statusFilter}

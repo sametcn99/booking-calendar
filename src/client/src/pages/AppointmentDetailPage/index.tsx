@@ -74,8 +74,8 @@ export default function AppointmentDetailPage() {
 					justifyContent: "center",
 					alignItems: "center",
 					minHeight: "100vh",
-					backgroundColor: "#0a0a0a",
-					color: "#888",
+					backgroundColor: "var(--color-bg-primary)",
+					color: "var(--color-text-muted)",
 					fontSize: "18px",
 				})}
 			>
@@ -92,8 +92,8 @@ export default function AppointmentDetailPage() {
 					justifyContent: "center",
 					alignItems: "center",
 					minHeight: "100vh",
-					backgroundColor: "#0a0a0a",
-					color: "#fca5a5",
+					backgroundColor: "var(--color-bg-primary)",
+					color: "var(--color-error-text)",
 					fontSize: "16px",
 					padding: "24px",
 					textAlign: "center",
@@ -110,7 +110,7 @@ export default function AppointmentDetailPage() {
 		<div
 			className={css({
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 				padding: "24px",
 				display: "flex",
 				justifyContent: "center",
@@ -122,8 +122,8 @@ export default function AppointmentDetailPage() {
 				className={css({
 					maxWidth: "640px",
 					width: "100%",
-					backgroundColor: "#141414",
-					border: "1px solid #2a2a2a",
+					backgroundColor: "var(--color-bg-secondary)",
+					border: "1px solid var(--color-bg-quaternary)",
 					borderRadius: "14px",
 					padding: "24px",
 				})}
@@ -132,7 +132,7 @@ export default function AppointmentDetailPage() {
 					className={css({
 						fontSize: "24px",
 						fontWeight: 700,
-						color: "#e0d6f0",
+						color: "var(--color-text-primary)",
 						marginBottom: "18px",
 					})}
 				>
@@ -142,26 +142,26 @@ export default function AppointmentDetailPage() {
 				<div
 					className={css({ display: "grid", gap: "8px", marginBottom: "16px" })}
 				>
-					<div className={css({ color: "#e0d6f0" })}>
+					<div className={css({ color: "var(--color-text-primary)" })}>
 						<strong>{t("dashboard.calendar.name")}:</strong> {appointment.name}
 					</div>
-					<div className={css({ color: "#b8a9d4" })}>
+					<div className={css({ color: "var(--color-text-secondary)" })}>
 						<strong>{t("dashboard.calendar.email")}:</strong>{" "}
 						{appointment.email || t("appointments.noEmail")}
 					</div>
-					<div className={css({ color: "#b8a9d4" })}>
+					<div className={css({ color: "var(--color-text-secondary)" })}>
 						<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
 						{new Date(appointment.start_at).toLocaleString(locale)} -{" "}
 						{new Date(appointment.end_at).toLocaleString(locale)}
 					</div>
 					{appointment.meeting_place && (
-						<div className={css({ color: "#b8a9d4" })}>
+						<div className={css({ color: "var(--color-text-secondary)" })}>
 							<strong>{t("appointments.meetingPlace")}:</strong>{" "}
 							{appointment.meeting_place}
 						</div>
 					)}
 					{appointment.note && (
-						<div className={css({ color: "#8b7aab" })}>
+						<div className={css({ color: "var(--color-text-tertiary)" })}>
 							<strong>{t("appointments.note")}:</strong> {appointment.note}
 						</div>
 					)}
@@ -169,8 +169,8 @@ export default function AppointmentDetailPage() {
 
 				<div
 					className={css({
-						backgroundColor: "#1e1e1e",
-						border: "1px solid #2a2a2a",
+						backgroundColor: "var(--color-bg-tertiary)",
+						border: "1px solid var(--color-bg-quaternary)",
 						borderRadius: "8px",
 						padding: "12px",
 						marginBottom: "16px",
@@ -179,7 +179,7 @@ export default function AppointmentDetailPage() {
 					<div
 						className={css({
 							fontSize: "13px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "6px",
 						})}
 					>
@@ -195,7 +195,7 @@ export default function AppointmentDetailPage() {
 						<code
 							className={css({
 								flex: 1,
-								color: "#a78bfa",
+								color: "var(--color-accent-800)",
 								wordBreak: "break-all",
 							})}
 						>
@@ -216,9 +216,10 @@ export default function AppointmentDetailPage() {
 						className={css({
 							padding: "12px",
 							borderRadius: "8px",
-							backgroundColor: "#3b102522",
-							border: "1px solid #7f1d1d",
-							color: "#fca5a5",
+							backgroundColor:
+								"color-mix(in srgb, var(--color-error-bg) 13%, transparent)",
+							border: "1px solid var(--color-error)",
+							color: "var(--color-error-text)",
 							fontWeight: 600,
 						})}
 					>

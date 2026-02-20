@@ -12,7 +12,7 @@ export default function LoginHeader({ title }: Props) {
 			className={css({
 				fontSize: "24px",
 				fontWeight: 700,
-				color: "#a78bfa",
+				color: "var(--color-accent-800)",
 				textAlign: "center",
 				marginBottom: "32px",
 			})}

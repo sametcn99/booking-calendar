@@ -14,19 +14,35 @@ export default function LinksHeader({ onCreateClick, t }: Props) {
 			className={css({
 				display: "flex",
 				justifyContent: "space-between",
-				alignItems: "center",
+				alignItems: "flex-start",
 				marginBottom: "24px",
+				gap: "16px",
 			})}
 		>
-			<h1
-				className={css({
-					fontSize: "28px",
-					fontWeight: 700,
-					color: "#e0d6f0",
-				})}
-			>
-				{t("links.title")}
-			</h1>
+			<div>
+				<h1
+					className={css({
+						fontSize: "28px",
+						fontWeight: 700,
+						color: "var(--color-text-primary)",
+						marginTop: 0,
+						marginBottom: "8px",
+					})}
+				>
+					{t("links.title")}
+				</h1>
+				<p
+					className={css({
+						fontSize: "14px",
+						lineHeight: 1.5,
+						color: "var(--color-text-subtle)",
+						margin: 0,
+						maxWidth: "760px",
+					})}
+				>
+					{t("links.description")}
+				</p>
+			</div>
 			<Button onClick={onCreateClick}>{t("links.create")}</Button>
 		</div>
 	);

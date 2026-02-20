@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useState } from "react";
 import { type ApiPlannerEvent, api } from "../../../api";
+import { APP_COLORS } from "../../../theme";
 
 function getErrorMessage(error: unknown, fallback: string): string {
 	if (error instanceof Error) return error.message;
@@ -20,7 +21,7 @@ const emptyForm: PlannerFormState = {
 	description: "",
 	startAt: "",
 	endAt: "",
-	color: "#f59e0b",
+	color: APP_COLORS.warning,
 };
 
 export function usePlannerPage(t: (key: string) => string) {
@@ -58,7 +59,7 @@ export function usePlannerPage(t: (key: string) => string) {
 			description: event.description || "",
 			startAt: event.start_at.slice(0, 16),
 			endAt: event.end_at.slice(0, 16),
-			color: event.color || "#f59e0b",
+			color: event.color || APP_COLORS.warning,
 		});
 		setModalOpen(true);
 	}, []);

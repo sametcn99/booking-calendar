@@ -26,6 +26,7 @@
 	},
 	"dashboard": {
 		"title": "Kontrol Paneli",
+		"description": "Takviminizi tek ekrandan yönetin: randevu yoğunluğunu takip edin, yaklaşan müsaitlikleri görün ve planlayıcı etkinliklerini canlı takvimde izleyin.",
 		"calendar": {
 			"title": "Takvim Genel Görünüm",
 			"subtitle": "Müsait slotları ve alınan randevuları tek bir zaman çizelgesinde takip edin.",
@@ -76,6 +77,7 @@
 	},
 	"slots": {
 		"title": "Müsait Zaman Aralıkları",
+		"description": "Müsaitlik aralıklarınızı oluşturun ve yönetin. Slotları açıp kapatın, isimlerini güncelleyin ve randevu takviminizi güncel tutun.",
 		"addSlot": "Slot Ekle",
 		"empty": "Henüz slot yok. Oluşturmak için \"Slot Ekle\"ye tıklayın.",
 		"name": "Slot İsmi",
@@ -100,6 +102,7 @@
 	},
 	"appointments": {
 		"title": "Randevular",
+		"description": "Tüm randevuları inceleyin, durum filtreleriyle yönetin ve gerektiğinde aktif randevuları iptal edip geçmiş kayıtları temizleyin.",
 		"all": "Tüm Randevular",
 		"active": "Aktif",
 		"past": "Tarihi Geçenler",
@@ -123,6 +126,7 @@
 	},
 	"links": {
 		"title": "Randevu Bağlantıları",
+		"description": "Paylaşılabilir randevu bağlantıları üretin, hangi slotların görüneceğini seçin ve her bağlantı için geçerlilik süresi belirleyin.",
 		"create": "Bağlantı Oluştur",
 		"empty": "Henüz bağlantı yok. Paylaşmak için bir tane oluşturun.",
 		"expired": "Süresi doldu",
@@ -184,6 +188,7 @@
 	},
 	"settings": {
 		"title": "Ayarlar",
+		"description": "Güvenlik, dil, bildirim tercihleri, takvim paylaşımı ve dışa aktarma seçeneklerini çalışma düzeninize göre yapılandırın.",
 		"changePassword": "Şifre Değiştir",
 		"passwordRequirements": "En az 10 karakter, büyük harf, küçük harf ve rakam içermelidir.",
 		"currentPassword": "Mevcut Şifre",
@@ -232,6 +237,7 @@
 	},
 	"planner": {
 		"title": "Planlayıcı",
+		"pageDescription": "Müşteri randevularından ayrı olarak, takvimde görünmesi gereken iç etkinlikleri ve blok zamanları planlayın.",
 		"addEvent": "Etkinlik Ekle",
 		"empty": "Henüz etkinlik yok. Oluşturmak için \"Etkinlik Ekle\"ye tıklayın.",
 		"eventTitle": "Etkinlik Başlığı",
@@ -259,6 +265,7 @@
 	},
 	"communityEvents": {
 		"title": "Topluluk Etkinlikleri",
+		"pageDescription": "Topluluk onayı gerektiren etkinlikler oluşturun, onay bağlantılarını paylaşın ve etkinlik aktif olana kadar onay ilerlemesini takip edin.",
 		"create": "Etkinlik Oluştur",
 		"empty": "Henüz topluluk etkinliği yok.",
 		"eventTitle": "Etkinlik Başlığı",
@@ -286,6 +293,10 @@
 		"approveTitle": "Topluluk Etkinlik Onayı",
 		"approveBtn": "Onayla",
 		"approved": "Onayınız kaydedildi!",
+		"approverEmail": "E-posta adresiniz (isteğe bağlı)",
+		"approverEmailPlaceholder": "ornek@alanadi.com",
+		"invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
+		"alreadyApprovedLocal": "Bu tarayıcıdan bu etkinliğe zaten onay verdiniz.",
 		"eventInfo": "Etkinlik Detayları",
 		"approvalProgress": "Onay Durumu"
 	}

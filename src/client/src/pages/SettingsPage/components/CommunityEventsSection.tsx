@@ -6,15 +6,16 @@ import { toaster } from "baseui/toast";
 import { Copy, ExternalLink, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { type ApiCommunityEvent, api } from "../../../api";
+import { APP_COLORS } from "../../../theme";
 
 interface Props {
 	t: (key: string) => string;
 }
 
 const STATUS_COLORS: Record<string, string> = {
-	pending: "#f59e0b",
-	active: "#22c55e",
-	canceled: "#ef4444",
+	pending: "var(--color-warning)",
+	active: "var(--color-success)",
+	canceled: "var(--color-error)",
 };
 
 export default function CommunityEventsSection({ t }: Props) {
@@ -25,7 +26,7 @@ export default function CommunityEventsSection({ t }: Props) {
 	const [description, setDescription] = useState("");
 	const [startAt, setStartAt] = useState("");
 	const [endAt, setEndAt] = useState("");
-	const [color, setColor] = useState("#a78bfa");
+	const [color, setColor] = useState<string>(APP_COLORS.accent800);
 	const [requiredApprovals, setRequiredApprovals] = useState(3);
 	const [creating, setCreating] = useState(false);
 
@@ -59,15 +60,18 @@ export default function CommunityEventsSection({ t }: Props) {
 				required_approvals: requiredApprovals,
 			});
 			toaster.positive(t("communityEvents.created"), {});
+			toaster.info(
+				`${t("communityEvents.shareLink")}: ${getShareLink(created.data.share_token)}`,
+				{},
+			);
 			setTitle("");
 			setDescription("");
 			setStartAt("");
 			setEndAt("");
-			setColor("#a78bfa");
+			setColor(APP_COLORS.accent800);
 			setRequiredApprovals(3);
 			setShowForm(false);
 			fetchEvents();
-			window.location.assign(getShareLink(created.data.share_token));
 		} catch (e) {
 			toaster.negative(e instanceof Error ? e.message : t("common.error"), {});
 		} finally {
@@ -103,10 +107,10 @@ export default function CommunityEventsSection({ t }: Props) {
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: "12px",
 				padding: "24px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<div
@@ -121,7 +125,7 @@ export default function CommunityEventsSection({ t }: Props) {
 					className={css({
 						fontSize: "18px",
 						fontWeight: 700,
-						color: "#e0d6f0",
+						color: "var(--color-text-primary)",
 						margin: 0,
 					})}
 				>
@@ -142,10 +146,10 @@ export default function CommunityEventsSection({ t }: Props) {
 			{showForm && (
 				<div
 					className={css({
-						backgroundColor: "#1e1e1e",
+						backgroundColor: "var(--color-bg-tertiary)",
 						borderRadius: "8px",
 						padding: "16px",
-						border: "1px solid #2a2a2a",
+						border: "1px solid var(--color-bg-quaternary)",
 						marginBottom: "16px",
 						display: "flex",
 						flexDirection: "column",
@@ -156,7 +160,7 @@ export default function CommunityEventsSection({ t }: Props) {
 						<div
 							className={css({
 								fontSize: "12px",
-								color: "#b8a9d4",
+								color: "var(--color-text-secondary)",
 								marginBottom: "4px",
 							})}
 						>
@@ -173,7 +177,7 @@ export default function CommunityEventsSection({ t }: Props) {
 						<div
 							className={css({
 								fontSize: "12px",
-								color: "#b8a9d4",
+								color: "var(--color-text-secondary)",
 								marginBottom: "4px",
 							})}
 						>
@@ -193,7 +197,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							<div
 								className={css({
 									fontSize: "12px",
-									color: "#b8a9d4",
+									color: "var(--color-text-secondary)",
 									marginBottom: "4px",
 								})}
 							>
@@ -210,7 +214,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							<div
 								className={css({
 									fontSize: "12px",
-									color: "#b8a9d4",
+									color: "var(--color-text-secondary)",
 									marginBottom: "4px",
 								})}
 							>
@@ -231,7 +235,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							<div
 								className={css({
 									fontSize: "12px",
-									color: "#b8a9d4",
+									color: "var(--color-text-secondary)",
 									marginBottom: "4px",
 								})}
 							>
@@ -239,6 +243,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							</div>
 							<input
 								type="color"
+								aria-label={t("communityEvents.color")}
 								value={color}
 								onChange={(e) => setColor(e.target.value)}
 								className={css({
@@ -255,7 +260,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							<div
 								className={css({
 									fontSize: "12px",
-									color: "#b8a9d4",
+									color: "var(--color-text-secondary)",
 									marginBottom: "4px",
 								})}
 							>
@@ -298,7 +303,12 @@ export default function CommunityEventsSection({ t }: Props) {
 			)}
 
 			{events.length === 0 && !showForm && (
-				<div className={css({ fontSize: "13px", color: "#b8a9d4" })}>
+				<div
+					className={css({
+						fontSize: "13px",
+						color: "var(--color-text-secondary)",
+					})}
+				>
 					{t("communityEvents.empty")}
 				</div>
 			)}
@@ -314,10 +324,10 @@ export default function CommunityEventsSection({ t }: Props) {
 					<div
 						key={ev.id}
 						className={css({
-							backgroundColor: "#1e1e1e",
+							backgroundColor: "var(--color-bg-tertiary)",
 							borderRadius: "8px",
 							padding: "14px",
-							border: "1px solid #2a2a2a",
+							border: "1px solid var(--color-bg-quaternary)",
 						})}
 					>
 						<div
@@ -352,7 +362,7 @@ export default function CommunityEventsSection({ t }: Props) {
 										className={css({
 											fontSize: "15px",
 											fontWeight: 600,
-											color: "#e0d6f0",
+											color: "var(--color-text-primary)",
 										})}
 									>
 										{ev.title}
@@ -363,8 +373,10 @@ export default function CommunityEventsSection({ t }: Props) {
 											fontWeight: 600,
 											padding: "2px 8px",
 											borderRadius: "4px",
-											color: "#fff",
-											backgroundColor: STATUS_COLORS[ev.status] ?? "#666",
+											color: "var(--color-text-on-primary)",
+											backgroundColor:
+												STATUS_COLORS[ev.status] ??
+												"var(--color-text-on-muted)",
 										})}
 									>
 										{statusLabel(ev.status)}
@@ -374,14 +386,19 @@ export default function CommunityEventsSection({ t }: Props) {
 									<div
 										className={css({
 											fontSize: "12px",
-											color: "#b8a9d4",
+											color: "var(--color-text-secondary)",
 											marginBottom: "4px",
 										})}
 									>
 										{ev.description}
 									</div>
 								)}
-								<div className={css({ fontSize: "12px", color: "#888" })}>
+								<div
+									className={css({
+										fontSize: "12px",
+										color: "var(--color-text-muted)",
+									})}
+								>
 									{new Date(ev.start_at).toLocaleString()} —{" "}
 									{new Date(ev.end_at).toLocaleString()}
 								</div>
@@ -403,7 +420,12 @@ export default function CommunityEventsSection({ t }: Props) {
 								gap: "8px",
 							})}
 						>
-							<div className={css({ fontSize: "13px", color: "#b8a9d4" })}>
+							<div
+								className={css({
+									fontSize: "13px",
+									color: "var(--color-text-secondary)",
+								})}
+							>
 								{t("communityEvents.approvals")}: {ev.current_approvals}/
 								{ev.required_approvals}
 							</div>
@@ -442,15 +464,15 @@ export default function CommunityEventsSection({ t }: Props) {
 							className={css({
 								marginTop: "8px",
 								padding: "8px 10px",
-								backgroundColor: "#141414",
+								backgroundColor: "var(--color-bg-secondary)",
 								borderRadius: "6px",
-								border: "1px solid #2a2a2a",
+								border: "1px solid var(--color-bg-quaternary)",
 							})}
 						>
 							<div
 								className={css({
 									fontSize: "12px",
-									color: "#8b7aab",
+									color: "var(--color-text-tertiary)",
 									marginBottom: "4px",
 								})}
 							>
@@ -459,7 +481,7 @@ export default function CommunityEventsSection({ t }: Props) {
 							<code
 								className={css({
 									fontSize: "12px",
-									color: "#a78bfa",
+									color: "var(--color-accent-800)",
 									wordBreak: "break-all",
 								})}
 							>

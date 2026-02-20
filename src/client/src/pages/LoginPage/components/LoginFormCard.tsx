@@ -15,9 +15,9 @@ export default function LoginFormCard({ children, onSubmit }: Props) {
 				width: "100%",
 				maxWidth: "400px",
 				padding: "40px",
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: "12px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			{children}

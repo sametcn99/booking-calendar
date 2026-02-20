@@ -21,11 +21,11 @@ export default function PlannerEventCard({
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: "12px",
 				padding: "16px 20px",
-				border: "1px solid #2a2a2a",
-				borderLeft: `4px solid ${event.color || "#f59e0b"}`,
+				border: "1px solid var(--color-bg-quaternary)",
+				borderLeft: `4px solid ${event.color || "var(--color-warning)"}`,
 				display: "flex",
 				justifyContent: "space-between",
 				alignItems: "flex-start",

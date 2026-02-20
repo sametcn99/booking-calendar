@@ -45,17 +45,17 @@ export default function BookingFormSection({
 		<form
 			onSubmit={handleSubmit}
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: "12px",
 				padding: "24px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<h2
 				className={css({
 					fontSize: "16px",
 					fontWeight: 600,
-					color: "#e0d6f0",
+					color: "var(--color-text-primary)",
 					marginBottom: "16px",
 				})}
 			>
@@ -71,9 +71,9 @@ export default function BookingFormSection({
 					overrides={{
 						Root: {
 							style: {
-								borderColor: "#4c1d95",
+								borderColor: "var(--color-accent-300)",
 								borderWidth: "1px",
-								backgroundColor: "#1e1e1e",
+								backgroundColor: "var(--color-bg-tertiary)",
 							},
 						},
 					}}
@@ -89,9 +89,9 @@ export default function BookingFormSection({
 					overrides={{
 						Root: {
 							style: {
-								borderColor: "#4c1d95",
+								borderColor: "var(--color-accent-300)",
 								borderWidth: "1px",
-								backgroundColor: "#1e1e1e",
+								backgroundColor: "var(--color-bg-tertiary)",
 							},
 						},
 					}}

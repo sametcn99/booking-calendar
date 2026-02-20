@@ -15,7 +15,10 @@ export default function DashboardPage() {
 		<div>
 			<ToasterContainer placement={PLACEMENT.bottomRight} />
 
-			<DashboardHeader title={t("dashboard.title")} />
+			<DashboardHeader
+				title={t("dashboard.title")}
+				description={t("dashboard.description")}
+			/>
 
 			<StatsCards cards={cards} />
 

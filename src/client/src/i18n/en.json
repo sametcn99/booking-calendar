@@ -26,6 +26,7 @@
 	},
 	"dashboard": {
 		"title": "Dashboard",
+		"description": "Track your schedule from one place: monitor appointment volume, review upcoming availability, and follow planner activity in the live calendar.",
 		"calendar": {
 			"title": "Calendar Overview",
 			"subtitle": "Track open slots and booked appointments in a single timeline.",
@@ -76,6 +77,7 @@
 	},
 	"slots": {
 		"title": "Available Time Slots",
+		"description": "Create and manage your availability windows. Enable or disable slots, rename them, and keep your booking schedule up to date.",
 		"addSlot": "Add Slot",
 		"empty": "No slots yet. Click \"Add Slot\" to create one.",
 		"name": "Slot Name",
@@ -100,6 +102,7 @@
 	},
 	"appointments": {
 		"title": "Appointments",
+		"description": "Review all bookings, filter by status, and take action when needed by canceling active appointments or cleaning up past records.",
 		"all": "All Appointments",
 		"active": "Active",
 		"past": "Past",
@@ -123,6 +126,7 @@
 	},
 	"links": {
 		"title": "Booking Links",
+		"description": "Generate shareable booking links, choose which slots are visible, and control validity periods for each link.",
 		"create": "Create Link",
 		"empty": "No links yet. Create one to share.",
 		"expired": "Expired",
@@ -184,6 +188,7 @@
 	},
 	"settings": {
 		"title": "Settings",
+		"description": "Configure security, language, notification preferences, calendar sharing, and export options to match your workflow.",
 		"changePassword": "Change Password",
 		"passwordRequirements": "At least 10 characters, must include uppercase, lowercase, and a number.",
 		"currentPassword": "Current Password",
@@ -232,6 +237,7 @@
 	},
 	"planner": {
 		"title": "Planner",
+		"pageDescription": "Plan internal events and blocked times that should appear on your calendar, separate from customer appointments.",
 		"addEvent": "Add Event",
 		"empty": "No events yet. Click \"Add Event\" to create one.",
 		"eventTitle": "Event Title",
@@ -259,6 +265,7 @@
 	},
 	"communityEvents": {
 		"title": "Community Events",
+		"pageDescription": "Create events that require community approvals, share approval links, and track approval progress until events become active.",
 		"create": "Create Event",
 		"empty": "No community events yet.",
 		"eventTitle": "Event Title",
@@ -286,6 +293,10 @@
 		"approveTitle": "Community Event Approval",
 		"approveBtn": "Approve",
 		"approved": "Your approval has been recorded!",
+		"approverEmail": "Your email (optional)",
+		"approverEmailPlaceholder": "name@domain.com",
+		"invalidEmail": "Please enter a valid email address",
+		"alreadyApprovedLocal": "You have already approved this event from this browser.",
 		"eventInfo": "Event Details",
 		"approvalProgress": "Approval Progress"
 	}

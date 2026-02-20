@@ -1,5 +1,6 @@
 import { useStyletron } from "baseui";
 import { Button, SIZE } from "baseui/button";
+import { Input } from "baseui/input";
 import { toaster } from "baseui/toast";
 import { Copy } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -15,28 +16,80 @@ export default function CommunityEventApprovalPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [approving, setApproving] = useState(false);
 	const [approved, setApproved] = useState(false);
+	const [approverEmail, setApproverEmail] = useState("");
+	const [alreadyApprovedLocal, setAlreadyApprovedLocal] = useState(false);
+
+	const getStorageKey = useCallback(
+		() => (token ? `community_event_approved_${token}` : ""),
+		[token],
+	);
+
+	const getStoredApprovers = useCallback((): string[] => {
+		const key = getStorageKey();
+		if (!key) return [];
+		try {
+			const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+			if (!Array.isArray(parsed)) return [];
+			return parsed.filter(
+				(value): value is string => typeof value === "string",
+			);
+		} catch {
+			return [];
+		}
+	}, [getStorageKey]);
 
 	const fetchEvent = useCallback(() => {
 		if (!token) return;
 		api
 			.getPublicCommunityEvent(token)
 			.then((r) => setEvent(r.data))
-			.catch(() => setError("Event not found"));
-	}, [token]);
+			.catch(() => setError(t("common.error")));
+	}, [t, token]);
 
 	useEffect(() => {
 		fetchEvent();
 	}, [fetchEvent]);
 
+	useEffect(() => {
+		const stored = getStoredApprovers();
+		if (stored.includes("anonymous")) {
+			setAlreadyApprovedLocal(true);
+		}
+	}, [getStoredApprovers]);
+
 	const handleApprove = async () => {
 		if (!token) return;
+		const normalizedEmail = approverEmail.trim().toLowerCase();
+		if (normalizedEmail.length > 0) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(normalizedEmail)) {
+				toaster.negative(t("communityEvents.invalidEmail"), {});
+				return;
+			}
+		}
+
+		const approvalId = normalizedEmail || "anonymous";
+		if (getStoredApprovers().includes(approvalId)) {
+			setAlreadyApprovedLocal(true);
+			toaster.negative(t("communityEvents.alreadyApprovedLocal"), {});
+			return;
+		}
+
 		setApproving(true);
 		try {
-			const r = await api.approveCommunityEvent(token);
+			const r = await api.approveCommunityEvent(token, {
+				email: normalizedEmail || undefined,
+			});
 			setEvent(r.data);
 			setApproved(true);
+			const key = getStorageKey();
+			const stored = getStoredApprovers();
+			if (key && !stored.includes(approvalId)) {
+				localStorage.setItem(key, JSON.stringify([...stored, approvalId]));
+			}
+			setAlreadyApprovedLocal(true);
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Error");
+			toaster.negative(e instanceof Error ? e.message : t("common.error"), {});
 		} finally {
 			setApproving(false);
 		}
@@ -50,8 +103,8 @@ export default function CommunityEventApprovalPage() {
 					justifyContent: "center",
 					alignItems: "center",
 					minHeight: "100vh",
-					backgroundColor: "#0a0a0a",
-					color: "#888",
+					backgroundColor: "var(--color-bg-primary)",
+					color: "var(--color-text-muted)",
 					fontSize: "18px",
 				})}
 			>
@@ -68,8 +121,8 @@ export default function CommunityEventApprovalPage() {
 					justifyContent: "center",
 					alignItems: "center",
 					minHeight: "100vh",
-					backgroundColor: "#0a0a0a",
-					color: "#888",
+					backgroundColor: "var(--color-bg-primary)",
+					color: "var(--color-text-muted)",
 					fontSize: "18px",
 				})}
 			>
@@ -84,9 +137,9 @@ export default function CommunityEventApprovalPage() {
 	);
 
 	const statusColor: Record<string, string> = {
-		pending: "#f59e0b",
-		active: "#22c55e",
-		canceled: "#ef4444",
+		pending: "var(--color-warning)",
+		active: "var(--color-success)",
+		canceled: "var(--color-error)",
 	};
 
 	const statusLabel: Record<string, string> = {
@@ -107,7 +160,7 @@ export default function CommunityEventApprovalPage() {
 		<div
 			className={css({
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 				display: "flex",
 				justifyContent: "center",
 				alignItems: "center",
@@ -116,10 +169,10 @@ export default function CommunityEventApprovalPage() {
 		>
 			<div
 				className={css({
-					backgroundColor: "#141414",
+					backgroundColor: "var(--color-bg-secondary)",
 					borderRadius: "16px",
 					padding: "32px",
-					border: "1px solid #2a2a2a",
+					border: "1px solid var(--color-bg-quaternary)",
 					maxWidth: "480px",
 					width: "100%",
 				})}
@@ -128,7 +181,7 @@ export default function CommunityEventApprovalPage() {
 					className={css({
 						fontSize: "24px",
 						fontWeight: 700,
-						color: "#e0d6f0",
+						color: "var(--color-text-primary)",
 						marginBottom: "24px",
 						textAlign: "center",
 					})}
@@ -138,10 +191,10 @@ export default function CommunityEventApprovalPage() {
 
 				<div
 					className={css({
-						backgroundColor: "#1e1e1e",
+						backgroundColor: "var(--color-bg-tertiary)",
 						borderRadius: "10px",
 						padding: "20px",
-						border: "1px solid #2a2a2a",
+						border: "1px solid var(--color-bg-quaternary)",
 						marginBottom: "20px",
 					})}
 				>
@@ -149,7 +202,7 @@ export default function CommunityEventApprovalPage() {
 						className={css({
 							fontSize: "14px",
 							fontWeight: 600,
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "12px",
 						})}
 					>
@@ -179,7 +232,7 @@ export default function CommunityEventApprovalPage() {
 							className={css({
 								fontSize: "18px",
 								fontWeight: 700,
-								color: "#e0d6f0",
+								color: "var(--color-text-primary)",
 							})}
 						>
 							{event.title}
@@ -190,7 +243,7 @@ export default function CommunityEventApprovalPage() {
 						<div
 							className={css({
 								fontSize: "13px",
-								color: "#b8a9d4",
+								color: "var(--color-text-secondary)",
 								marginBottom: "8px",
 							})}
 						>
@@ -201,7 +254,7 @@ export default function CommunityEventApprovalPage() {
 					<div
 						className={css({
 							fontSize: "13px",
-							color: "#888",
+							color: "var(--color-text-muted)",
 							marginBottom: "8px",
 						})}
 					>
@@ -215,8 +268,9 @@ export default function CommunityEventApprovalPage() {
 							fontWeight: 600,
 							padding: "3px 10px",
 							borderRadius: "4px",
-							color: "#fff",
-							backgroundColor: statusColor[event.status] ?? "#666",
+							color: "var(--color-text-on-primary)",
+							backgroundColor:
+								statusColor[event.status] ?? "var(--color-text-on-muted)",
 						})}
 					>
 						{statusLabel[event.status] ?? event.status}
@@ -232,13 +286,18 @@ export default function CommunityEventApprovalPage() {
 							marginBottom: "6px",
 						})}
 					>
-						<span className={css({ fontSize: "13px", color: "#b8a9d4" })}>
+						<span
+							className={css({
+								fontSize: "13px",
+								color: "var(--color-text-secondary)",
+							})}
+						>
 							{t("communityEvents.approvalProgress")}
 						</span>
 						<span
 							className={css({
 								fontSize: "13px",
-								color: "#e0d6f0",
+								color: "var(--color-text-primary)",
 								fontWeight: 600,
 							})}
 						>
@@ -248,7 +307,7 @@ export default function CommunityEventApprovalPage() {
 					<div
 						className={css({
 							height: "8px",
-							backgroundColor: "#2a2a2a",
+							backgroundColor: "var(--color-bg-quaternary)",
 							borderRadius: "4px",
 							overflow: "hidden",
 						})}
@@ -258,7 +317,9 @@ export default function CommunityEventApprovalPage() {
 								height: "100%",
 								width: `${progress}%`,
 								backgroundColor:
-									event.status === "active" ? "#22c55e" : "#a78bfa",
+									event.status === "active"
+										? "var(--color-success)"
+										: "var(--color-accent-800)",
 								borderRadius: "4px",
 								transition: "width 0.3s ease",
 							})}
@@ -266,10 +327,29 @@ export default function CommunityEventApprovalPage() {
 					</div>
 				</div>
 
+				<div className={css({ marginBottom: "16px" })}>
+					<div
+						className={css({
+							fontSize: "13px",
+							color: "var(--color-text-secondary)",
+							marginBottom: "6px",
+						})}
+					>
+						{t("communityEvents.approverEmail")}
+					</div>
+					<Input
+						value={approverEmail}
+						onChange={(e) => setApproverEmail(e.currentTarget.value)}
+						placeholder={t("communityEvents.approverEmailPlaceholder")}
+						type="email"
+						size={SIZE.compact}
+					/>
+				</div>
+
 				<div
 					className={css({
-						backgroundColor: "#1e1e1e",
-						border: "1px solid #2a2a2a",
+						backgroundColor: "var(--color-bg-tertiary)",
+						border: "1px solid var(--color-bg-quaternary)",
 						borderRadius: "8px",
 						padding: "12px",
 						marginBottom: "16px",
@@ -278,7 +358,7 @@ export default function CommunityEventApprovalPage() {
 					<div
 						className={css({
 							fontSize: "13px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "6px",
 						})}
 					>
@@ -295,7 +375,7 @@ export default function CommunityEventApprovalPage() {
 							className={css({
 								flex: 1,
 								fontSize: "12px",
-								color: "#a78bfa",
+								color: "var(--color-accent-800)",
 								wordBreak: "break-all",
 							})}
 						>
@@ -310,12 +390,13 @@ export default function CommunityEventApprovalPage() {
 				{approved && (
 					<div
 						className={css({
-							backgroundColor: "#22c55e22",
-							border: "1px solid #22c55e",
+							backgroundColor:
+								"color-mix(in srgb, var(--color-success) 13%, transparent)",
+							border: "1px solid var(--color-success)",
 							borderRadius: "8px",
 							padding: "12px",
 							textAlign: "center",
-							color: "#4ade80",
+							color: "var(--color-success-light)",
 							fontSize: "14px",
 							fontWeight: 600,
 							marginBottom: "16px",
@@ -325,7 +406,7 @@ export default function CommunityEventApprovalPage() {
 					</div>
 				)}
 
-				{event.status === "pending" && !approved && (
+				{event.status === "pending" && !approved && !alreadyApprovedLocal && (
 					<Button
 						size={SIZE.large}
 						onClick={handleApprove}
@@ -338,6 +419,24 @@ export default function CommunityEventApprovalPage() {
 					>
 						{t("communityEvents.approveBtn")}
 					</Button>
+				)}
+
+				{event.status === "pending" && alreadyApprovedLocal && !approved && (
+					<div
+						className={css({
+							backgroundColor:
+								"color-mix(in srgb, var(--color-warning) 13%, transparent)",
+							border: "1px solid var(--color-warning)",
+							borderRadius: "8px",
+							padding: "12px",
+							textAlign: "center",
+							color: "var(--color-warning-light)",
+							fontSize: "14px",
+							fontWeight: 600,
+						})}
+					>
+						{t("communityEvents.alreadyApprovedLocal")}
+					</div>
 				)}
 			</div>
 		</div>

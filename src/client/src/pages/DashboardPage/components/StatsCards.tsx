@@ -20,16 +20,16 @@ export default function StatsCards({ cards }: Props) {
 				<div
 					key={card.label}
 					className={css({
-						backgroundColor: "#141414",
+						backgroundColor: "var(--color-bg-secondary)",
 						borderRadius: "12px",
 						padding: "24px",
-						border: "1px solid #2a2a2a",
+						border: "1px solid var(--color-bg-quaternary)",
 					})}
 				>
 					<div
 						className={css({
 							fontSize: "14px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "8px",
 						})}
 					>

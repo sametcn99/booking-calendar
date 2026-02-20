@@ -98,6 +98,19 @@
 			"note": "Note",
 			"canceledByAdmin": "admin",
 			"canceledByUser": "appointment owner"
+		},
+		"communityEvent": {
+			"titleLabel": "Event",
+			"startTime": "Start Time:",
+			"endTime": "End Time:",
+			"approverActivatedSubject": "Community event approved",
+			"approverActivatedMessage": "A community event you approved is now active.",
+			"adminActivatedSubject": "Community event became active",
+			"adminActivatedMessage": "A community event has reached the required approvals and is now active.",
+			"approverCanceledSubject": "Community event canceled",
+			"approverCanceledMessage": "A community event you approved has been canceled.",
+			"adminCanceledSubject": "Community event canceled",
+			"adminCanceledMessage": "A pending community event has been canceled."
 		}
 	},
 	"planner": {
@@ -111,7 +124,11 @@
 		"newBookingTitle": "New Booking",
 		"newBookingBody": "A new appointment has been booked by",
 		"cancellationTitle": "Appointment Canceled",
-		"cancellationBody": "An appointment has been canceled by"
+		"cancellationBody": "An appointment has been canceled by",
+		"communityEventActivatedTitle": "Community Event Active",
+		"communityEventActivatedBody": "Required approvals completed for:",
+		"communityEventCanceledTitle": "Community Event Canceled",
+		"communityEventCanceledBody": "A community event was canceled:"
 	},
 	"communityEvent": {
 		"fieldsRequired": "Event title, start time, and end time are required",
@@ -119,6 +136,7 @@
 		"alreadyCanceled": "This event has been canceled",
 		"alreadyActive": "This event is already active",
 		"mustBeFuture": "Event must be in the future",
-		"minApprovals": "At least 1 approval is required"
+		"minApprovals": "At least 1 approval is required",
+		"emailAlreadyApproved": "This email has already approved this event"
 	}
 }

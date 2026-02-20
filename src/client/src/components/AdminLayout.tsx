@@ -51,7 +51,7 @@ export default function AdminLayout() {
 				display: "flex",
 				height: "100vh",
 				overflow: "hidden",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 			})}
 		>
 			{/* Sidebar */}
@@ -59,8 +59,8 @@ export default function AdminLayout() {
 				className={css({
 					width: "240px",
 					height: "100%",
-					backgroundColor: "#141414",
-					borderRight: "1px solid #2a2a2a",
+					backgroundColor: "var(--color-bg-secondary)",
+					borderRight: "1px solid var(--color-bg-quaternary)",
 					padding: "24px 16px",
 					display: "flex",
 					flexDirection: "column",
@@ -95,7 +95,7 @@ export default function AdminLayout() {
 								left: 0,
 								right: 0,
 								bottom: 0,
-								backgroundColor: "rgba(0, 0, 0, 0.5)",
+								backgroundColor: "var(--color-overlay)",
 								zIndex: -1,
 								border: "none",
 								padding: 0,
@@ -119,13 +119,15 @@ export default function AdminLayout() {
 							top: 0,
 							left: 0,
 							width: isExpanded ? "240px" : "70px",
-							backgroundColor: "#141414",
+							backgroundColor: "var(--color-bg-secondary)",
 							height: "100%",
 							padding: isExpanded ? "24px 16px" : "24px 8px",
 							transition: "width 0.3s ease, padding 0.3s ease",
-							borderRight: isExpanded ? "1px solid #2a2a2a" : "none",
+							borderRight: isExpanded
+								? "1px solid var(--color-bg-quaternary)"
+								: "none",
 							boxShadow: isExpanded
-								? "10px 0 15px -3px rgba(0, 0, 0, 0.5)"
+								? "10px 0 15px -3px var(--color-overlay)"
 								: "none",
 						},
 					})}
@@ -134,7 +136,7 @@ export default function AdminLayout() {
 						className={css({
 							fontSize: "20px",
 							fontWeight: 700,
-							color: "#a78bfa",
+							color: "var(--color-accent-800)",
 							marginBottom: "32px",
 							textAlign: "center",
 							display: "flex",
@@ -239,7 +241,7 @@ export default function AdminLayout() {
 								BaseButton: {
 									style: {
 										width: "100%",
-										color: "#b8a9d4",
+										color: "var(--color-text-secondary)",
 										justifyContent: "flex-start",
 										paddingLeft: "12px",
 										paddingRight: "12px",
@@ -276,7 +278,7 @@ export default function AdminLayout() {
 								display: "flex",
 								justifyContent: "center",
 								paddingTop: "16px",
-								borderTop: "1px solid #2a2a2a",
+								borderTop: "1px solid var(--color-bg-quaternary)",
 								marginTop: "16px",
 							},
 						})}

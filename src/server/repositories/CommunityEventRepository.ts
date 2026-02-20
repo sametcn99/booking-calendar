@@ -41,10 +41,32 @@ export class CommunityEventRepository {
 		return this.repo().save(entity);
 	}
 
-	async incrementApproval(id: number): Promise<CommunityEventEntity | null> {
+	async incrementApproval(
+		id: number,
+		approverEmail?: string,
+	): Promise<CommunityEventEntity | null> {
 		const event = await this.findById(id);
 		if (!event) return null;
+
+		const normalizedEmail = approverEmail?.trim().toLowerCase();
+		const approverEmails: string[] = (() => {
+			try {
+				const parsed = JSON.parse(event.approver_emails_json);
+				return Array.isArray(parsed) ? parsed : [];
+			} catch {
+				return [];
+			}
+		})();
+
+		if (normalizedEmail && approverEmails.includes(normalizedEmail)) {
+			return event;
+		}
+
 		event.current_approvals += 1;
+		if (normalizedEmail) {
+			approverEmails.push(normalizedEmail);
+			event.approver_emails_json = JSON.stringify(approverEmails);
+		}
 		if (event.current_approvals >= event.required_approvals) {
 			event.status = "active";
 		}

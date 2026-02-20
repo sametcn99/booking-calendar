@@ -14,7 +14,7 @@ export default function LoginPageLayout({ children }: Props) {
 				alignItems: "center",
 				justifyContent: "center",
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
+				backgroundColor: "var(--color-bg-primary)",
 			})}
 		>
 			{children}

@@ -173,7 +173,7 @@ export default function CreateLinkModal({
 			overrides={{
 				Dialog: {
 					style: {
-						backgroundColor: "#141414",
+						backgroundColor: "var(--color-bg-secondary)",
 						borderRadius: "12px",
 					},
 				},
@@ -225,7 +225,7 @@ export default function CreateLinkModal({
 										<div
 											className={css({
 												fontSize: "12px",
-												color: "#a99cbc",
+												color: "var(--color-text-faint)",
 											})}
 										>
 											{t("links.selectedSummary")}: {selectedSlotIds.length} /{" "}
@@ -257,8 +257,8 @@ export default function CreateLinkModal({
 										overflowY: "auto",
 										padding: "10px",
 										borderRadius: "8px",
-										border: "1px solid #2a2a2a",
-										backgroundColor: "#0f0f0f",
+										border: "1px solid var(--color-bg-quaternary)",
+										backgroundColor: "var(--color-bg-off-range)",
 									})}
 								>
 									{visibleSlots.length === 0 && (
@@ -267,7 +267,7 @@ export default function CreateLinkModal({
 												textAlign: "center",
 												padding: "18px 12px",
 												fontSize: "13px",
-												color: "#8b7aab",
+												color: "var(--color-text-tertiary)",
 											})}
 										>
 											{slotQuery
@@ -290,11 +290,11 @@ export default function CreateLinkModal({
 															className={css({
 																borderRadius: "8px",
 																border: checked
-																	? "1px solid #6d4ab0"
-																	: "1px solid #29223a",
+																	? "1px solid var(--color-accent-500)"
+																	: "1px solid var(--color-border-primary)",
 																backgroundColor: checked
-																	? "#1b1430"
-																	: "#141122",
+																	? "var(--color-accent-100)"
+																	: "var(--color-bg-secondary)",
 																padding: "8px 10px",
 															})}
 														>
@@ -314,7 +314,7 @@ export default function CreateLinkModal({
 									<div
 										className={css({
 											fontSize: "12px",
-											color: "#8b7aab",
+											color: "var(--color-text-tertiary)",
 											marginTop: "6px",
 										})}
 									>
@@ -330,7 +330,7 @@ export default function CreateLinkModal({
 						<div
 							className={css({
 								fontSize: "14px",
-								color: "#b8a9d4",
+								color: "var(--color-text-secondary)",
 								marginBottom: "8px",
 							})}
 						>
@@ -338,13 +338,13 @@ export default function CreateLinkModal({
 						</div>
 						<div
 							className={css({
-								backgroundColor: "#1e1e1e",
+								backgroundColor: "var(--color-bg-tertiary)",
 								padding: "12px",
 								borderRadius: "8px",
 								fontFamily: "monospace",
 								fontSize: "13px",
 								wordBreak: "break-all",
-								color: "#a78bfa",
+								color: "var(--color-accent-800)",
 							})}
 						>
 							{generatedUrl}

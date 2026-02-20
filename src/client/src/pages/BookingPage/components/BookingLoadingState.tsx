@@ -14,8 +14,8 @@ export default function BookingLoadingState({ message }: Props) {
 				alignItems: "center",
 				justifyContent: "center",
 				minHeight: "100vh",
-				backgroundColor: "#0a0a0a",
-				color: "#b8a9d4",
+				backgroundColor: "var(--color-bg-primary)",
+				color: "var(--color-text-secondary)",
 				fontSize: "18px",
 			})}
 		>

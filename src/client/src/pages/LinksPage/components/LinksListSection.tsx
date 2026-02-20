@@ -26,7 +26,7 @@ export default function LinksListSection({
 					className={css({
 						textAlign: "center",
 						padding: "48px",
-						color: "#8b7aab",
+						color: "var(--color-text-tertiary)",
 					})}
 				>
 					{t("links.empty")}

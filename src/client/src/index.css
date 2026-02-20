@@ -11,14 +11,14 @@ body,
 #root {
 	height: 100%;
 	width: 100%;
-	background-color: #0a0a0a;
-	color: #e0d6f0;
+	background-color: var(--color-bg-primary);
+	color: var(--color-text-primary);
 	font-family:
 		-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 a {
-	color: #a78bfa;
+	color: var(--color-accent-800);
 	text-decoration: none;
 }
 
@@ -31,16 +31,16 @@ a:hover {
 }
 
 ::-webkit-scrollbar-track {
-	background: #0a0a0a;
+	background: var(--color-bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #4c1d95;
+	background: var(--color-accent-300);
 	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: #6d28d9;
+	background: var(--color-accent-500);
 }
 
 /* Make native date/time picker icons visible in dark mode */

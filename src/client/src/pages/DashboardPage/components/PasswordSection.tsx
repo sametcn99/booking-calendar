@@ -42,10 +42,10 @@ export default function PasswordSection({
 	return (
 		<div
 			className={css({
-				backgroundColor: "#141414",
+				backgroundColor: "var(--color-bg-secondary)",
 				borderRadius: isList ? "10px" : "12px",
 				padding: isList ? "18px" : "24px",
-				border: "1px solid #2a2a2a",
+				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
 			<button
@@ -67,13 +67,18 @@ export default function PasswordSection({
 					className={css({
 						fontSize: "18px",
 						fontWeight: 700,
-						color: "#e0d6f0",
+						color: "var(--color-text-primary)",
 						margin: 0,
 					})}
 				>
 					{t(`${keyPrefix}.changePassword`)}
 				</h2>
-				<span className={css({ color: "#b8a9d4", fontSize: "18px" })}>
+				<span
+					className={css({
+						color: "var(--color-text-secondary)",
+						fontSize: "18px",
+					})}
+				>
 					{isOpen ? "-" : "+"}
 				</span>
 			</button>
@@ -86,9 +91,9 @@ export default function PasswordSection({
 								marginBottom: "14px",
 								padding: "14px 16px",
 								borderRadius: "10px",
-								border: "1px solid #6d2800",
-								backgroundColor: "#2f1b00",
-								color: "#ffd6a0",
+								border: "1px solid var(--color-warning)",
+								backgroundColor: "var(--color-warning-bg)",
+								color: "var(--color-warning-light)",
 								fontSize: "14px",
 								fontWeight: 600,
 							})}
@@ -100,7 +105,7 @@ export default function PasswordSection({
 					<div
 						className={css({
 							fontSize: "13px",
-							color: "#b8a9d4",
+							color: "var(--color-text-secondary)",
 							marginBottom: "14px",
 						})}
 					>

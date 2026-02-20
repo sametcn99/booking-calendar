@@ -43,7 +43,7 @@ export default function CreateSlotModal({
 			overrides={{
 				Dialog: {
 					style: {
-						backgroundColor: "#141414",
+						backgroundColor: "var(--color-bg-secondary)",
 						borderRadius: "12px",
 					},
 				},
@@ -66,9 +66,9 @@ export default function CreateSlotModal({
 						overrides={{
 							Root: {
 								style: {
-									borderColor: "#4c1d95",
+									borderColor: "var(--color-accent-300)",
 									borderWidth: "1px",
-									backgroundColor: "#1e1e1e",
+									backgroundColor: "var(--color-bg-tertiary)",
 								},
 							},
 						}}
@@ -82,9 +82,9 @@ export default function CreateSlotModal({
 						overrides={{
 							Root: {
 								style: {
-									borderColor: "#4c1d95",
+									borderColor: "var(--color-accent-300)",
 									borderWidth: "1px",
-									backgroundColor: "#1e1e1e",
+									backgroundColor: "var(--color-bg-tertiary)",
 								},
 							},
 						}}

@@ -12,8 +12,8 @@ export default function ErrorBanner({ message }: Props) {
 	return (
 		<div
 			className={css({
-				backgroundColor: "#3b1025",
-				color: "#fca5a5",
+				backgroundColor: "var(--color-error-bg)",
+				color: "var(--color-error-text)",
 				padding: "12px",
 				borderRadius: "8px",
 				marginBottom: "16px",
