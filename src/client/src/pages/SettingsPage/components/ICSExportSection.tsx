@@ -11,10 +11,7 @@ interface Props {
 }
 
 async function downloadIcs(url: string) {
-	const token = localStorage.getItem("auth_token");
-	const res = await fetch(url, {
-		headers: { Authorization: `Bearer ${token}` },
-	});
+	const res = await fetch(url, { credentials: "include" });
 	if (!res.ok) throw new Error("Export failed");
 	const blob = await res.blob();
 	const a = document.createElement("a");

@@ -19,7 +19,34 @@ export const handlePublicAuthAndSettingsRoutes: PublicRouteHandler = async (
 			password?: string;
 		}>(args.request);
 		const result = await args.authController.login(body, args.clientIp);
-		return jsonResponse(result.status, result.body, corsHeaders);
+		return jsonResponse(result.status, result.body, {
+			...corsHeaders,
+			...(result.headers || {}),
+		});
+	}
+
+	if (pathname === "/api/auth/refresh" && method === "POST") {
+		const result = await args.authController.refresh(args.request);
+		return jsonResponse(result.status, result.body, {
+			...corsHeaders,
+			...(result.headers || {}),
+		});
+	}
+
+	if (pathname === "/api/auth/session" && method === "GET") {
+		const result = await args.authController.session(args.request);
+		return jsonResponse(result.status, result.body, {
+			...corsHeaders,
+			...(result.headers || {}),
+		});
+	}
+
+	if (pathname === "/api/auth/logout" && method === "POST") {
+		const result = await args.authController.logout();
+		return jsonResponse(result.status, result.body, {
+			...corsHeaders,
+			...(result.headers || {}),
+		});
 	}
 
 	if (pathname === "/api/settings/language" && method === "GET") {

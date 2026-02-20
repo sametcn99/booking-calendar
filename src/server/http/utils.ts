@@ -27,15 +27,26 @@ export function getMimeType(path: string): string {
 export function jsonResponse(
 	status: number,
 	body: unknown,
-	headers: Record<string, string> = {},
+	headers: Record<string, string | string[]> = {},
 ): Response {
+	const responseHeaders = new Headers({
+		"Content-Type": "application/json",
+		"X-Robots-Tag": robotsHeaderValue,
+	});
+
+	for (const [key, value] of Object.entries(headers)) {
+		if (Array.isArray(value)) {
+			for (const item of value) {
+				responseHeaders.append(key, item);
+			}
+			continue;
+		}
+		responseHeaders.set(key, value);
+	}
+
 	return new Response(JSON.stringify(body), {
 		status,
-		headers: {
-			"Content-Type": "application/json",
-			"X-Robots-Tag": robotsHeaderValue,
-			...headers,
-		},
+		headers: responseHeaders,
 	});
 }
 

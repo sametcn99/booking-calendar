@@ -15,7 +15,8 @@ import SettingsPage from "./pages/SettingsPage";
 import SlotsPage from "./pages/SlotsPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, isLoading } = useAuth();
+	if (isLoading) return null;
 	if (!isAuthenticated) return <Navigate to="/login" replace />;
 	return <>{children}</>;
 }

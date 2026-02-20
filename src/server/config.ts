@@ -43,10 +43,15 @@ function loadEnv(): void {
 
 loadEnv();
 
+const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+const isProduction =
+	(process.env.NODE_ENV || "").toLowerCase() === "production";
+const isHttpsBaseUrl = baseUrl.toLowerCase().startsWith("https://");
+
 export const config = {
 	port: parseInt(process.env.PORT || "3000", 10),
 	host: process.env.HOST || "0.0.0.0",
-	baseUrl: process.env.BASE_URL || "http://localhost:3000",
+	baseUrl,
 
 	app: {
 		version: readAppVersionFromPackageJson(),
@@ -64,7 +69,18 @@ export const config = {
 
 	jwt: {
 		secret: process.env.JWT_SECRET || "default-secret-change-me",
-		expiresInSeconds: 86400, // 24 hours
+		refreshSecret:
+			process.env.JWT_REFRESH_SECRET ||
+			process.env.JWT_SECRET ||
+			"default-secret-change-me",
+		accessExpiresInSeconds: parseInt(
+			process.env.JWT_ACCESS_EXPIRES_IN_SECONDS || "900",
+			10,
+		), // 15 minutes
+		refreshExpiresInSeconds: parseInt(
+			process.env.JWT_REFRESH_EXPIRES_IN_SECONDS || "2592000",
+			10,
+		), // 30 days
 	},
 
 	smtp: {
@@ -89,5 +105,14 @@ export const config = {
 		publicKey: process.env.VITE_VAPID_PUBLIC_KEY || "",
 		privateKey: process.env.VAPID_PRIVATE_KEY || "",
 		email: process.env.ADMIN_EMAIL || "admin@example.com",
+	},
+
+	authCookies: {
+		accessTokenName: "bc_access_token",
+		refreshTokenName: "bc_refresh_token",
+		path: "/",
+		domain: "",
+		sameSite: "Strict" as const,
+		secure: isProduction || isHttpsBaseUrl,
 	},
 };

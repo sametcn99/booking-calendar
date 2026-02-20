@@ -6,6 +6,7 @@ import { AdminCredentialRepository } from "../repositories/AdminCredentialReposi
 type AuthTokenPayload = {
 	sub: string;
 	role: "admin";
+	token_type: "access" | "refresh";
 	iat: number;
 	nbf: number;
 	exp: number;
@@ -23,7 +24,11 @@ export class AuthService {
 	async login(
 		username: string,
 		password: string,
-	): Promise<{ token: string; mustChangePassword: boolean } | null> {
+	): Promise<{
+		accessToken: string;
+		refreshToken: string;
+		mustChangePassword: boolean;
+	} | null> {
 		if (username !== config.admin.username) {
 			return null;
 		}
@@ -37,11 +42,21 @@ export class AuthService {
 			return null;
 		}
 
-		const token = await this.createToken(username);
+		const accessToken = await this.createAccessToken(username);
+		const refreshToken = await this.createRefreshToken(username);
 		return {
-			token,
+			accessToken,
+			refreshToken,
 			mustChangePassword: credential.is_default_password,
 		};
+	}
+
+	async getMustChangePassword(username: string): Promise<boolean> {
+		if (username !== config.admin.username) {
+			return false;
+		}
+		const credential = await this.ensureAdminCredential();
+		return credential.is_default_password;
 	}
 
 	async changePassword(
@@ -77,14 +92,54 @@ export class AuthService {
 	}
 
 	async verifyToken(token: string): Promise<AuthTokenPayload | null> {
+		return this.verifyJwt(token, "access");
+	}
+
+	async verifyRefreshToken(token: string): Promise<AuthTokenPayload | null> {
+		return this.verifyJwt(token, "refresh");
+	}
+
+	async createAccessToken(username: string): Promise<string> {
+		return this.createToken({
+			username,
+			tokenType: "access",
+			audience: "booking-calendar-admin",
+			expiresInSeconds: config.jwt.accessExpiresInSeconds,
+			secret: config.jwt.secret,
+		});
+	}
+
+	async createRefreshToken(username: string): Promise<string> {
+		return this.createToken({
+			username,
+			tokenType: "refresh",
+			audience: "booking-calendar-admin-refresh",
+			expiresInSeconds: config.jwt.refreshExpiresInSeconds,
+			secret: config.jwt.refreshSecret,
+		});
+	}
+
+	private async verifyJwt(
+		token: string,
+		expectedTokenType: "access" | "refresh",
+	): Promise<AuthTokenPayload | null> {
 		try {
 			const parts = token.split(".");
 			if (parts.length !== 3) return null;
 
 			const [header, payload, signature] = parts;
+			const secret =
+				expectedTokenType === "access"
+					? config.jwt.secret
+					: config.jwt.refreshSecret;
+			const expectedAudience =
+				expectedTokenType === "access"
+					? "booking-calendar-admin"
+					: "booking-calendar-admin-refresh";
 			const validSignature = await this.verifySignature(
 				`${header}.${payload}`,
 				signature,
+				secret,
 			);
 			if (!validSignature) return null;
 
@@ -104,11 +159,12 @@ export class AuthService {
 				typeof decoded.sub !== "string" ||
 				decoded.sub !== config.admin.username ||
 				decoded.role !== "admin" ||
+				decoded.token_type !== expectedTokenType ||
 				typeof decoded.exp !== "number" ||
 				typeof decoded.iat !== "number" ||
 				typeof decoded.nbf !== "number" ||
 				decoded.iss !== config.baseUrl ||
-				decoded.aud !== "booking-calendar-admin"
+				decoded.aud !== expectedAudience
 			) {
 				return null;
 			}
@@ -137,37 +193,44 @@ export class AuthService {
 		return this.credentialRepo.create(config.admin.username, defaultHash);
 	}
 
-	private async createToken(username: string): Promise<string> {
+	private async createToken(input: {
+		username: string;
+		tokenType: "access" | "refresh";
+		audience: string;
+		expiresInSeconds: number;
+		secret: string;
+	}): Promise<string> {
 		const now = Math.floor(Date.now() / 1000);
 		const header = this.base64urlEncodeString(
 			JSON.stringify({ alg: "HS256", typ: "JWT" }),
 		);
 		const payload = this.base64urlEncodeString(
 			JSON.stringify({
-				sub: username,
+				sub: input.username,
 				role: "admin",
+				token_type: input.tokenType,
 				iat: now,
 				nbf: now,
-				exp: now + config.jwt.expiresInSeconds,
+				exp: now + input.expiresInSeconds,
 				iss: config.baseUrl,
-				aud: "booking-calendar-admin",
+				aud: input.audience,
 			}),
 		);
 
-		const signature = await this.sign(`${header}.${payload}`);
+		const signature = await this.sign(`${header}.${payload}`, input.secret);
 		return `${header}.${payload}.${signature}`;
 	}
 
-	private async sign(data: string): Promise<string> {
-		const signature = await this.signRaw(data);
+	private async sign(data: string, secret: string): Promise<string> {
+		const signature = await this.signRaw(data, secret);
 		return this.base64urlEncodeBytes(new Uint8Array(signature));
 	}
 
-	private async signRaw(data: string): Promise<ArrayBuffer> {
+	private async signRaw(data: string, secret: string): Promise<ArrayBuffer> {
 		const encoder = new TextEncoder();
 		const key = await crypto.subtle.importKey(
 			"raw",
-			encoder.encode(config.jwt.secret),
+			encoder.encode(secret),
 			{ name: "HMAC", hash: "SHA-256" },
 			false,
 			["sign"],
@@ -183,8 +246,9 @@ export class AuthService {
 	private async verifySignature(
 		data: string,
 		signature: string,
+		secret: string,
 	): Promise<boolean> {
-		const expected = new Uint8Array(await this.signRaw(data));
+		const expected = new Uint8Array(await this.signRaw(data, secret));
 		const provided = this.base64urlDecodeToBytes(signature);
 
 		if (expected.length !== provided.length) {

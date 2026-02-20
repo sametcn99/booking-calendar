@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useState } from "react";
 import { type ApiVersionInfo, api } from "../../../api";
+import { useAuth } from "../../../context/AuthContext";
 
 interface Params {
 	t: (key: string) => string;
@@ -36,7 +37,7 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [changingPassword, setChangingPassword] = useState(false);
 	const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(false);
-	const [mustChangePassword, setMustChangePassword] = useState(false);
+	const { markPasswordChanged, mustChangePassword } = useAuth();
 	const [savingLanguage, setSavingLanguage] = useState(false);
 	const [adminEmail, setAdminEmail] = useState("");
 	const [savingAdminEmail, setSavingAdminEmail] = useState(false);
@@ -52,12 +53,6 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 	const [versionInfo, setVersionInfo] = useState<ApiVersionInfo | null>(null);
 	const [loadingVersionInfo, setLoadingVersionInfo] = useState(true);
 	const publicVapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
-
-	useEffect(() => {
-		setMustChangePassword(
-			localStorage.getItem("must_change_password") === "true",
-		);
-	}, []);
 
 	useEffect(() => {
 		if (mustChangePassword) setIsPasswordSectionOpen(true);
@@ -115,15 +110,14 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 				setCurrentPassword("");
 				setNewPassword("");
 				setConfirmPassword("");
-				setMustChangePassword(false);
-				localStorage.setItem("must_change_password", "false");
+				markPasswordChanged();
 			} catch (error: unknown) {
 				toaster.negative(getErrorMessage(error, t("common.error")), {});
 			} finally {
 				setChangingPassword(false);
 			}
 		},
-		[confirmPassword, currentPassword, newPassword, t],
+		[confirmPassword, currentPassword, markPasswordChanged, newPassword, t],
 	);
 
 	const handleLanguageChange = useCallback(

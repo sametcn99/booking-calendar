@@ -1,19 +1,39 @@
+import { config } from "../config";
 import { AuthService } from "../services/AuthService";
 
 const authService = new AuthService();
 
+function parseCookies(cookieHeader: string | null): Map<string, string> {
+	const map = new Map<string, string>();
+	if (!cookieHeader) return map;
+
+	for (const part of cookieHeader.split(";")) {
+		const [rawKey, ...rawValue] = part.trim().split("=");
+		if (!rawKey || rawValue.length === 0) continue;
+		map.set(rawKey, decodeURIComponent(rawValue.join("=")));
+	}
+
+	return map;
+}
+
 export async function extractToken(request: Request): Promise<string | null> {
 	const authHeader = request.headers.get("authorization");
-	if (!authHeader) {
-		return null;
+	if (authHeader) {
+		const parts = authHeader.split(" ");
+		if (parts.length === 2 && parts[0] === "Bearer" && parts[1].trim()) {
+			return parts[1].trim();
+		}
 	}
 
-	const parts = authHeader.split(" ");
-	if (parts.length !== 2 || parts[0] !== "Bearer" || !parts[1].trim()) {
-		return null;
-	}
+	const cookies = parseCookies(request.headers.get("cookie"));
+	const accessToken = cookies.get(config.authCookies.accessTokenName);
+	return accessToken?.trim() ? accessToken.trim() : null;
+}
 
-	return parts[1].trim();
+export function extractRefreshToken(request: Request): string | null {
+	const cookies = parseCookies(request.headers.get("cookie"));
+	const refreshToken = cookies.get(config.authCookies.refreshTokenName);
+	return refreshToken?.trim() ? refreshToken.trim() : null;
 }
 
 export async function getAuthenticatedUser(

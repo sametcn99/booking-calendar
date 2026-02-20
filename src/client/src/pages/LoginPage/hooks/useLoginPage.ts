@@ -23,11 +23,7 @@ export function useLoginPage(t: (key: string) => string) {
 
 		try {
 			const result = await api.login(username, password);
-			localStorage.setItem(
-				"must_change_password",
-				String(result.data.must_change_password),
-			);
-			login(result.data.token);
+			login(result.data.must_change_password);
 			navigate("/admin");
 		} catch (err: unknown) {
 			setError(getErrorMessage(err, t("login.error")));

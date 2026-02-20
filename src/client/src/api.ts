@@ -76,7 +76,11 @@ export interface ApiCommunityEvent {
 }
 
 export interface LoginResponseData {
-	token: string;
+	must_change_password: boolean;
+}
+
+export interface AuthSessionResponseData {
+	authenticated: boolean;
 	must_change_password: boolean;
 }
 
@@ -89,32 +93,65 @@ export interface ApiVersionInfo {
 	update_available: boolean;
 }
 
+async function parseApiResponse<T>(response: Response): Promise<T> {
+	const text = await response.text();
+	const parsed = text ? (JSON.parse(text) as Record<string, unknown>) : {};
+
+	if (!response.ok) {
+		const errorMessage =
+			typeof parsed.error === "string" && parsed.error.length > 0
+				? parsed.error
+				: "An error occurred";
+		throw new Error(errorMessage);
+	}
+
+	return parsed as T;
+}
+
+async function refreshAuthSession(): Promise<boolean> {
+	try {
+		const response = await fetch(`${API_BASE}/auth/refresh`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			credentials: "include",
+		});
+		return response.ok;
+	} catch {
+		return false;
+	}
+}
+
 async function request<T>(
 	endpoint: string,
 	options: RequestInit = {},
+	allowRefresh = true,
 ): Promise<T> {
-	const token = localStorage.getItem("auth_token");
 	const headers: Record<string, string> = {
 		"Content-Type": "application/json",
 		...(options.headers as Record<string, string>),
 	};
 
-	if (token) {
-		headers.Authorization = `Bearer ${token}`;
-	}
-
 	const response = await fetch(`${API_BASE}${endpoint}`, {
 		...options,
 		headers,
+		credentials: "include",
 	});
 
-	const data = await response.json();
-
-	if (!response.ok) {
-		throw new Error(data.error || "An error occurred");
+	if (
+		response.status === 401 &&
+		allowRefresh &&
+		endpoint !== "/auth/login" &&
+		endpoint !== "/auth/refresh" &&
+		endpoint !== "/auth/session" &&
+		endpoint !== "/auth/logout"
+	) {
+		const refreshed = await refreshAuthSession();
+		if (refreshed) {
+			return request<T>(endpoint, options, false);
+		}
 	}
 
-	return data;
+	return parseApiResponse<T>(response);
 }
 
 // Auth
@@ -124,6 +161,14 @@ export const api = {
 			method: "POST",
 			body: JSON.stringify({ username, password }),
 		}),
+
+	getAuthSession: () =>
+		request<{ success: boolean; data: AuthSessionResponseData }>(
+			"/auth/session",
+		),
+
+	logout: () =>
+		request<{ success: boolean }>("/auth/logout", { method: "POST" }),
 
 	changePassword: (current_password: string, new_password: string) =>
 		request<{ success: boolean; data: { changed: boolean } }>(

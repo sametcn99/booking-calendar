@@ -1,43 +1,88 @@
 import type React from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../api";
 
 interface AuthContextType {
-	token: string | null;
 	isAuthenticated: boolean;
-	login: (token: string) => void;
-	logout: () => void;
+	isLoading: boolean;
+	mustChangePassword: boolean;
+	login: (mustChangePassword: boolean) => void;
+	logout: () => Promise<void>;
+	markPasswordChanged: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
-	token: null,
 	isAuthenticated: false,
-	login: () => {},
-	logout: () => {},
+	isLoading: true,
+	mustChangePassword: false,
+	login: () => {
+		return;
+	},
+	logout: async () => {
+		return;
+	},
+	markPasswordChanged: () => {
+		return;
+	},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-	const [token, setToken] = useState<string | null>(() =>
-		localStorage.getItem("auth_token"),
-	);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+	const [mustChangePassword, setMustChangePassword] = useState(false);
 
-	const login = (newToken: string) => {
-		localStorage.setItem("auth_token", newToken);
-		setToken(newToken);
+	useEffect(() => {
+		let isMounted = true;
+
+		api
+			.getAuthSession()
+			.then((result) => {
+				if (!isMounted) return;
+				setIsAuthenticated(result.data.authenticated);
+				setMustChangePassword(result.data.must_change_password);
+			})
+			.catch(() => {
+				if (!isMounted) return;
+				setIsAuthenticated(false);
+				setMustChangePassword(false);
+			})
+			.finally(() => {
+				if (!isMounted) return;
+				setIsLoading(false);
+			});
+
+		return () => {
+			isMounted = false;
+		};
+	}, []);
+
+	const login = (mustChange: boolean) => {
+		setIsAuthenticated(true);
+		setMustChangePassword(mustChange);
 	};
 
-	const logout = () => {
-		localStorage.removeItem("auth_token");
-		localStorage.removeItem("must_change_password");
-		setToken(null);
+	const logout = async () => {
+		try {
+			await api.logout();
+		} finally {
+			setIsAuthenticated(false);
+			setMustChangePassword(false);
+		}
+	};
+
+	const markPasswordChanged = () => {
+		setMustChangePassword(false);
 	};
 
 	return (
 		<AuthContext.Provider
 			value={{
-				token,
-				isAuthenticated: !!token,
+				isAuthenticated,
+				isLoading,
+				mustChangePassword,
 				login,
 				logout,
+				markPasswordChanged,
 			}}
 		>
 			{children}

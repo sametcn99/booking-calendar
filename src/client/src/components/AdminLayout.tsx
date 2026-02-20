@@ -39,8 +39,8 @@ export default function AdminLayout() {
 		{ label: t("nav.settings"), path: "/admin/settings", icon: Settings },
 	];
 
-	const handleLogout = () => {
-		logout();
+	const handleLogout = async () => {
+		await logout();
 		navigate("/login");
 	};
 
@@ -191,8 +191,8 @@ export default function AdminLayout() {
 						<Button
 							kind={KIND.tertiary}
 							size={SIZE.compact}
-							onClick={() => {
-								handleLogout();
+							onClick={async () => {
+								await handleLogout();
 								if (isExpanded) setIsExpanded(false);
 							}}
 							overrides={{
