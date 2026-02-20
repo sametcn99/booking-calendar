@@ -18,6 +18,8 @@ You are a frontend specialist for booking-calendar.
 - Avoid introducing inconsistent UI patterns.
 - Prefer existing API client patterns in `src/client/src/api.ts`.
 - Keep mobile and desktop behavior stable.
+- Keep admin list pages (`AppointmentsPage`, `LinksPage`, `EventsPage`) consistent in header/action placement and list-card structure.
+- Prefer modal-based create flows for admin pages when matching existing UX.
 
 ## Workflow
 

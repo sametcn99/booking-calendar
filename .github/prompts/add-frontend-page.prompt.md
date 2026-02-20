@@ -13,6 +13,8 @@ Requirements:
 - Use centralized API helpers in `src/client/src/api.ts` where possible.
 - Keep desktop and mobile usability in mind.
 - Preserve existing visual language and avoid unrelated design-system drift.
+- For admin list pages, align header/action layout with existing `Appointments`, `Links`, and `Events` pages.
+- Prefer modal-based create/edit forms on admin pages unless an inline form is explicitly requested.
 
 Expected output:
 

@@ -44,6 +44,7 @@
 - Respect route declaration order in `src/server/index.ts`; generic dynamic routes can shadow specific routes.
 - Read environment values through `src/server/config.ts` conventions. Do not assume `dotenv`; this project uses a custom `.env` loader.
 - Treat `VITE_*` variables as build-time client variables. Rebuild frontend when they change.
+- Keep admin frontend pages (`Appointments`, `Links`, `Events`) aligned in layout and interactions; prefer header-level primary actions and modal-based create forms.
 - No dedicated automated test suite is configured yet. Always run `bun run check` before finishing substantial code changes.
 
 ## Key References
