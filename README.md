@@ -101,32 +101,32 @@ bun run dev:client
 
 The table below matches `.env.example`.
 
-| Variable | Description | Example |
-|---|---|---|
-| `PORT` | Backend port | `3000` |
-| `HOST` | Backend bind address | `0.0.0.0` |
-| `BASE_URL` | Public base URL (critical for email links) | `https://book.example.com` |
-| `ADMIN_USERNAME` | Initial admin username | `admin` |
-| `ADMIN_PASSWORD` | Initial admin password | `strong-password` |
-| `JWT_SECRET` | JWT signing secret (must be strong and long) | `change-me` |
-| `SMTP_HOST` | SMTP server hostname | `smtp.example.com` |
-| `SMTP_PORT` | SMTP port | `587` |
-| `SMTP_USER` | SMTP username | `noreply@example.com` |
-| `SMTP_PASS` | SMTP password | `...` |
-| `SMTP_FROM` | Sender address | `Booking <noreply@example.com>` |
-| `DB_PATH` | Database file path | `./data/booking.db` |
-| `RATE_LIMIT_WINDOW_MS` | Rate-limit window in ms | `60000` |
-| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `30` |
-| `VITE_VAPID_PUBLIC_KEY` | Public VAPID key used by browser push subscription (build-time) | `BEl...` |
-| `VAPID_PRIVATE_KEY` | Private VAPID key used by server to send Web Push | `2Vw...` |
-| `VITE_PUBLIC_URL` | Canonical/public app URL used for SEO tags | `https://book.example.com` |
-| `VITE_SEO_LANG` | HTML `lang` value | `en` |
-| `VITE_SEO_TITLE` | SEO page title | `Booking Calendar` |
-| `VITE_SEO_DESCRIPTION` | SEO meta description | `Personal booking calendar` |
-| `VITE_SEO_KEYWORDS` | SEO meta keywords | `booking,calendar,appointments,self-hosted` |
-| `VITE_SEO_AUTHOR` | SEO author metadata | `Booking Calendar` |
-| `VITE_SEO_OG_TYPE` | Open Graph type | `website` |
-| `VITE_SEO_TWITTER_CARD` | Twitter card type | `summary` |
+| Variable                  | Description                                                     | Example                                     |
+| ------------------------- | --------------------------------------------------------------- | ------------------------------------------- |
+| `PORT`                    | Backend port                                                    | `3000`                                      |
+| `HOST`                    | Backend bind address                                            | `0.0.0.0`                                   |
+| `BASE_URL`                | Public base URL (critical for email links)                      | `https://book.example.com`                  |
+| `ADMIN_USERNAME`          | Initial admin username                                          | `admin`                                     |
+| `ADMIN_PASSWORD`          | Initial admin password                                          | `strong-password`                           |
+| `JWT_SECRET`              | JWT signing secret (must be strong and long)                    | `change-me`                                 |
+| `SMTP_HOST`               | SMTP server hostname                                            | `smtp.example.com`                          |
+| `SMTP_PORT`               | SMTP port                                                       | `587`                                       |
+| `SMTP_USER`               | SMTP username                                                   | `noreply@example.com`                       |
+| `SMTP_PASS`               | SMTP password                                                   | `...`                                       |
+| `SMTP_FROM`               | Sender address                                                  | `Booking <noreply@example.com>`             |
+| `DB_PATH`                 | Database file path                                              | `./data/booking.db`                         |
+| `RATE_LIMIT_WINDOW_MS`    | Rate-limit window in ms                                         | `60000`                                     |
+| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window                                         | `30`                                        |
+| `VITE_VAPID_PUBLIC_KEY`   | Public VAPID key used by browser push subscription (build-time) | `BEl...`                                    |
+| `VAPID_PRIVATE_KEY`       | Private VAPID key used by server to send Web Push               | `2Vw...`                                    |
+| `VITE_PUBLIC_URL`         | Canonical/public app URL used for SEO tags                      | `https://book.example.com`                  |
+| `VITE_SEO_LANG`           | HTML `lang` value                                               | `en`                                        |
+| `VITE_SEO_TITLE`          | SEO page title                                                  | `Booking Calendar`                          |
+| `VITE_SEO_DESCRIPTION`    | SEO meta description                                            | `Personal booking calendar`                 |
+| `VITE_SEO_KEYWORDS`       | SEO meta keywords                                               | `booking,calendar,appointments,self-hosted` |
+| `VITE_SEO_AUTHOR`         | SEO author metadata                                             | `Booking Calendar`                          |
+| `VITE_SEO_OG_TYPE`        | Open Graph type                                                 | `website`                                   |
+| `VITE_SEO_TWITTER_CARD`   | Twitter card type                                               | `summary`                                   |
 
 Notes:
 

@@ -1,0 +1,13 @@
+{
+	"hooks": {
+		"PreToolUse": [
+			{
+				"type": "command",
+				"windows": "bun run scripts/hooks/pretool-guard.ts",
+				"linux": "bun run scripts/hooks/pretool-guard.ts",
+				"osx": "bun run scripts/hooks/pretool-guard.ts",
+				"timeout": 8
+			}
+		]
+	}
+}
