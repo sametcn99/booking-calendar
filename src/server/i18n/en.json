@@ -1,0 +1,116 @@
+{
+	"error": {
+		"unexpected": "Unexpected error"
+	},
+	"auth": {
+		"usernamePasswordRequired": "Username and password are required",
+		"tooManyAttempts": "Too many failed login attempts. Try again later",
+		"invalidCredentials": "Invalid credentials",
+		"passwordFieldsRequired": "Current password and new password are required",
+		"passwordMinLength": "New password must be at least 10 characters",
+		"passwordComplexity": "New password must include uppercase, lowercase, and a number",
+		"unauthorized": "Unauthorized",
+		"currentPasswordIncorrect": "Current password is incorrect",
+		"passwordMustDiffer": "New password must be different from current password"
+	},
+	"slot": {
+		"nameAndDatesRequired": "Slot name, start time, and end time are required",
+		"nameRequired": "Slot name is required",
+		"datesRequired": "Start and end time are required",
+		"invalidDate": "Invalid date format",
+		"endAfterStart": "End time must be after start time",
+		"notFound": "Slot not found"
+	},
+	"appointment": {
+		"fieldsRequired": "Slot, name, start time, and end time are required",
+		"invalidEmail": "Invalid email format",
+		"invalidBookingLink": "Invalid or expired booking link",
+		"slotNotAvailable": "Slot is not available",
+		"slotNotAllowedForLink": "Selected slot is not available for this booking link",
+		"invalidDateRange": "Invalid appointment date range",
+		"endAfterStart": "Appointment end time must be after start time",
+		"outsideSlot": "Appointment must be within the selected availability slot",
+		"overlap": "Selected time range overlaps with another appointment",
+		"loadError": "Appointment could not be loaded after creation",
+		"notFound": "Appointment not found",
+		"deleteOnlyPastOrCanceled": "Only past or canceled appointments can be deleted",
+		"alreadyCanceled": "Appointment is already canceled",
+		"invalidCancelLink": "Invalid cancellation link"
+	},
+	"link": {
+		"invalidToken": "Invalid or expired token",
+		"notFound": "Link not found",
+		"slotSelectionRequired": "At least one slot must be selected",
+		"invalidSlots": "Invalid slot selection",
+		"defaultNamePrefix": "Untitled Link"
+	},
+	"general": {
+		"tooManyRequests": "Too many requests",
+		"invalidRoute": "Invalid route parameter",
+		"unauthorized": "Unauthorized",
+		"notFound": "Not found",
+		"forbidden": "Forbidden",
+		"invalidEmail": "Invalid email format",
+		"isActiveRequired": "is_active is required",
+		"invalidLanguage": "Invalid language. Supported: en, tr",
+		"invalidRequest": "Invalid request"
+	},
+	"cancelPage": {
+		"successTitle": "Appointment Canceled",
+		"successMessage": "Your appointment has been successfully canceled.",
+		"failTitle": "Cancellation Failed",
+		"failDefault": "The operation could not be completed"
+	},
+	"mail": {
+		"common": {},
+		"confirmation": {
+			"subject": "Your Appointment is Confirmed",
+			"title": "Appointment Confirmed!",
+			"greeting": "Hi",
+			"message": "your appointment has been successfully booked. An ICS calendar file is attached below.",
+			"startTime": "Start Time",
+			"endTime": "End Time",
+			"meetingPlace": "Meeting Place",
+			"note": "Note",
+			"cancelBtn": "Cancel Appointment"
+		},
+		"adminNotification": {
+			"subject": "New Booking",
+			"title": "New Appointment Booked",
+			"message": "A new appointment has been scheduled by a client. Details are provided below.",
+			"clientName": "Client Name",
+			"clientEmail": "Client Email",
+			"startTime": "Start Time",
+			"endTime": "End Time",
+			"meetingPlace": "Meeting Place",
+			"note": "Note",
+			"cancelBtn": "Cancel Appointment (Admin)"
+		},
+		"cancellation": {
+			"subject": "Appointment Canceled",
+			"title": "Appointment Canceled",
+			"message": "The following appointment has been canceled by",
+			"clientName": "Client Name",
+			"clientEmail": "Client Email",
+			"startTime": "Start Time",
+			"endTime": "End Time",
+			"meetingPlace": "Meeting Place",
+			"note": "Note",
+			"canceledByAdmin": "admin",
+			"canceledByUser": "appointment owner"
+		}
+	},
+	"planner": {
+		"fieldsRequired": "Event title, start time, and end time are required",
+		"notFound": "Planner event not found"
+	},
+	"push": {
+		"vapidNotConfigured": "VAPID keys not configured. Push notifications are disabled.",
+		"invalidSubscription": "Invalid push subscription",
+		"subscriptionSaved": "Push subscription saved",
+		"newBookingTitle": "New Booking",
+		"newBookingBody": "A new appointment has been booked by",
+		"cancellationTitle": "Appointment Canceled",
+		"cancellationBody": "An appointment has been canceled by"
+	}
+}

@@ -1,0 +1,65 @@
+# Coolify bu dosyayı tarayarak ${VAR:-default} kalıplarını otomatik olarak
+# Environment Variables arayüzünde gösterir.
+#
+# VITE_* değişkenleri build-time'dır (bundle'a gömülür); değiştirmek için
+# yeni bir build tetiklemek gerekir.
+
+services:
+  app:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # VITE_* değerleri Vite build sırasında bundle'a gömülür.
+      # Coolify UI'ındaki environment değişkenlerini değiştirdiğinizde
+      # yeni bir deploy (rebuild) gerektirir.
+      args:
+        VITE_SEO_TITLE: ${VITE_SEO_TITLE:-Booking Calendar}
+        VITE_SEO_DESCRIPTION: ${VITE_SEO_DESCRIPTION:-Personal booking calendar}
+        VITE_SEO_LANG: ${VITE_SEO_LANG:-en}
+        VITE_SEO_KEYWORDS: ${VITE_SEO_KEYWORDS:-booking,calendar,appointments,self-hosted}
+        VITE_SEO_AUTHOR: ${VITE_SEO_AUTHOR:-Booking Calendar}
+        VITE_SEO_OG_TYPE: ${VITE_SEO_OG_TYPE:-website}
+        VITE_SEO_TWITTER_CARD: ${VITE_SEO_TWITTER_CARD:-summary}
+        VITE_PUBLIC_URL: ${VITE_PUBLIC_URL:-}
+        VITE_VAPID_PUBLIC_KEY: ${VITE_VAPID_PUBLIC_KEY:-}
+    restart: unless-stopped
+    expose:
+      - "${PORT:-3000}"
+    environment:
+      # ── Runtime ──────────────────────────────────────────────────────────
+      NODE_ENV: production
+      PORT: ${PORT:-3000}
+      HOST: ${HOST:-0.0.0.0}
+      BASE_URL: ${BASE_URL:-http://localhost:3000}
+
+      # ── Admin credentials ─────────────────────────────────────────────────
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme}
+
+      # ── JWT ───────────────────────────────────────────────────────────────
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production}
+
+      # ── SMTP (boş bırakılırsa e-posta gönderimleri atlanır) ────────────────
+      SMTP_HOST: ${SMTP_HOST:-smtp.example.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+
+      # ── Database ──────────────────────────────────────────────────────────
+      DB_PATH: ${DB_PATH:-/app/data/booking.db}
+
+      # ── Rate limiting ─────────────────────────────────────────────────────
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-300}
+
+      # ── Web Push (VAPID) ────────────────────────────────────────────────
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+    volumes:
+      - booking_data:/app/data
+
+volumes:
+  booking_data:
+    driver: local

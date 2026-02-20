@@ -1,0 +1,32 @@
+{
+	"name": "booking-calendar",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"dev:server": "bun run --watch src/server/index.ts",
+		"dev:client": "cd src/client && bun run dev",
+		"dev": "concurrently \"bun run dev:server\" \"bun run dev:client\"",
+		"build:client": "cd src/client && bun run build",
+		"build": "bun run build:client",
+		"start": "NODE_ENV=production bun run src/server/index.ts",
+		"db:init": "bun run src/server/db/init.ts",
+		"generate-vapid-keys": "bun run src/server/generate-vapid-keys.ts",
+		"check": "bunx biome check --write --unsafe"
+	},
+	"dependencies": {
+		"@types/web-push": "^3.6.4",
+		"concurrently": "^9.2.1",
+		"handlebars": "^4.7.8",
+		"nodemailer": "^8.0.1",
+		"reflect-metadata": "^0.2.2",
+		"sql.js": "^1.14.0",
+		"typeorm": "^0.3.28",
+		"web-push": "^3.6.7"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.3",
+		"@types/nodemailer": "^7.0.10",
+		"bun-types": "^1.3.9",
+		"typescript": "^5.9.3"
+	}
+}

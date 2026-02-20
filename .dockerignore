@@ -1,0 +1,30 @@
+# Dependencies
+**/node_modules
+
+# Build outputs (builder stage'de yeniden oluşturulur)
+src/client/dist
+
+# Environment files (Coolify/Docker env vars üzerinden geçilir)
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+.github
+
+# IDE / Editor
+.vscode
+.idea
+
+# Logs & temp files
+*.log
+*.tmp
+
+# Local data directory
+data/
+
+# OS
+.DS_Store
+Thumbs.db

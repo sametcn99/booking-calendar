@@ -1,0 +1,462 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"error": {
+			"type": "object",
+			"properties": {
+				"unexpected": {
+					"type": "string"
+				}
+			},
+			"required": ["unexpected"],
+			"additionalProperties": false
+		},
+		"auth": {
+			"type": "object",
+			"properties": {
+				"usernamePasswordRequired": {
+					"type": "string"
+				},
+				"tooManyAttempts": {
+					"type": "string"
+				},
+				"invalidCredentials": {
+					"type": "string"
+				},
+				"passwordFieldsRequired": {
+					"type": "string"
+				},
+				"passwordMinLength": {
+					"type": "string"
+				},
+				"passwordComplexity": {
+					"type": "string"
+				},
+				"unauthorized": {
+					"type": "string"
+				},
+				"currentPasswordIncorrect": {
+					"type": "string"
+				},
+				"passwordMustDiffer": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"usernamePasswordRequired",
+				"tooManyAttempts",
+				"invalidCredentials",
+				"passwordFieldsRequired",
+				"passwordMinLength",
+				"passwordComplexity",
+				"unauthorized",
+				"currentPasswordIncorrect",
+				"passwordMustDiffer"
+			],
+			"additionalProperties": false
+		},
+		"slot": {
+			"type": "object",
+			"properties": {
+				"nameAndDatesRequired": {
+					"type": "string"
+				},
+				"nameRequired": {
+					"type": "string"
+				},
+				"datesRequired": {
+					"type": "string"
+				},
+				"invalidDate": {
+					"type": "string"
+				},
+				"endAfterStart": {
+					"type": "string"
+				},
+				"notFound": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"nameAndDatesRequired",
+				"nameRequired",
+				"datesRequired",
+				"invalidDate",
+				"endAfterStart",
+				"notFound"
+			],
+			"additionalProperties": false
+		},
+		"appointment": {
+			"type": "object",
+			"properties": {
+				"fieldsRequired": {
+					"type": "string"
+				},
+				"invalidEmail": {
+					"type": "string"
+				},
+				"invalidBookingLink": {
+					"type": "string"
+				},
+				"slotNotAvailable": {
+					"type": "string"
+				},
+				"slotNotAllowedForLink": {
+					"type": "string"
+				},
+				"invalidDateRange": {
+					"type": "string"
+				},
+				"endAfterStart": {
+					"type": "string"
+				},
+				"outsideSlot": {
+					"type": "string"
+				},
+				"overlap": {
+					"type": "string"
+				},
+				"loadError": {
+					"type": "string"
+				},
+				"notFound": {
+					"type": "string"
+				},
+				"deleteOnlyPastOrCanceled": {
+					"type": "string"
+				},
+				"alreadyCanceled": {
+					"type": "string"
+				},
+				"invalidCancelLink": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"fieldsRequired",
+				"invalidEmail",
+				"invalidBookingLink",
+				"slotNotAvailable",
+				"slotNotAllowedForLink",
+				"invalidDateRange",
+				"endAfterStart",
+				"outsideSlot",
+				"overlap",
+				"loadError",
+				"notFound",
+				"deleteOnlyPastOrCanceled",
+				"alreadyCanceled",
+				"invalidCancelLink"
+			],
+			"additionalProperties": false
+		},
+		"link": {
+			"type": "object",
+			"properties": {
+				"invalidToken": {
+					"type": "string"
+				},
+				"notFound": {
+					"type": "string"
+				},
+				"slotSelectionRequired": {
+					"type": "string"
+				},
+				"invalidSlots": {
+					"type": "string"
+				},
+				"defaultNamePrefix": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"invalidToken",
+				"notFound",
+				"slotSelectionRequired",
+				"invalidSlots",
+				"defaultNamePrefix"
+			],
+			"additionalProperties": false
+		},
+		"general": {
+			"type": "object",
+			"properties": {
+				"tooManyRequests": {
+					"type": "string"
+				},
+				"invalidRoute": {
+					"type": "string"
+				},
+				"unauthorized": {
+					"type": "string"
+				},
+				"notFound": {
+					"type": "string"
+				},
+				"forbidden": {
+					"type": "string"
+				},
+				"invalidEmail": {
+					"type": "string"
+				},
+				"isActiveRequired": {
+					"type": "string"
+				},
+				"invalidLanguage": {
+					"type": "string"
+				},
+				"invalidRequest": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"tooManyRequests",
+				"invalidRoute",
+				"unauthorized",
+				"notFound",
+				"forbidden",
+				"invalidEmail",
+				"isActiveRequired",
+				"invalidLanguage",
+				"invalidRequest"
+			],
+			"additionalProperties": false
+		},
+		"cancelPage": {
+			"type": "object",
+			"properties": {
+				"successTitle": {
+					"type": "string"
+				},
+				"successMessage": {
+					"type": "string"
+				},
+				"failTitle": {
+					"type": "string"
+				},
+				"failDefault": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"successTitle",
+				"successMessage",
+				"failTitle",
+				"failDefault"
+			],
+			"additionalProperties": false
+		},
+		"mail": {
+			"type": "object",
+			"properties": {
+				"common": {
+					"type": "object",
+					"properties": {},
+					"required": [],
+					"additionalProperties": false
+				},
+				"confirmation": {
+					"type": "object",
+					"properties": {
+						"subject": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"greeting": {
+							"type": "string"
+						},
+						"message": {
+							"type": "string"
+						},
+						"startTime": {
+							"type": "string"
+						},
+						"endTime": {
+							"type": "string"
+						},
+						"meetingPlace": {
+							"type": "string"
+						},
+						"note": {
+							"type": "string"
+						},
+						"cancelBtn": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"subject",
+						"title",
+						"greeting",
+						"message",
+						"startTime",
+						"endTime",
+						"meetingPlace",
+						"note",
+						"cancelBtn"
+					],
+					"additionalProperties": false
+				},
+				"adminNotification": {
+					"type": "object",
+					"properties": {
+						"subject": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"message": {
+							"type": "string"
+						},
+						"clientName": {
+							"type": "string"
+						},
+						"clientEmail": {
+							"type": "string"
+						},
+						"startTime": {
+							"type": "string"
+						},
+						"endTime": {
+							"type": "string"
+						},
+						"meetingPlace": {
+							"type": "string"
+						},
+						"note": {
+							"type": "string"
+						},
+						"cancelBtn": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"subject",
+						"title",
+						"message",
+						"clientName",
+						"clientEmail",
+						"startTime",
+						"endTime",
+						"meetingPlace",
+						"note",
+						"cancelBtn"
+					],
+					"additionalProperties": false
+				},
+				"cancellation": {
+					"type": "object",
+					"properties": {
+						"subject": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"message": {
+							"type": "string"
+						},
+						"clientName": {
+							"type": "string"
+						},
+						"clientEmail": {
+							"type": "string"
+						},
+						"startTime": {
+							"type": "string"
+						},
+						"endTime": {
+							"type": "string"
+						},
+						"meetingPlace": {
+							"type": "string"
+						},
+						"note": {
+							"type": "string"
+						},
+						"canceledByAdmin": {
+							"type": "string"
+						},
+						"canceledByUser": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"subject",
+						"title",
+						"message",
+						"clientName",
+						"clientEmail",
+						"startTime",
+						"endTime",
+						"meetingPlace",
+						"note",
+						"canceledByAdmin",
+						"canceledByUser"
+					],
+					"additionalProperties": false
+				}
+			},
+			"required": [
+				"common",
+				"confirmation",
+				"adminNotification",
+				"cancellation"
+			],
+			"additionalProperties": false
+		},
+		"push": {
+			"type": "object",
+			"properties": {
+				"vapidNotConfigured": {
+					"type": "string"
+				},
+				"invalidSubscription": {
+					"type": "string"
+				},
+				"subscriptionSaved": {
+					"type": "string"
+				},
+				"newBookingTitle": {
+					"type": "string"
+				},
+				"newBookingBody": {
+					"type": "string"
+				},
+				"cancellationTitle": {
+					"type": "string"
+				},
+				"cancellationBody": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"vapidNotConfigured",
+				"invalidSubscription",
+				"subscriptionSaved",
+				"newBookingTitle",
+				"newBookingBody",
+				"cancellationTitle",
+				"cancellationBody"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"error",
+		"auth",
+		"slot",
+		"appointment",
+		"link",
+		"general",
+		"cancelPage",
+		"mail",
+		"push"
+	],
+	"additionalProperties": false
+}

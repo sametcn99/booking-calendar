@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #e0d6f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #0a0a0a;
+      padding: 40px 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 32px 24px;
+      text-align: center;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .header h1 {
+      color: #a78bfa;
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .content {
+      padding: 32px 24px;
+    }
+
+    .greeting {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .message {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      color: #b8a9d4;
+    }
+
+    .details-card {
+      background-color: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .detail-item {
+      margin-bottom: 12px;
+    }
+
+    .detail-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b7aab;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      color: #e0d6f0;
+      font-weight: 500;
+    }
+
+    .actions {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .button-cancel {
+      display: inline-block;
+      background-color: #3b1025;
+      color: #fca5a5;
+      border: 1px solid #581c32;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 20px;
+      transition: background-color 0.2s;
+    }
+
+    .button-cancel:hover {
+      background-color: #4c162e;
+    }
+
+
+    @media only screen and (max-width: 600px) {
+      .container {
+        width: 100% !important;
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <h1>Booking Calendar</h1>
+      </div>
+      <div class="content">
+        <div class="greeting">{{t.title}}</div>
+        <div class="message">
+          {{t.message}}
+        </div>
+
+        <div class="details-card">
+          <div class="detail-item">
+            <div class="detail-label">{{t.clientName}}</div>
+            <div class="detail-value">{{name}}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">{{t.clientEmail}}</div>
+            <div class="detail-value">{{emailDisplay}}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">{{t.startTime}}</div>
+            <div class="detail-value">{{start}}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">{{t.endTime}}</div>
+            <div class="detail-value">{{end}}</div>
+          </div>
+          {{#if meetingPlace}}
+          <div class="detail-item">
+            <div class="detail-label">{{t.meetingPlace}}</div>
+            <div class="detail-value">{{meetingPlace}}</div>
+          </div>
+          {{/if}}
+          {{#if note}}
+          <div class="detail-item">
+            <div class="detail-label">{{t.note}}</div>
+            <div class="detail-value">{{note}}</div>
+          </div>
+          {{/if}}
+        </div>
+
+        {{#if cancelUrl}}
+        <div class="actions">
+          <a href="{{cancelUrl}}" class="button button-cancel">
+            {{t.cancelBtn}}
+          </a>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

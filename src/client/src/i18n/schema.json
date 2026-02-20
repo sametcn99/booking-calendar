@@ -1,0 +1,854 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"app": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"titleShort": {
+					"type": "string"
+				}
+			},
+			"required": ["title", "titleShort"],
+			"additionalProperties": false
+		},
+		"nav": {
+			"type": "object",
+			"properties": {
+				"dashboard": {
+					"type": "string"
+				},
+				"slots": {
+					"type": "string"
+				},
+				"appointments": {
+					"type": "string"
+				},
+				"links": {
+					"type": "string"
+				},
+				"planner": {
+					"type": "string"
+				},
+				"settings": {
+					"type": "string"
+				},
+				"logout": {
+					"type": "string"
+				},
+				"enableNotifications": {
+					"type": "string"
+				},
+				"notificationsOn": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"dashboard",
+				"slots",
+				"appointments",
+				"links",
+				"planner",
+				"settings",
+				"logout",
+				"enableNotifications",
+				"notificationsOn"
+			],
+			"additionalProperties": false
+		},
+		"login": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"error": {
+					"type": "string"
+				},
+				"username": {
+					"type": "string"
+				},
+				"usernamePlaceholder": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				},
+				"passwordPlaceholder": {
+					"type": "string"
+				},
+				"submit": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"title",
+				"error",
+				"username",
+				"usernamePlaceholder",
+				"password",
+				"passwordPlaceholder",
+				"submit"
+			],
+			"additionalProperties": false
+		},
+		"dashboard": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"calendar": {
+					"type": "object",
+					"properties": {
+						"title": {
+							"type": "string"
+						},
+						"subtitle": {
+							"type": "string"
+						},
+						"availableSlot": {
+							"type": "string"
+						},
+						"availableLegend": {
+							"type": "string"
+						},
+						"appointmentsLegend": {
+							"type": "string"
+						},
+						"next": {
+							"type": "string"
+						},
+						"previous": {
+							"type": "string"
+						},
+						"today": {
+							"type": "string"
+						},
+						"month": {
+							"type": "string"
+						},
+						"week": {
+							"type": "string"
+						},
+						"day": {
+							"type": "string"
+						},
+						"agenda": {
+							"type": "string"
+						},
+						"date": {
+							"type": "string"
+						},
+						"time": {
+							"type": "string"
+						},
+						"event": {
+							"type": "string"
+						},
+						"more": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"email": {
+							"type": "string"
+						},
+						"note": {
+							"type": "string"
+						},
+						"status": {
+							"type": "string"
+						},
+						"timeLabel": {
+							"type": "string"
+						},
+						"close": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"title",
+						"subtitle",
+						"availableSlot",
+						"availableLegend",
+						"appointmentsLegend",
+						"next",
+						"previous",
+						"today",
+						"month",
+						"week",
+						"day",
+						"agenda",
+						"date",
+						"time",
+						"event",
+						"more",
+						"name",
+						"email",
+						"note",
+						"status",
+						"timeLabel",
+						"close"
+					],
+					"additionalProperties": false
+				},
+				"changePasswordWarning": {
+					"type": "string"
+				},
+				"totalSlots": {
+					"type": "string"
+				},
+				"appointments": {
+					"type": "string"
+				},
+				"bookingLinks": {
+					"type": "string"
+				},
+				"changePassword": {
+					"type": "string"
+				},
+				"passwordRequirements": {
+					"type": "string"
+				},
+				"currentPassword": {
+					"type": "string"
+				},
+				"newPassword": {
+					"type": "string"
+				},
+				"confirmPassword": {
+					"type": "string"
+				},
+				"updatePassword": {
+					"type": "string"
+				},
+				"passwordMismatch": {
+					"type": "string"
+				},
+				"passwordChanged": {
+					"type": "string"
+				},
+				"language": {
+					"type": "string"
+				},
+				"languageDescription": {
+					"type": "string"
+				},
+				"languageSaved": {
+					"type": "string"
+				},
+				"adminEmail": {
+					"type": "string"
+				},
+				"adminEmailDescription": {
+					"type": "string"
+				},
+				"adminEmailField": {
+					"type": "string"
+				},
+				"adminEmailPlaceholder": {
+					"type": "string"
+				},
+				"saveAdminEmail": {
+					"type": "string"
+				},
+				"adminEmailSaved": {
+					"type": "string"
+				},
+				"langEn": {
+					"type": "string"
+				},
+				"langTr": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"title",
+				"calendar",
+				"changePasswordWarning",
+				"totalSlots",
+				"appointments",
+				"bookingLinks",
+				"changePassword",
+				"passwordRequirements",
+				"currentPassword",
+				"newPassword",
+				"confirmPassword",
+				"updatePassword",
+				"passwordMismatch",
+				"passwordChanged",
+				"language",
+				"languageDescription",
+				"languageSaved",
+				"adminEmail",
+				"adminEmailDescription",
+				"adminEmailField",
+				"adminEmailPlaceholder",
+				"saveAdminEmail",
+				"adminEmailSaved",
+				"langEn",
+				"langTr"
+			],
+			"additionalProperties": false
+		},
+		"slots": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"addSlot": {
+					"type": "string"
+				},
+				"empty": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"namePlaceholder": {
+					"type": "string"
+				},
+				"saveName": {
+					"type": "string"
+				},
+				"active": {
+					"type": "string"
+				},
+				"inactive": {
+					"type": "string"
+				},
+				"disable": {
+					"type": "string"
+				},
+				"enable": {
+					"type": "string"
+				},
+				"delete": {
+					"type": "string"
+				},
+				"createTitle": {
+					"type": "string"
+				},
+				"startTime": {
+					"type": "string"
+				},
+				"endTime": {
+					"type": "string"
+				},
+				"cancel": {
+					"type": "string"
+				},
+				"create": {
+					"type": "string"
+				},
+				"startEndRequired": {
+					"type": "string"
+				},
+				"nameRequired": {
+					"type": "string"
+				},
+				"created": {
+					"type": "string"
+				},
+				"nameUpdated": {
+					"type": "string"
+				},
+				"updated": {
+					"type": "string"
+				},
+				"deleted": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"title",
+				"addSlot",
+				"empty",
+				"name",
+				"namePlaceholder",
+				"saveName",
+				"active",
+				"inactive",
+				"disable",
+				"enable",
+				"delete",
+				"createTitle",
+				"startTime",
+				"endTime",
+				"cancel",
+				"create",
+				"startEndRequired",
+				"nameRequired",
+				"created",
+				"nameUpdated",
+				"updated",
+				"deleted"
+			],
+			"additionalProperties": false
+		},
+		"appointments": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"all": {
+					"type": "string"
+				},
+				"active": {
+					"type": "string"
+				},
+				"past": {
+					"type": "string"
+				},
+				"canceled": {
+					"type": "string"
+				},
+				"empty": {
+					"type": "string"
+				},
+				"noEmail": {
+					"type": "string"
+				},
+				"pastStatus": {
+					"type": "string"
+				},
+				"canceledBy": {
+					"type": "string"
+				},
+				"unknown": {
+					"type": "string"
+				},
+				"note": {
+					"type": "string"
+				},
+				"meetingPlace": {
+					"type": "string"
+				},
+				"cancelBtn": {
+					"type": "string"
+				},
+				"deleteBtn": {
+					"type": "string"
+				},
+				"appointmentCanceled": {
+					"type": "string"
+				},
+				"appointmentDeleted": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"title",
+				"all",
+				"active",
+				"past",
+				"canceled",
+				"empty",
+				"noEmail",
+				"pastStatus",
+				"canceledBy",
+				"unknown",
+				"note",
+				"meetingPlace",
+				"cancelBtn",
+				"deleteBtn",
+				"appointmentCanceled",
+				"appointmentDeleted"
+			],
+			"additionalProperties": false
+		},
+		"links": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"create": {
+					"type": "string"
+				},
+				"empty": {
+					"type": "string"
+				},
+				"expired": {
+					"type": "string"
+				},
+				"expires": {
+					"type": "string"
+				},
+				"copy": {
+					"type": "string"
+				},
+				"delete": {
+					"type": "string"
+				},
+				"createTitle": {
+					"type": "string"
+				},
+				"linkName": {
+					"type": "string"
+				},
+				"linkNamePlaceholder": {
+					"type": "string"
+				},
+				"expiresInDays": {
+					"type": "string"
+				},
+				"selectSlots": {
+					"type": "string"
+				},
+				"selectAtLeastOneSlot": {
+					"type": "string"
+				},
+				"slotCount": {
+					"type": "string"
+				},
+				"searchSlotsPlaceholder": {
+					"type": "string"
+				},
+				"selectedSummary": {
+					"type": "string"
+				},
+				"selectVisible": {
+					"type": "string"
+				},
+				"clearVisible": {
+					"type": "string"
+				},
+				"visibleSelection": {
+					"type": "string"
+				},
+				"noActiveSlots": {
+					"type": "string"
+				},
+				"noFilteredSlots": {
+					"type": "string"
+				},
+				"shareLink": {
+					"type": "string"
+				},
+				"copyLink": {
+					"type": "string"
+				},
+				"close": {
+					"type": "string"
+				},
+				"createBtn": {
+					"type": "string"
+				},
+				"linkCreated": {
+					"type": "string"
+				},
+				"linkDeleted": {
+					"type": "string"
+				},
+				"copied": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"title",
+				"create",
+				"empty",
+				"expired",
+				"expires",
+				"copy",
+				"delete",
+				"createTitle",
+				"linkName",
+				"linkNamePlaceholder",
+				"expiresInDays",
+				"selectSlots",
+				"selectAtLeastOneSlot",
+				"slotCount",
+				"searchSlotsPlaceholder",
+				"selectedSummary",
+				"selectVisible",
+				"clearVisible",
+				"visibleSelection",
+				"noActiveSlots",
+				"noFilteredSlots",
+				"shareLink",
+				"copyLink",
+				"close",
+				"createBtn",
+				"linkCreated",
+				"linkDeleted",
+				"copied"
+			],
+			"additionalProperties": false
+		},
+		"booking": {
+			"type": "object",
+			"properties": {
+				"loading": {
+					"type": "string"
+				},
+				"invalidTitle": {
+					"type": "string"
+				},
+				"invalidMessage": {
+					"type": "string"
+				},
+				"successTitle": {
+					"type": "string"
+				},
+				"successMessage": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"subtitle": {
+					"type": "string"
+				},
+				"availableTimes": {
+					"type": "string"
+				},
+				"noSlots": {
+					"type": "string"
+				},
+				"yourInfo": {
+					"type": "string"
+				},
+				"startTime": {
+					"type": "string"
+				},
+				"endTime": {
+					"type": "string"
+				},
+				"fullName": {
+					"type": "string"
+				},
+				"fullNamePlaceholder": {
+					"type": "string"
+				},
+				"email": {
+					"type": "string"
+				},
+				"emailHelp": {
+					"type": "string"
+				},
+				"meetingPlace": {
+					"type": "string"
+				},
+				"meetingPlacePlaceholder": {
+					"type": "string"
+				},
+				"note": {
+					"type": "string"
+				},
+				"notePlaceholder": {
+					"type": "string"
+				},
+				"submit": {
+					"type": "string"
+				},
+				"requiredFields": {
+					"type": "string"
+				},
+				"slotNotFound": {
+					"type": "string"
+				},
+				"endAfterStart": {
+					"type": "string"
+				},
+				"outsideSlot": {
+					"type": "string"
+				},
+				"occupiedTimes": {
+					"type": "string"
+				},
+				"noOccupiedTimes": {
+					"type": "string"
+				},
+				"overlapOccupied": {
+					"type": "string"
+				},
+				"slotFullyOccupied": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"loading",
+				"invalidTitle",
+				"invalidMessage",
+				"successTitle",
+				"successMessage",
+				"title",
+				"subtitle",
+				"availableTimes",
+				"noSlots",
+				"yourInfo",
+				"startTime",
+				"endTime",
+				"fullName",
+				"fullNamePlaceholder",
+				"email",
+				"emailHelp",
+				"meetingPlace",
+				"meetingPlacePlaceholder",
+				"note",
+				"notePlaceholder",
+				"submit",
+				"requiredFields",
+				"slotNotFound",
+				"endAfterStart",
+				"outsideSlot",
+				"occupiedTimes",
+				"noOccupiedTimes",
+				"overlapOccupied",
+				"slotFullyOccupied"
+			],
+			"additionalProperties": false
+		},
+		"settings": {
+			"type": "object",
+			"properties": {
+				"title": { "type": "string" },
+				"changePassword": { "type": "string" },
+				"passwordRequirements": { "type": "string" },
+				"currentPassword": { "type": "string" },
+				"newPassword": { "type": "string" },
+				"confirmPassword": { "type": "string" },
+				"updatePassword": { "type": "string" },
+				"passwordMismatch": { "type": "string" },
+				"passwordChanged": { "type": "string" },
+				"changePasswordWarning": { "type": "string" },
+				"language": { "type": "string" },
+				"languageDescription": { "type": "string" },
+				"languageSaved": { "type": "string" },
+				"langEn": { "type": "string" },
+				"langTr": { "type": "string" },
+				"adminEmail": { "type": "string" },
+				"adminEmailDescription": { "type": "string" },
+				"adminEmailField": { "type": "string" },
+				"adminEmailPlaceholder": { "type": "string" },
+				"saveAdminEmail": { "type": "string" },
+				"adminEmailSaved": { "type": "string" },
+				"calendarSharing": { "type": "string" },
+				"calendarSharingDescription": { "type": "string" },
+				"calendarSharingEnabled": { "type": "string" },
+				"calendarSharingDisabled": { "type": "string" },
+				"calendarSharingSaved": { "type": "string" },
+				"publicCalendarLink": { "type": "string" },
+				"copyLink": { "type": "string" },
+				"copied": { "type": "string" }
+			},
+			"required": [
+				"title",
+				"changePassword",
+				"passwordRequirements",
+				"currentPassword",
+				"newPassword",
+				"confirmPassword",
+				"updatePassword",
+				"passwordMismatch",
+				"passwordChanged",
+				"changePasswordWarning",
+				"language",
+				"languageDescription",
+				"languageSaved",
+				"langEn",
+				"langTr",
+				"adminEmail",
+				"adminEmailDescription",
+				"adminEmailField",
+				"adminEmailPlaceholder",
+				"saveAdminEmail",
+				"adminEmailSaved",
+				"calendarSharing",
+				"calendarSharingDescription",
+				"calendarSharingEnabled",
+				"calendarSharingDisabled",
+				"calendarSharingSaved",
+				"publicCalendarLink",
+				"copyLink",
+				"copied"
+			],
+			"additionalProperties": false
+		},
+		"planner": {
+			"type": "object",
+			"properties": {
+				"title": { "type": "string" },
+				"addEvent": { "type": "string" },
+				"empty": { "type": "string" },
+				"eventTitle": { "type": "string" },
+				"eventTitlePlaceholder": { "type": "string" },
+				"description": { "type": "string" },
+				"descriptionPlaceholder": { "type": "string" },
+				"startTime": { "type": "string" },
+				"endTime": { "type": "string" },
+				"color": { "type": "string" },
+				"cancel": { "type": "string" },
+				"create": { "type": "string" },
+				"save": { "type": "string" },
+				"delete": { "type": "string" },
+				"edit": { "type": "string" },
+				"createTitle": { "type": "string" },
+				"editTitle": { "type": "string" },
+				"created": { "type": "string" },
+				"updated": { "type": "string" },
+				"deleted": { "type": "string" },
+				"fieldsRequired": { "type": "string" },
+				"plannerLegend": { "type": "string" }
+			},
+			"required": [
+				"title",
+				"addEvent",
+				"empty",
+				"eventTitle",
+				"eventTitlePlaceholder",
+				"description",
+				"descriptionPlaceholder",
+				"startTime",
+				"endTime",
+				"color",
+				"cancel",
+				"create",
+				"save",
+				"delete",
+				"edit",
+				"createTitle",
+				"editTitle",
+				"created",
+				"updated",
+				"deleted",
+				"fieldsRequired",
+				"plannerLegend"
+			],
+			"additionalProperties": false
+		},
+		"common": {
+			"type": "object",
+			"properties": {
+				"error": {
+					"type": "string"
+				}
+			},
+			"required": ["error"],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"app",
+		"nav",
+		"login",
+		"dashboard",
+		"slots",
+		"appointments",
+		"links",
+		"booking",
+		"settings",
+		"planner",
+		"common"
+	],
+	"additionalProperties": false
+}

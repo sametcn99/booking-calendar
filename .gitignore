@@ -1,0 +1,12 @@
+node_modules/
+dist/
+data/
+.env
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+client/dist/
+client/node_modules/
+
+vapid-keys.txt

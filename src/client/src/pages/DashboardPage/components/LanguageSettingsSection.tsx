@@ -1,0 +1,67 @@
+import { useStyletron } from "baseui";
+import { Select } from "baseui/select";
+
+interface Props {
+	language: "en" | "tr";
+	onLanguageChange: (lang: "en" | "tr") => void;
+	savingLanguage: boolean;
+	t: (key: string) => string;
+	keyPrefix?: string;
+}
+
+export default function LanguageSettingsSection({
+	language,
+	onLanguageChange,
+	savingLanguage,
+	t,
+	keyPrefix = "dashboard",
+}: Props) {
+	const [css] = useStyletron();
+
+	return (
+		<div
+			className={css({
+				backgroundColor: "#141414",
+				borderRadius: "12px",
+				padding: "24px",
+				border: "1px solid #2a2a2a",
+			})}
+		>
+			<h2
+				className={css({
+					fontSize: "18px",
+					fontWeight: 700,
+					color: "#e0d6f0",
+					marginBottom: "12px",
+				})}
+			>
+				{t(`${keyPrefix}.language`)}
+			</h2>
+			<div
+				className={css({
+					fontSize: "13px",
+					color: "#b8a9d4",
+					marginBottom: "14px",
+				})}
+			>
+				{t(`${keyPrefix}.languageDescription`)}
+			</div>
+			<Select
+				options={[
+					{ id: "en", label: t(`${keyPrefix}.langEn`) },
+					{ id: "tr", label: t(`${keyPrefix}.langTr`) },
+				]}
+				value={[{ id: language }]}
+				onChange={(params) => {
+					const selected = params.value[0]?.id as "en" | "tr";
+					if (selected) onLanguageChange(selected);
+				}}
+				clearable={false}
+				disabled={savingLanguage}
+				overrides={{
+					Root: { style: { maxWidth: "300px" } },
+				}}
+			/>
+		</div>
+	);
+}

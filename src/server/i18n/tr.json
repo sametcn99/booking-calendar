@@ -1,0 +1,116 @@
+{
+	"error": {
+		"unexpected": "Beklenmeyen bir hata oluştu"
+	},
+	"auth": {
+		"usernamePasswordRequired": "Kullanıcı adı ve şifre gereklidir",
+		"tooManyAttempts": "Çok fazla başarısız giriş denemesi. Daha sonra tekrar deneyin",
+		"invalidCredentials": "Geçersiz kullanıcı bilgileri",
+		"passwordFieldsRequired": "Mevcut şifre ve yeni şifre gereklidir",
+		"passwordMinLength": "Yeni şifre en az 10 karakter olmalıdır",
+		"passwordComplexity": "Yeni şifre büyük harf, küçük harf ve rakam içermelidir",
+		"unauthorized": "Yetkisiz erişim",
+		"currentPasswordIncorrect": "Mevcut şifre yanlış",
+		"passwordMustDiffer": "Yeni şifre mevcut şifreden farklı olmalıdır"
+	},
+	"slot": {
+		"nameAndDatesRequired": "Slot ismi, başlangıç ve bitiş zamanı gereklidir",
+		"nameRequired": "Slot ismi gereklidir",
+		"datesRequired": "Başlangıç ve bitiş zamanı gereklidir",
+		"invalidDate": "Geçersiz tarih formatı",
+		"endAfterStart": "Bitiş zamanı başlangıçtan sonra olmalıdır",
+		"notFound": "Slot bulunamadı"
+	},
+	"appointment": {
+		"fieldsRequired": "Slot, isim, başlangıç ve bitiş zamanı gereklidir",
+		"invalidEmail": "Geçersiz e-posta formatı",
+		"invalidBookingLink": "Geçersiz veya süresi dolmuş randevu bağlantısı",
+		"slotNotAvailable": "Slot müsait değil",
+		"slotNotAllowedForLink": "Seçili slot bu bağlantı için kullanılamaz",
+		"invalidDateRange": "Geçersiz randevu tarih aralığı",
+		"endAfterStart": "Randevu bitiş zamanı başlangıçtan sonra olmalıdır",
+		"outsideSlot": "Randevu seçilen müsait zaman aralığı içinde olmalıdır",
+		"overlap": "Seçilen zaman aralığı başka bir randevuyla çakışıyor",
+		"loadError": "Randevu oluşturulduktan sonra yüklenemedi",
+		"notFound": "Randevu bulunamadı",
+		"deleteOnlyPastOrCanceled": "Sadece tarihi geçmiş veya iptal edilmiş randevular silinebilir",
+		"alreadyCanceled": "Randevu zaten iptal edilmiş",
+		"invalidCancelLink": "Geçersiz iptal bağlantısı"
+	},
+	"link": {
+		"invalidToken": "Geçersiz veya süresi dolmuş token",
+		"notFound": "Bağlantı bulunamadı",
+		"slotSelectionRequired": "En az bir slot seçilmelidir",
+		"invalidSlots": "Geçersiz slot seçimi",
+		"defaultNamePrefix": "Isimsiz Baglanti"
+	},
+	"general": {
+		"tooManyRequests": "Çok fazla istek",
+		"invalidRoute": "Geçersiz adres parametresi",
+		"unauthorized": "Yetkisiz erişim",
+		"notFound": "Bulunamadı",
+		"forbidden": "Yasaklı",
+		"invalidEmail": "Geçersiz e-posta formatı",
+		"isActiveRequired": "is_active gereklidir",
+		"invalidLanguage": "Geçersiz dil. Desteklenen: en, tr",
+		"invalidRequest": "Geçersiz istek"
+	},
+	"cancelPage": {
+		"successTitle": "Randevu İptal Edildi",
+		"successMessage": "Randevunuz başarıyla iptal edildi.",
+		"failTitle": "İptal İşlemi Başarısız",
+		"failDefault": "İşlem tamamlanamadı"
+	},
+	"mail": {
+		"common": {},
+		"confirmation": {
+			"subject": "Randevunuz Onaylandı",
+			"title": "Randevu Onaylandı!",
+			"greeting": "Merhaba",
+			"message": "randevunuz başarıyla oluşturuldu. Takviminize ekleyebileceğiniz ICS dosyası ekte yer almaktadır.",
+			"startTime": "Başlangıç Zamanı",
+			"endTime": "Bitiş Zamanı",
+			"meetingPlace": "Görüşme Yeri",
+			"note": "Not",
+			"cancelBtn": "Randevuyu İptal Et"
+		},
+		"adminNotification": {
+			"subject": "Yeni Randevu Kaydı",
+			"title": "Yeni Randevu Alındı",
+			"message": "Bir müşteri tarafından yeni bir randevu planlandı. Detaylar aşağıdadır.",
+			"clientName": "Müşteri Adı",
+			"clientEmail": "Müşteri E-postası",
+			"startTime": "Başlangıç Zamanı",
+			"endTime": "Bitiş Zamanı",
+			"meetingPlace": "Görüşme Yeri",
+			"note": "Not",
+			"cancelBtn": "Randevuyu İptal Et (Yönetici)"
+		},
+		"cancellation": {
+			"subject": "Randevu İptal Edildi",
+			"title": "Randevu İptal Edildi",
+			"message": "Aşağıdaki randevu tarafınca iptal edildi:",
+			"clientName": "Müşteri Adı",
+			"clientEmail": "Müşteri E-postası",
+			"startTime": "Başlangıç Zamanı",
+			"endTime": "Bitiş Zamanı",
+			"meetingPlace": "Görüşme Yeri",
+			"note": "Not",
+			"canceledByAdmin": "yönetici",
+			"canceledByUser": "randevu sahibi"
+		}
+	},
+	"planner": {
+		"fieldsRequired": "Etkinlik başlığı, başlangıç ve bitiş zamanı gereklidir",
+		"notFound": "Planlayıcı etkinliği bulunamadı"
+	},
+	"push": {
+		"vapidNotConfigured": "VAPID anahtarları yapılandırılmamış. Push bildirimleri devre dışı.",
+		"invalidSubscription": "Geçersiz push aboneliği",
+		"subscriptionSaved": "Push aboneliği kaydedildi",
+		"newBookingTitle": "Yeni Randevu",
+		"newBookingBody": "Tarafından yeni bir randevu alındı:",
+		"cancellationTitle": "Randevu İptal Edildi",
+		"cancellationBody": "Tarafından bir randevu iptal edildi:"
+	}
+}

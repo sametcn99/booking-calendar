@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"outDir": "./dist",
+		"rootDir": ".",
+		"resolveJsonModule": true,
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"types": ["bun-types"],
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"include": ["src/server/**/*.ts"],
+	"exclude": ["node_modules", "dist", "src/client"]
+}

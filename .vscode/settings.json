@@ -1,0 +1,15 @@
+{
+	"json.schemas": [
+		{
+			"fileMatch": [
+				"/src/client/src/i18n/en.json",
+				"/src/client/src/i18n/tr.json"
+			],
+			"url": "./src/client/src/i18n/schema.json"
+		},
+		{
+			"fileMatch": ["/src/server/i18n/en.json", "/src/server/i18n/tr.json"],
+			"url": "./src/server/i18n/schema.json"
+		}
+	]
+}

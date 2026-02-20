@@ -1,0 +1,60 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+	width: 100%;
+	background-color: #0a0a0a;
+	color: #e0d6f0;
+	font-family:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+a {
+	color: #a78bfa;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #4c1d95;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #6d28d9;
+}
+
+/* Make native date/time picker icons visible in dark mode */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+	cursor: pointer;
+	filter: invert(0.8) sepia(100%) saturate(1000%) hue-rotate(220deg);
+	opacity: 0.8;
+	transition: opacity 0.2s ease;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+	opacity: 1;
+}
