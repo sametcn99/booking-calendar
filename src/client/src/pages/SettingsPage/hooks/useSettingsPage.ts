@@ -12,6 +12,17 @@ function getErrorMessage(error: unknown, fallback: string): string {
 	return fallback;
 }
 
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+	const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+	const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+	const rawData = window.atob(base64);
+	const outputArray = new Uint8Array(rawData.length);
+	for (let i = 0; i < rawData.length; i++) {
+		outputArray[i] = rawData.charCodeAt(i);
+	}
+	return outputArray;
+}
+
 export function useSettingsPage({ setLanguage, t }: Params) {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
@@ -33,6 +44,7 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		useState(false);
 	const [versionInfo, setVersionInfo] = useState<ApiVersionInfo | null>(null);
 	const [loadingVersionInfo, setLoadingVersionInfo] = useState(true);
+	const publicVapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 
 	useEffect(() => {
 		setMustChangePassword(
@@ -159,11 +171,50 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		async (enabled: boolean) => {
 			setSavingPushNotifications(true);
 			try {
+				if (enabled) {
+					if (!publicVapidKey) {
+						throw new Error("VAPID key missing");
+					}
+
+					if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+						throw new Error("Push is not supported");
+					}
+
+					if (!("Notification" in window)) {
+						throw new Error("Notifications are not supported");
+					}
+
+					const permission =
+						Notification.permission === "granted"
+							? "granted"
+							: await Notification.requestPermission();
+					if (permission !== "granted") {
+						throw new Error("Notification permission denied");
+					}
+
+					let registration = await navigator.serviceWorker.getRegistration();
+					if (!registration) {
+						registration = await navigator.serviceWorker.ready;
+					}
+
+					const existingSubscription =
+						await registration.pushManager.getSubscription();
+					if (existingSubscription) {
+						await api.subscribeToPush(existingSubscription);
+					} else {
+						const newSubscription = await registration.pushManager.subscribe({
+							userVisibleOnly: true,
+							applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+						});
+						await api.subscribeToPush(newSubscription);
+					}
+				}
+
 				await api.setPushNotifications(enabled);
 				setPushNotificationsEnabled(enabled);
 				toaster.positive(t("settings.pushNotificationsSaved"), {});
-			} catch (error: unknown) {
-				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} catch {
+				toaster.negative(t("common.error"), {});
 			} finally {
 				setSavingPushNotifications(false);
 			}

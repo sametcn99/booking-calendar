@@ -16,7 +16,6 @@ import { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useI18n } from "../context/I18nContext";
-import { NotificationToggle } from "./NotificationToggle";
 
 export default function AdminLayout() {
 	const [css] = useStyletron();
@@ -226,9 +225,6 @@ export default function AdminLayout() {
 						))}
 
 						<div className={css({ flex: 1 })} />
-
-						<NotificationToggle isExpanded={isExpanded} />
-						<div className={css({ height: "8px" })} />
 
 						<Button
 							kind={KIND.tertiary}

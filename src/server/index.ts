@@ -763,7 +763,7 @@ const _server = Bun.serve({
 				const value = await settingsRepo.get("push_notifications_enabled");
 				return jsonResponse(
 					200,
-					{ success: true, data: { enabled: value !== "false" } },
+					{ success: true, data: { enabled: value === "true" } },
 					corsHeaders,
 				);
 			}
@@ -794,7 +794,7 @@ const _server = Bun.serve({
 				const value = await settingsRepo.get("email_notifications_enabled");
 				return jsonResponse(
 					200,
-					{ success: true, data: { enabled: value !== "false" } },
+					{ success: true, data: { enabled: value === "true" } },
 					corsHeaders,
 				);
 			}

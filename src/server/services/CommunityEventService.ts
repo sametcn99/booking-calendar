@@ -26,12 +26,12 @@ export class CommunityEventService {
 
 	private async isPushEnabled(): Promise<boolean> {
 		const value = await this.settingsRepo.get("push_notifications_enabled");
-		return value !== "false";
+		return value === "true";
 	}
 
 	private async isEmailEnabled(): Promise<boolean> {
 		const value = await this.settingsRepo.get("email_notifications_enabled");
-		return value !== "false";
+		return value === "true";
 	}
 
 	private async notifyEventActive(eventId: number): Promise<void> {
