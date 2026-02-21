@@ -10,3 +10,6 @@ client/dist/
 client/node_modules/
 
 vapid-keys.txt
+src/docs/.vitepress/dist/
+src/docs/.vitepress/node_modules/
+src/docs/.vitepress/cache/
