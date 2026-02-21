@@ -57,6 +57,7 @@ export default function AdminLayout() {
 			<nav
 				className={css({
 					width: "240px",
+
 					height: "100%",
 					backgroundColor: "var(--color-bg-secondary)",
 					borderRight: "1px solid var(--color-bg-quaternary)",
@@ -67,7 +68,7 @@ export default function AdminLayout() {
 					flexShrink: 0,
 					transition: "width 0.3s ease, padding 0.3s ease",
 					position: "relative",
-					zIndex: 0,
+					zIndex: isExpanded ? 100 : "auto",
 					"@media (max-width: 768px)": {
 						width: "70px",
 						padding: "24px 8px",
