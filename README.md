@@ -46,18 +46,6 @@ For detailed guides, API references, and deployment instructions, please visit o
 - **Database**: TypeORM + SQLite (file-based persistence).
 - **Notifications**: Nodemailer, Web Push (VAPID), Webhooks.
 
-## Development
-
-```bash
-# Terminal 1: backend (watch)
-bun run dev:server
-
-# Terminal 2: frontend (Vite dev)
-bun run dev:client
-```
-
-For more details on setting up your development environment, see the [Contributing Guide](https://booking-calendar-docs.vercel.app/contributing).
-
 ## License
 
 Released under the GPL 3.0 License.
