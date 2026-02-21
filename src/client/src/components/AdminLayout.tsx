@@ -67,7 +67,7 @@ export default function AdminLayout() {
 					flexShrink: 0,
 					transition: "width 0.3s ease, padding 0.3s ease",
 					position: "relative",
-					zIndex: 20,
+					zIndex: 0,
 					"@media (max-width: 768px)": {
 						width: "70px",
 						padding: "24px 8px",
@@ -95,7 +95,6 @@ export default function AdminLayout() {
 								right: 0,
 								bottom: 0,
 								backgroundColor: "var(--color-overlay)",
-								zIndex: -1,
 								border: "none",
 								padding: 0,
 								width: "100%",

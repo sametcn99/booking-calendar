@@ -58,3 +58,8 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover,
 input[type="time"]::-webkit-calendar-picker-indicator:hover {
 	opacity: 1;
 }
+
+/* Ensure app dialogs appear above persistent UI like the sidebar */
+[role="dialog"] {
+	z-index: 99999;
+}

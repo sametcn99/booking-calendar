@@ -1,6 +1,6 @@
 {
 	"name": "booking-calendar",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"private": true,
 	"scripts": {
 		"dev:server": "bun run --watch src/server/index.ts",
