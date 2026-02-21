@@ -2,93 +2,51 @@
 
 Booking Calendar is a self-hosted PWA designed for single-admin appointment management. It runs on your own server, keeps your data under your control, and supports a complete booking flow using shareable booking links.
 
-This project is specifically optimized for self-hosted deployments:
+---
 
-- API and web app are served from a single process.
-- File-based database storage (SQLite/sql.js style) makes backup and migration simple.
-- Email notifications are sent using your own SMTP configuration.
-- It runs in containers with a straightforward Docker Compose production flow.
+## 🚀 Live Documentation
+
+For detailed guides, API references, and deployment instructions, please visit our documentation site:
+
+👉 **[booking-calendar-docs.vercel.app](https://booking-calendar-docs.vercel.app/)**
+
+---
 
 ## Key Features
 
-- Admin panel for slots, appointments, and booking links
-- Public booking page for guests
-- Double-booking prevention with slot overlap checks
-- Email notifications with `.ics` calendar attachments
-- Token-based cancellation links in email
-- Public appointment detail pages with persistent shareable links
-- Community events with public approval links and approval progress
-- Calendar sharing controls, push/email notification toggles, and ICS export (all/range)
-- Admin-configurable webhook notifications with HMAC signatures and test delivery
-- Installable PWA (mobile and desktop)
-- IP-based rate limiting
-- Asynchronous email sending, so booking responses are not blocked
+- **Admin Control**: Full dashboard for managing slots, appointments, and unique booking links.
+- **Guest Experience**: Streamlined public booking page with mobile-first design.
+- **Conflict Prevention**: Built-in double-booking prevention with intelligent slot overlap checks.
+- **Smart Notifications**:
+  - Email alerts with `.ics` calendar attachments for instant syncing.
+  - Token-based one-click cancellation links for guests.
+  - Real-time Web Push notifications for administrators.
+- **Advanced Sharing**: Public appointment detail pages with persistent shareable links.
+- **Community Events**: Support for community-driven events with public approval workflows.
+- **Integrations**:
+  - **Webhooks**: HMAC-signed notifications for Discord, Slack, or custom automations.
+  - **iCal Export**: Export your entire schedule or specific ranges to external calendars.
+- **Performance & Security**:
+  - **Native PWA**: Installable on both mobile and desktop.
+  - **Rate Limiting**: IP-based protection against brute-force and spam.
+  - **Async Processing**: Asynchronous email delivery to ensure zero-latency booking responses.
+  - **Privacy**: Self-hosted SQLite persistence — your data never leaves your server.
+
+## Quick Links
+
+- [Getting Started](https://booking-calendar-docs.vercel.app/guide/getting-started)
+- [Docker Deployment Guide](https://booking-calendar-docs.vercel.app/guide/deployment-docker)
+- [Environment Variables](https://booking-calendar-docs.vercel.app/guide/configuration)
+- [Contributing Guide](https://booking-calendar-docs.vercel.app/contributing)
 
 ## Tech Stack
 
-- Frontend: React + TypeScript + Base Web, Vite
-- Backend: Bun native HTTP server, OOP layers (Controller/Service/Repository)
-- Database: TypeORM + `sqljs` (file-based persistence)
-- Email: Nodemailer + Handlebars HTML templates + ICS attachments
+- **Frontend**: React 19, TypeScript, Base Web, Vite.
+- **Backend**: Bun native HTTP server, Layered Architecture.
+- **Database**: TypeORM + SQLite (file-based persistence).
+- **Notifications**: Nodemailer, Web Push (VAPID), Webhooks.
 
-## Architecture
-
-In production, `bun run start` serves both backend API and frontend static assets.
-
-- API prefix: `/api/...`
-- Frontend: served from `src/client/dist`
-- Auth: Bearer token
-- Persistence: file path configured by `DB_PATH`
-
-## Quick Start
-
-```bash
-# 1) Install dependencies
-bun install
-cd src/client && bun install && cd ../..
-
-# 2) Configure environment
-cp .env.example .env
-
-# 3) Edit .env values
-# - BASE_URL
-# - JWT_SECRET
-# - SMTP_*
-# - ADMIN_USERNAME / ADMIN_PASSWORD
-# - VAPID_* (for push notifications)
-
-# 4) Build frontend
-cd src/client && bun run build && cd ../..
-
-# 5) Start app (API + frontend)
-bun run start
-```
-
-By default, the app runs on `http://localhost:3000`.
-
-## Docker Quick Start
-
-1. **Configure Environment**:
-
-   ```bash
-   cp .env.example .env
-   # Edit .env and set your values (SMTP, ADMIN credentials, etc.)
-   ```
-
-2. **Run with Docker Compose**:
-
-   ```bash
-   docker-compose up -d --build
-   ```
-
-3. **Access the App**:
-   Open `http://localhost:3000`.
-
-**Note:** The database is persisted in the `./data` directory. If you change `VITE_*` variables in `.env`, you must rebuild the image (`docker-compose up -d --build`).
-
-If you change `VITE_VAPID_PUBLIC_KEY`, it is also a `VITE_*` build-time variable and requires image rebuild.
-
-## Development Mode
+## Development
 
 ```bash
 # Terminal 1: backend (watch)
@@ -98,181 +56,8 @@ bun run dev:server
 bun run dev:client
 ```
 
-## Environment Variables
+For more details on setting up your development environment, see the [Contributing Guide](https://booking-calendar-docs.vercel.app/contributing).
 
-The table below matches `.env.example`.
+## License
 
-| Variable                  | Description                                                     | Example                                     |
-| ------------------------- | --------------------------------------------------------------- | ------------------------------------------- |
-| `PORT`                    | Backend port                                                    | `3000`                                      |
-| `HOST`                    | Backend bind address                                            | `0.0.0.0`                                   |
-| `BASE_URL`                | Public base URL (critical for email links)                      | `https://book.example.com`                  |
-| `ADMIN_USERNAME`          | Initial admin username                                          | `admin`                                     |
-| `ADMIN_PASSWORD`          | Initial admin password                                          | `strong-password`                           |
-| `JWT_SECRET`              | JWT signing secret (must be strong and long)                    | `change-me`                                 |
-| `SMTP_HOST`               | SMTP server hostname                                            | `smtp.example.com`                          |
-| `SMTP_PORT`               | SMTP port                                                       | `587`                                       |
-| `SMTP_USER`               | SMTP username                                                   | `noreply@example.com`                       |
-| `SMTP_PASS`               | SMTP password                                                   | `...`                                       |
-| `SMTP_FROM`               | Sender address                                                  | `Booking <noreply@example.com>`             |
-| `DB_PATH`                 | Database file path                                              | `./data/booking.db`                         |
-| `RATE_LIMIT_WINDOW_MS`    | Rate-limit window in ms                                         | `60000`                                     |
-| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window                                         | `30`                                        |
-| `VITE_VAPID_PUBLIC_KEY`   | Public VAPID key used by browser push subscription (build-time) | `BEl...`                                    |
-| `VAPID_PRIVATE_KEY`       | Private VAPID key used by server to send Web Push               | `2Vw...`                                    |
-| `VITE_PUBLIC_URL`         | Canonical/public app URL used for SEO tags                      | `https://book.example.com`                  |
-| `VITE_SEO_LANG`           | HTML `lang` value                                               | `en`                                        |
-| `VITE_SEO_TITLE`          | SEO page title                                                  | `Booking Calendar`                          |
-| `VITE_SEO_DESCRIPTION`    | SEO meta description                                            | `Personal booking calendar`                 |
-| `VITE_SEO_KEYWORDS`       | SEO meta keywords                                               | `booking,calendar,appointments,self-hosted` |
-| `VITE_SEO_AUTHOR`         | SEO author metadata                                             | `Booking Calendar`                          |
-| `VITE_SEO_OG_TYPE`        | Open Graph type                                                 | `website`                                   |
-| `VITE_SEO_TWITTER_CARD`   | Twitter card type                                               | `summary`                                   |
-
-Notes:
-
-- If `BASE_URL` is wrong, cancellation links in emails will be wrong.
-- Never keep default `JWT_SECRET` or `ADMIN_PASSWORD` in production.
-- `VITE_VAPID_PUBLIC_KEY` is build-time (frontend bundle). Rebuild client/image after changing it.
-- `VAPID_PRIVATE_KEY` is runtime env var used by the backend push sender.
-
-## Web Push (VAPID)
-
-VAPID keys are used for browser push notifications:
-
-- `VITE_VAPID_PUBLIC_KEY`: sent to browser to create push subscription.
-- `VAPID_PRIVATE_KEY`: stays on server; signs push payload requests.
-
-Generate keys:
-
-```bash
-bun run generate-vapid-keys
-```
-
-This creates `vapid-keys.txt` with ready-to-copy `.env` lines:
-
-```env
-VITE_VAPID_PUBLIC_KEY=...
-VAPID_PRIVATE_KEY=...
-```
-
-Then:
-
-1. Copy values into `.env`.
-2. Rebuild frontend/client image because `VITE_VAPID_PUBLIC_KEY` is embedded at build time.
-3. Restart app/container so backend reads `VAPID_PRIVATE_KEY`.
-
-## Webhook Notifications
-
-You can mirror all push notification events to an external webhook endpoint.
-
-Configure it from `Settings -> Webhook Notifications` in the admin panel:
-
-- Enable/disable webhook delivery
-- Set webhook URL (`https` required, `http` allowed only for localhost)
-- Set signing secret (minimum 16 chars)
-- Send a test webhook event
-
-Webhook deliveries include these security headers:
-
-- `X-BookingCalendar-Signature: sha256=<hmac>`
-- `X-BookingCalendar-Timestamp: <unix-seconds>`
-- `X-BookingCalendar-Event: <event-name>`
-- `X-BookingCalendar-Delivery-Id: <uuid>`
-
-Signature payload format:
-
-```text
-<timestamp>.<raw-json-body>
-```
-
-Compute and compare HMAC SHA-256 using your configured signing secret.
-
-## Docker Production Setup Guide
-
-### 1) Configure `.env`
-
-- Set `BASE_URL` to your public domain.
-- Verify SMTP credentials and delivery.
-- Keep strong values for `ADMIN_PASSWORD` and `JWT_SECRET`.
-
-### 2) Build and start containers
-
-```bash
-docker compose up -d --build
-```
-
-### 3) Check runtime health
-
-```bash
-docker compose ps
-docker compose logs -f server
-```
-
-### 4) Update after config changes
-
-```bash
-docker compose up -d --build
-```
-
-## Security Checklist
-
-- Change default admin credentials.
-- Use a long, random `JWT_SECRET`.
-- Serve publicly only behind HTTPS.
-- Restrict firewall rules to required ports (`80/443`).
-- Tighten file permissions for `.env` and `DB_PATH`.
-- Create regular backups.
-
-## Backup and Restore
-
-Because persistence is file-based, backup is straightforward.
-
-- Primary backup target: file configured by `DB_PATH`
-- Recommendation: daily automated backups, copied to separate disk/object storage
-
-Example:
-
-```bash
-cp ./data/booking.db ./backups/booking-$(date +%F).db
-```
-
-For restore: stop containers, replace DB file with backup, then start containers again.
-
-## Email System
-
-Email bodies are rendered from Handlebars templates under `src/server/mail/templates`:
-
-- `booking-confirmation.hbs`
-- `admin-notification.hbs`
-- `cancellation-notification.hbs`
-
-Template variables are provided in `src/server/mail/MailService.ts` context objects.
-
-## API Endpoints
-
-Interactive API reference is available via Scalar:
-
-- Docs UI: `/docs`
-- OpenAPI spec: `/openapi.json`
-
-## Troubleshooting
-
-### Emails are not sent
-
-- Check all `SMTP_*` values.
-- Confirm SMTP TLS/port requirements.
-- Validate `SMTP_FROM` format.
-
-### Cancellation link points to wrong domain
-
-- Set `BASE_URL` to your production domain.
-
-### Frontend loads but API fails
-
-- Verify container status (`docker compose ps`).
-- Inspect server logs (`docker compose logs server`).
-
-## Usage Note
-
-This repository is designed for personal/self-hosted use. If you need team workflows or multi-tenant support, you should extend auth/roles, auditing, background jobs, and data strategy accordingly.
+Released under the GPL 3.0 License.

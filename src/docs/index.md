@@ -175,7 +175,7 @@ onMounted(() => {
 :root {
   --accent: #8b5cf6;
   --accent-soft: rgba(139, 92, 246, 0.12);
-  --grd: linear-gradient(135deg, #000000 0%, #1e1b4b 50%, #581c87 100%);
+  --grd: linear-gradient(135deg, #ffffff 0%, #c4b5fd 50%, #8b5cf6 100%);
 }
 
 /* ─── Intersection Observer Animations ─── */
@@ -461,8 +461,17 @@ onMounted(() => {
 
 /* ─── CTA ─── */
 .cta-card {
+  --cta-bg-top: #7c3aed;
+  --cta-bg-bottom: #4c1d95;
+  --cta-btn-primary-bg: #ffffff;
+  --cta-btn-primary-text: #5b21b6;
+  --cta-btn-primary-hover-text: #441791;
+  --cta-btn-secondary-bg: rgba(255, 255, 255, 0.12);
+  --cta-btn-secondary-text: #ffffff;
+  --cta-btn-secondary-border: rgba(255, 255, 255, 0.3);
+
   padding: 72px 40px;
-  background: var(--grd);
+  background: linear-gradient(135deg, var(--cta-bg-top) 0%, var(--cta-bg-bottom) 100%);
   border-radius: 28px;
   text-align: center;
   position: relative;
@@ -518,34 +527,34 @@ onMounted(() => {
   border-radius: 14px;
   font-weight: 700;
   font-size: 1rem;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.3s ease-in-out !important;
   text-decoration: none !important;
   cursor: pointer;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .cta-button.primary {
-  background: white;
-  color: #6d28d9;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  background: var(--cta-btn-primary-bg);
+  color: var(--cta-btn-primary-text);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .cta-button.primary:hover {
-  box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.45), 0 10px 15px -5px rgba(0, 0, 0, 0.3);
-  color: #4c1d95;
+  box-shadow: 0 20px 38px -12px rgba(0, 0, 0, 0.35), 0 12px 18px -8px rgba(0, 0, 0, 0.25) !important;
+  color: var(--cta-btn-primary-hover-text);
 }
 
 .cta-button.secondary {
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: var(--cta-btn-secondary-bg);
+  color: var(--cta-btn-secondary-text);
+  border: 1px solid var(--cta-btn-secondary-border);
   backdrop-filter: blur(8px);
 }
 
 .cta-button.secondary:hover {
   background: rgba(255, 255, 255, 0.22);
   border-color: rgba(255, 255, 255, 0.45);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.3) !important;
   color: white !important;
 }
 

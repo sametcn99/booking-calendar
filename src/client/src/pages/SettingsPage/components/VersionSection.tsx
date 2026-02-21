@@ -117,6 +117,15 @@ export default function VersionSection({
 				>
 					{t("settings.openSupportPage")}
 				</Button>
+				<Button
+					kind={KIND.secondary}
+					size={SIZE.compact}
+					onClick={() =>
+						openExternalUrl("https://booking-calendar-docs.vercel.app/")
+					}
+				>
+					{t("settings.openDocumentation")}
+				</Button>
 			</div>
 		</div>
 	);

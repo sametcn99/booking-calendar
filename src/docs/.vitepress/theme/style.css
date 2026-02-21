@@ -50,8 +50,11 @@
 	--vp-c-gutter: rgba(167, 139, 250, 0.04);
 
 	/* Code Blocks */
-	--vp-code-bg: #111113;
 	--vp-code-block-bg: #0c0c0e;
+	--vp-code-line-height: 1.7;
+	--vp-code-font-size: 0.87rem;
+	--vp-code-copy-code-hover-bg: rgba(139, 92, 246, 0.15);
+	--vp-code-copy-code-active-text: var(--vp-c-brand-1);
 
 	/* Buttons */
 	--vp-button-brand-border: transparent;
@@ -414,4 +417,158 @@ a {
 .VPLocalSearchBox .shell {
 	border-radius: 16px;
 	border: 1px solid var(--vp-c-divider);
+}
+
+/* ──────── CODE BLOCKS ──────── */
+.vp-doc [class*="language-"] {
+	background-color: var(--vp-code-block-bg);
+	border: 1px solid var(--vp-c-divider);
+	border-radius: 16px;
+	margin: 24px 0;
+	box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+	transition:
+		border-color 0.3s ease,
+		box-shadow 0.3s ease;
+}
+
+.vp-doc [class*="language-"]:hover {
+	border-color: rgba(139, 92, 246, 0.25);
+	box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6);
+}
+
+.vp-doc [class*="language-"] pre {
+	padding: 20px;
+	margin: 0;
+	line-height: var(--vp-code-line-height);
+	font-size: var(--vp-code-font-size);
+	background: transparent;
+}
+
+.vp-doc [class*="language-"] code {
+	background: transparent;
+	padding: 0;
+	border-radius: 0;
+	color: #e2e8f0;
+	font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* Inline Code */
+.vp-doc :not(pre) > code {
+	background-color: rgba(139, 92, 246, 0.1);
+	color: var(--vp-c-brand-1);
+	padding: 3px 6px;
+	border-radius: 6px;
+	font-size: 0.9em;
+	font-weight: 500;
+	border: 1px solid rgba(139, 92, 246, 0.15);
+	transition: all 0.2s ease;
+}
+
+.vp-doc :not(pre) > code:hover {
+	background-color: rgba(139, 92, 246, 0.18);
+	border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* Code Block Tools (Copy, Lang) */
+.vp-doc [class*="language-"] .copy {
+	border-radius: 8px;
+	color: var(--vp-c-text-3);
+	background-color: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	transition: all 0.2s ease;
+	width: 36px;
+	height: 36px;
+	top: 12px;
+	right: 12px;
+}
+
+.vp-doc [class*="language-"] .copy:hover {
+	background-color: var(--vp-code-copy-code-hover-bg);
+	color: var(--vp-c-brand-1);
+	border-color: rgba(139, 92, 246, 0.3);
+}
+
+.vp-doc [class*="language-"] .lang {
+	top: 12px;
+	right: 56px;
+	font-size: 0.7rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--vp-c-text-3);
+	opacity: 0.6;
+}
+
+/* MacOS style dots (optional premium touch) */
+.vp-doc [class*="language-"]::before {
+	content: "";
+	position: absolute;
+	top: 16px;
+	left: 18px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #ff5f56;
+	box-shadow:
+		16px 0 0 #ffbd2e,
+		32px 0 0 #27c93f;
+	z-index: 2;
+	opacity: 0.5;
+}
+
+/* Adjust padding when dots are present */
+.vp-doc [class*="language-"] pre {
+	padding-top: 48px;
+}
+
+/* ──────── SYNTAX HIGHLIGHTING ──────── */
+:root {
+	--shiki-color-text: #e2e8f0;
+	--shiki-color-background: transparent;
+	--shiki-token-constant: #f9a8d4;
+	/* Pinkish for constants */
+	--shiki-token-string: #c4b5fd;
+	/* Light violet for strings */
+	--shiki-token-comment: #94a3b8;
+	/* Brighter slate for comments */
+	--shiki-token-keyword: #8b5cf6;
+	/* Strong violet for keywords */
+	--shiki-token-parameter: #f1f5f9;
+	/* Near white for params */
+	--shiki-token-function: #a78bfa;
+	/* Vibrant violet for functions */
+	--shiki-token-string-expression: #c4b5fd;
+	--shiki-token-punctuation: #94a3b8;
+	--shiki-token-link: #a78bfa;
+}
+
+/* Force colors on Shiki spans if they use inline styles */
+.vp-doc [class*="language-"] span {
+	color: var(--shiki-token-text, inherit);
+}
+
+/* Specific overrides for common highlight types */
+.vp-doc [class*="language-"] .keyword {
+	color: #8b5cf6;
+}
+
+.vp-doc [class*="language-"] .string {
+	color: #c4b5fd;
+}
+
+.vp-doc [class*="language-"] .comment {
+	color: #94a3b8;
+}
+
+.vp-doc [class*="language-"] .function {
+	color: #ddd6fe;
+}
+
+.vp-doc [class*="language-"] .operator {
+	color: #94a3b8;
+}
+
+.vp-doc [class*="language-"] .punctuation {
+	color: #94a3b8;
 }

@@ -9,6 +9,9 @@ export default defineConfig({
 	lastUpdated: true,
 	cleanUrls: true,
 	appearance: false,
+	markdown: {
+		theme: "github-dark",
+	},
 	sitemap: {
 		hostname: "https://booking-calendar-docs.vercel.app/",
 	},
@@ -34,7 +37,11 @@ export default defineConfig({
 		],
 		[
 			"link",
-			{ rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+			{
+				rel: "apple-touch-icon",
+				sizes: "180x180",
+				href: "/apple-touch-icon.png",
+			},
 		],
 		["link", { rel: "manifest", href: "/manifest.json" }],
 		["meta", { name: "theme-color", content: "#7c3aed" }],
@@ -130,6 +137,7 @@ export default defineConfig({
 					{ text: "Localization", link: "/guide/localization" },
 					{ text: "Branding", link: "/guide/branding" },
 					{ text: "Troubleshooting", link: "/guide/troubleshooting" },
+					{ text: "Contributing", link: "/contributing" },
 				],
 			},
 			{
@@ -147,6 +155,24 @@ export default defineConfig({
 				items: [
 					{ text: "Docker Guide", link: "/guide/deployment-docker" },
 					{ text: "Manual Installation", link: "/guide/deployment-manual" },
+				],
+			},
+			{
+				text: "Pages",
+				collapsed: false,
+				items: [
+					{ text: "Dashboard", link: "/pages/dashboard" },
+					{ text: "Appointments", link: "/pages/appointments" },
+					{ text: "Booking", link: "/pages/booking" },
+					{ text: "Events", link: "/pages/events" },
+					{ text: "Links", link: "/pages/links" },
+					{ text: "Slots", link: "/pages/slots" },
+					{ text: "Planner", link: "/pages/planner" },
+					{ text: "Settings", link: "/pages/settings" },
+					{ text: "Login", link: "/pages/login" },
+					{ text: "Public Calendar", link: "/pages/public-calendar" },
+					{ text: "Appointment Details", link: "/pages/appointment-detail" },
+					{ text: "Community Approval", link: "/pages/community-approval" },
 				],
 			},
 			{

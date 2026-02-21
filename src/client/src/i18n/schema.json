@@ -763,99 +763,288 @@
 		"settings": {
 			"type": "object",
 			"properties": {
-				"title": { "type": "string" },
-				"description": { "type": "string" },
-				"changePassword": { "type": "string" },
-				"passwordRequirements": { "type": "string" },
-				"currentPassword": { "type": "string" },
-				"newPassword": { "type": "string" },
-				"confirmPassword": { "type": "string" },
-				"updatePassword": { "type": "string" },
-				"passwordMismatch": { "type": "string" },
-				"passwordChanged": { "type": "string" },
-				"changePasswordWarning": { "type": "string" },
-				"language": { "type": "string" },
-				"languageDescription": { "type": "string" },
-				"languageSaved": { "type": "string" },
-				"langEn": { "type": "string" },
-				"langTr": { "type": "string" },
-				"adminEmail": { "type": "string" },
-				"adminEmailDescription": { "type": "string" },
-				"adminEmailField": { "type": "string" },
-				"adminEmailPlaceholder": { "type": "string" },
-				"adminEmailRegistered": { "type": "string" },
-				"saveAdminEmail": { "type": "string" },
-				"adminEmailSaved": { "type": "string" },
-				"calendarSharing": { "type": "string" },
-				"calendarSharingDescription": { "type": "string" },
-				"calendarSharingEnabled": { "type": "string" },
-				"calendarSharingDisabled": { "type": "string" },
-				"calendarSharingSaved": { "type": "string" },
-				"publicCalendarLink": { "type": "string" },
-				"copyLink": { "type": "string" },
-				"copied": { "type": "string" },
-				"pushNotifications": { "type": "string" },
-				"pushNotificationsDescription": { "type": "string" },
-				"pushNotificationsEnabled": { "type": "string" },
-				"pushNotificationsDisabled": { "type": "string" },
-				"pushNotificationsSaved": { "type": "string" },
-				"emailNotifications": { "type": "string" },
-				"emailNotificationsDescription": { "type": "string" },
-				"emailNotificationsEnabled": { "type": "string" },
-				"emailNotificationsDisabled": { "type": "string" },
-				"emailNotificationsRequiresAdminEmail": { "type": "string" },
-				"emailNotificationsSaved": { "type": "string" },
-				"webhook": { "type": "string" },
-				"webhookDescription": { "type": "string" },
-				"webhookEnabled": { "type": "string" },
-				"webhookDisabled": { "type": "string" },
-				"webhookUrl": { "type": "string" },
-				"webhookUrlPlaceholder": { "type": "string" },
-				"webhookSecret": { "type": "string" },
-				"webhookSecretHint": { "type": "string" },
-				"webhookSecretPlaceholder": { "type": "string" },
-				"webhookGenerateSecret": { "type": "string" },
-				"webhookSecretConfigured": { "type": "string" },
-				"webhookSave": { "type": "string" },
-				"webhookSaved": { "type": "string" },
-				"webhookSendTest": { "type": "string" },
-				"webhookTestSent": { "type": "string" },
-				"version": { "type": "string" },
-				"versionDescription": { "type": "string" },
-				"currentVersion": { "type": "string" },
-				"latestVersion": { "type": "string" },
-				"versionStatus": { "type": "string" },
-				"versionChecking": { "type": "string" },
-				"versionUpdateAvailable": { "type": "string" },
-				"versionUpToDate": { "type": "string" },
-				"versionNoRelease": { "type": "string" },
-				"openLatestRelease": { "type": "string" },
-				"githubRepository": { "type": "string" },
-				"supportPage": { "type": "string" },
-				"openGithubRepository": { "type": "string" },
-				"openSupportPage": { "type": "string" },
-				"themeColors": { "type": "string" },
-				"themeColorsDescription": { "type": "string" },
-				"themeEdit": { "type": "string" },
-				"themeModeDefault": { "type": "string" },
-				"themeModeCustom": { "type": "string" },
-				"themeModalTitle": { "type": "string" },
-				"themeDeveloperShow": { "type": "string" },
-				"themeDeveloperHide": { "type": "string" },
-				"themeDeveloperHint": { "type": "string" },
-				"themeDeveloperInvalid": { "type": "string" },
-				"themeSaveButton": { "type": "string" },
-				"themeSaved": { "type": "string" },
-				"themeResetButton": { "type": "string" },
-				"themeReset": { "type": "string" },
-				"cancel": { "type": "string" },
-				"icsExport": { "type": "string" },
-				"icsExportDescription": { "type": "string" },
-				"icsExportAll": { "type": "string" },
-				"icsExportRange": { "type": "string" },
-				"icsExportFrom": { "type": "string" },
-				"icsExportTo": { "type": "string" },
-				"icsExportDownload": { "type": "string" }
+				"title": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"changePassword": {
+					"type": "string"
+				},
+				"passwordRequirements": {
+					"type": "string"
+				},
+				"currentPassword": {
+					"type": "string"
+				},
+				"newPassword": {
+					"type": "string"
+				},
+				"confirmPassword": {
+					"type": "string"
+				},
+				"updatePassword": {
+					"type": "string"
+				},
+				"passwordMismatch": {
+					"type": "string"
+				},
+				"passwordChanged": {
+					"type": "string"
+				},
+				"changePasswordWarning": {
+					"type": "string"
+				},
+				"language": {
+					"type": "string"
+				},
+				"languageDescription": {
+					"type": "string"
+				},
+				"languageSaved": {
+					"type": "string"
+				},
+				"langEn": {
+					"type": "string"
+				},
+				"langTr": {
+					"type": "string"
+				},
+				"adminEmail": {
+					"type": "string"
+				},
+				"adminEmailDescription": {
+					"type": "string"
+				},
+				"adminEmailField": {
+					"type": "string"
+				},
+				"adminEmailPlaceholder": {
+					"type": "string"
+				},
+				"adminEmailRegistered": {
+					"type": "string"
+				},
+				"saveAdminEmail": {
+					"type": "string"
+				},
+				"adminEmailSaved": {
+					"type": "string"
+				},
+				"calendarSharing": {
+					"type": "string"
+				},
+				"calendarSharingDescription": {
+					"type": "string"
+				},
+				"calendarSharingEnabled": {
+					"type": "string"
+				},
+				"calendarSharingDisabled": {
+					"type": "string"
+				},
+				"calendarSharingSaved": {
+					"type": "string"
+				},
+				"publicCalendarLink": {
+					"type": "string"
+				},
+				"copyLink": {
+					"type": "string"
+				},
+				"copied": {
+					"type": "string"
+				},
+				"pushNotifications": {
+					"type": "string"
+				},
+				"pushNotificationsDescription": {
+					"type": "string"
+				},
+				"pushNotificationsEnabled": {
+					"type": "string"
+				},
+				"pushNotificationsDisabled": {
+					"type": "string"
+				},
+				"pushNotificationsSaved": {
+					"type": "string"
+				},
+				"emailNotifications": {
+					"type": "string"
+				},
+				"emailNotificationsDescription": {
+					"type": "string"
+				},
+				"emailNotificationsEnabled": {
+					"type": "string"
+				},
+				"emailNotificationsDisabled": {
+					"type": "string"
+				},
+				"emailNotificationsRequiresAdminEmail": {
+					"type": "string"
+				},
+				"emailNotificationsSaved": {
+					"type": "string"
+				},
+				"webhook": {
+					"type": "string"
+				},
+				"webhookDescription": {
+					"type": "string"
+				},
+				"webhookEnabled": {
+					"type": "string"
+				},
+				"webhookDisabled": {
+					"type": "string"
+				},
+				"webhookUrl": {
+					"type": "string"
+				},
+				"webhookUrlPlaceholder": {
+					"type": "string"
+				},
+				"webhookSecret": {
+					"type": "string"
+				},
+				"webhookSecretHint": {
+					"type": "string"
+				},
+				"webhookSecretPlaceholder": {
+					"type": "string"
+				},
+				"webhookGenerateSecret": {
+					"type": "string"
+				},
+				"webhookSecretConfigured": {
+					"type": "string"
+				},
+				"webhookSave": {
+					"type": "string"
+				},
+				"webhookSaved": {
+					"type": "string"
+				},
+				"webhookSendTest": {
+					"type": "string"
+				},
+				"webhookTestSent": {
+					"type": "string"
+				},
+				"version": {
+					"type": "string"
+				},
+				"versionDescription": {
+					"type": "string"
+				},
+				"currentVersion": {
+					"type": "string"
+				},
+				"latestVersion": {
+					"type": "string"
+				},
+				"versionStatus": {
+					"type": "string"
+				},
+				"versionChecking": {
+					"type": "string"
+				},
+				"versionUpdateAvailable": {
+					"type": "string"
+				},
+				"versionUpToDate": {
+					"type": "string"
+				},
+				"versionNoRelease": {
+					"type": "string"
+				},
+				"openLatestRelease": {
+					"type": "string"
+				},
+				"githubRepository": {
+					"type": "string"
+				},
+				"supportPage": {
+					"type": "string"
+				},
+				"openGithubRepository": {
+					"type": "string"
+				},
+				"openSupportPage": {
+					"type": "string"
+				},
+				"openDocumentation": {
+					"type": "string"
+				},
+				"themeColors": {
+					"type": "string"
+				},
+				"themeColorsDescription": {
+					"type": "string"
+				},
+				"themeEdit": {
+					"type": "string"
+				},
+				"themeModeDefault": {
+					"type": "string"
+				},
+				"themeModeCustom": {
+					"type": "string"
+				},
+				"themeModalTitle": {
+					"type": "string"
+				},
+				"themeDeveloperShow": {
+					"type": "string"
+				},
+				"themeDeveloperHide": {
+					"type": "string"
+				},
+				"themeDeveloperHint": {
+					"type": "string"
+				},
+				"themeDeveloperInvalid": {
+					"type": "string"
+				},
+				"themeSaveButton": {
+					"type": "string"
+				},
+				"themeSaved": {
+					"type": "string"
+				},
+				"themeResetButton": {
+					"type": "string"
+				},
+				"themeReset": {
+					"type": "string"
+				},
+				"cancel": {
+					"type": "string"
+				},
+				"icsExport": {
+					"type": "string"
+				},
+				"icsExportDescription": {
+					"type": "string"
+				},
+				"icsExportAll": {
+					"type": "string"
+				},
+				"icsExportRange": {
+					"type": "string"
+				},
+				"icsExportFrom": {
+					"type": "string"
+				},
+				"icsExportTo": {
+					"type": "string"
+				},
+				"icsExportDownload": {
+					"type": "string"
+				}
 			},
 			"required": [
 				"title",
@@ -929,6 +1118,7 @@
 				"supportPage",
 				"openGithubRepository",
 				"openSupportPage",
+				"openDocumentation",
 				"themeColors",
 				"themeColorsDescription",
 				"themeEdit",
@@ -957,33 +1147,87 @@
 		"planner": {
 			"type": "object",
 			"properties": {
-				"title": { "type": "string" },
-				"pageDescription": { "type": "string" },
-				"all": { "type": "string" },
-				"upcoming": { "type": "string" },
-				"ongoing": { "type": "string" },
-				"past": { "type": "string" },
-				"addEvent": { "type": "string" },
-				"empty": { "type": "string" },
-				"eventTitle": { "type": "string" },
-				"eventTitlePlaceholder": { "type": "string" },
-				"description": { "type": "string" },
-				"descriptionPlaceholder": { "type": "string" },
-				"startTime": { "type": "string" },
-				"endTime": { "type": "string" },
-				"color": { "type": "string" },
-				"cancel": { "type": "string" },
-				"create": { "type": "string" },
-				"save": { "type": "string" },
-				"delete": { "type": "string" },
-				"edit": { "type": "string" },
-				"createTitle": { "type": "string" },
-				"editTitle": { "type": "string" },
-				"created": { "type": "string" },
-				"updated": { "type": "string" },
-				"deleted": { "type": "string" },
-				"fieldsRequired": { "type": "string" },
-				"plannerLegend": { "type": "string" }
+				"title": {
+					"type": "string"
+				},
+				"pageDescription": {
+					"type": "string"
+				},
+				"all": {
+					"type": "string"
+				},
+				"upcoming": {
+					"type": "string"
+				},
+				"ongoing": {
+					"type": "string"
+				},
+				"past": {
+					"type": "string"
+				},
+				"addEvent": {
+					"type": "string"
+				},
+				"empty": {
+					"type": "string"
+				},
+				"eventTitle": {
+					"type": "string"
+				},
+				"eventTitlePlaceholder": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"descriptionPlaceholder": {
+					"type": "string"
+				},
+				"startTime": {
+					"type": "string"
+				},
+				"endTime": {
+					"type": "string"
+				},
+				"color": {
+					"type": "string"
+				},
+				"cancel": {
+					"type": "string"
+				},
+				"create": {
+					"type": "string"
+				},
+				"save": {
+					"type": "string"
+				},
+				"delete": {
+					"type": "string"
+				},
+				"edit": {
+					"type": "string"
+				},
+				"createTitle": {
+					"type": "string"
+				},
+				"editTitle": {
+					"type": "string"
+				},
+				"created": {
+					"type": "string"
+				},
+				"updated": {
+					"type": "string"
+				},
+				"deleted": {
+					"type": "string"
+				},
+				"fieldsRequired": {
+					"type": "string"
+				},
+				"plannerLegend": {
+					"type": "string"
+				}
 			},
 			"required": [
 				"title",
@@ -1055,47 +1299,129 @@
 		"communityEvents": {
 			"type": "object",
 			"properties": {
-				"title": { "type": "string" },
-				"pageDescription": { "type": "string" },
-				"all": { "type": "string" },
-				"create": { "type": "string" },
-				"empty": { "type": "string" },
-				"eventTitle": { "type": "string" },
-				"eventTitlePlaceholder": { "type": "string" },
-				"description": { "type": "string" },
-				"descriptionPlaceholder": { "type": "string" },
-				"startTime": { "type": "string" },
-				"endTime": { "type": "string" },
-				"color": { "type": "string" },
-				"requiredApprovals": { "type": "string" },
-				"cancel": { "type": "string" },
-				"createBtn": { "type": "string" },
-				"delete": { "type": "string" },
-				"created": { "type": "string" },
-				"deleted": { "type": "string" },
-				"fieldsRequired": { "type": "string" },
-				"shareLink": { "type": "string" },
-				"openLink": { "type": "string" },
-				"copyLink": { "type": "string" },
-				"copied": { "type": "string" },
-				"approvals": { "type": "string" },
-				"statusPending": { "type": "string" },
-				"statusActive": { "type": "string" },
-				"statusCanceled": { "type": "string" },
-				"approveTitle": { "type": "string" },
-				"approveBtn": { "type": "string" },
-				"approved": { "type": "string" },
-				"approverFullName": { "type": "string" },
-				"approverFullNamePlaceholder": { "type": "string" },
-				"fullNameInvalid": { "type": "string" },
-				"approverEmail": { "type": "string" },
-				"approverEmailPlaceholder": { "type": "string" },
-				"invalidEmail": { "type": "string" },
-				"alreadyApprovedLocal": { "type": "string" },
-				"eventInfo": { "type": "string" },
-				"approvalProgress": { "type": "string" },
-				"approversDetail": { "type": "string" },
-				"noApproversYet": { "type": "string" }
+				"title": {
+					"type": "string"
+				},
+				"pageDescription": {
+					"type": "string"
+				},
+				"all": {
+					"type": "string"
+				},
+				"create": {
+					"type": "string"
+				},
+				"empty": {
+					"type": "string"
+				},
+				"eventTitle": {
+					"type": "string"
+				},
+				"eventTitlePlaceholder": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"descriptionPlaceholder": {
+					"type": "string"
+				},
+				"startTime": {
+					"type": "string"
+				},
+				"endTime": {
+					"type": "string"
+				},
+				"color": {
+					"type": "string"
+				},
+				"requiredApprovals": {
+					"type": "string"
+				},
+				"cancel": {
+					"type": "string"
+				},
+				"createBtn": {
+					"type": "string"
+				},
+				"delete": {
+					"type": "string"
+				},
+				"created": {
+					"type": "string"
+				},
+				"deleted": {
+					"type": "string"
+				},
+				"fieldsRequired": {
+					"type": "string"
+				},
+				"shareLink": {
+					"type": "string"
+				},
+				"openLink": {
+					"type": "string"
+				},
+				"copyLink": {
+					"type": "string"
+				},
+				"copied": {
+					"type": "string"
+				},
+				"approvals": {
+					"type": "string"
+				},
+				"statusPending": {
+					"type": "string"
+				},
+				"statusActive": {
+					"type": "string"
+				},
+				"statusCanceled": {
+					"type": "string"
+				},
+				"approveTitle": {
+					"type": "string"
+				},
+				"approveBtn": {
+					"type": "string"
+				},
+				"approved": {
+					"type": "string"
+				},
+				"approverFullName": {
+					"type": "string"
+				},
+				"approverFullNamePlaceholder": {
+					"type": "string"
+				},
+				"fullNameInvalid": {
+					"type": "string"
+				},
+				"approverEmail": {
+					"type": "string"
+				},
+				"approverEmailPlaceholder": {
+					"type": "string"
+				},
+				"invalidEmail": {
+					"type": "string"
+				},
+				"alreadyApprovedLocal": {
+					"type": "string"
+				},
+				"eventInfo": {
+					"type": "string"
+				},
+				"approvalProgress": {
+					"type": "string"
+				},
+				"approversDetail": {
+					"type": "string"
+				},
+				"noApproversYet": {
+					"type": "string"
+				}
 			},
 			"required": [
 				"title",
