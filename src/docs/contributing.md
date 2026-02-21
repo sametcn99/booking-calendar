@@ -6,7 +6,7 @@ This guide provides a deep dive into our development standards, architectural pa
 
 ---
 
-## 🛠 Core Technologies
+## Core Technologies
 
 Before contributing, it's helpful to be familiar with our stack:
 
@@ -19,7 +19,7 @@ Before contributing, it's helpful to be familiar with our stack:
 
 ---
 
-## 🏗 Architectural Layers
+## Architectural Layers
 
 We follow a strict **Layered Architecture** to keep the code testable and maintainable.
 
@@ -39,7 +39,7 @@ We follow a strict **Layered Architecture** to keep the code testable and mainta
 
 ---
 
-## 🚀 Development Workflow
+## Development Workflow
 
 ### 1. Environment Setup
 
@@ -74,17 +74,17 @@ This command runs Biome to format and lint your code. It will automatically fix 
 
 ---
 
-## 🌍 Localization (i18n)
+## Localization (i18n)
 
 We take internationalization seriously. **Hard-coded strings are not allowed.**
 
-### Workflow for New Text:
+### Workflow for New Text
 
-1.  **Add to English**: Update `src/client/src/i18n/en.json` (Frontend) or `src/server/i18n/en.json` (Backend).
-2.  **Add to Turkish**: Provide the equivalent in `tr.json`.
-3.  **Update Schema**: (Frontend only) Update `src/client/src/i18n/schema.json` to include the new key. This ensures type-safety and prevents missing translations.
+1. **Add to English**: Update `src/client/src/i18n/en.json` (Frontend) or `src/server/i18n/en.json` (Backend).
+2. **Add to Turkish**: Provide the equivalent in `tr.json`.
+3. **Update Schema**: (Frontend only) Update `src/client/src/i18n/schema.json` to include the new key. This ensures type-safety and prevents missing translations.
 
-### Adding a New Language:
+### Adding a New Language
 
 We welcome new languages!
 
@@ -93,7 +93,7 @@ We welcome new languages!
 
 ---
 
-## 🧪 Testing Standards
+## Testing Standards
 
 - **Manual Verification**: Before PR, verify the feature works in both Light and Dark modes.
 - **Type Safety**: Ensure `bunx tsc --noEmit` passes in both the root and `src/client` directories.
@@ -101,7 +101,7 @@ We welcome new languages!
 
 ---
 
-## 📝 Commit Guidelines
+## Commit Guidelines
 
 We follow conventional commits to keep a clean history:
 
@@ -115,11 +115,11 @@ We follow conventional commits to keep a clean history:
 
 ---
 
-## 📬 Pull Request Process
+## Pull Request Process
 
-1.  **Issue First**: For large changes, please open an issue to discuss the approach.
-2.  **Branching**: Use descriptive branch names like `feature/your-feature` or `fix/issue-id`.
-3.  **Documentation**: If you're adding a new page or feature, update the relevant döküman in `src/docs`.
-4.  **Screenshots**: If your PR involves UI changes, please attach "Before/After" screenshots.
+1. **Issue First**: For large changes, please open an issue to discuss the approach.
+2. **Branching**: Use descriptive branch names like `feature/your-feature` or `fix/issue-id`.
+3. **Documentation**: If you're adding a new page or feature, update the relevant döküman in `src/docs`.
+4. **Screenshots**: If your PR involves UI changes, please attach "Before/After" screenshots.
 
 Thank you for making **Booking Calendar** better for everyone!
