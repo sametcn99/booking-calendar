@@ -13,7 +13,10 @@
 		"generate-vapid-keys": "bun run src/server/generate-vapid-keys.ts",
 		"check:i18n": "bun run scripts/check-i18n.ts",
 		"format:md": "prettier --write \"**/*.md\"",
-		"check": "bunx biome check --write --unsafe && bunx tsc --noEmit && bun run check:i18n && bun run format:md"
+		"check": "bunx biome check --write --unsafe && bunx tsc --noEmit && bun run check:i18n && bun run format:md",
+		"docs:dev": "cd src/docs && bun run docs:dev",
+		"docs:build": "cd src/docs && bun run docs:build",
+		"docs:preview": "cd src/docs && bun run docs:preview"
 	},
 	"dependencies": {
 		"@types/web-push": "^3.6.4",

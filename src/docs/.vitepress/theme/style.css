@@ -1,0 +1,409 @@
+/**
+ * Booking Calendar Docs Theme
+ * A premium dark theme with violet accents, glassmorphism, and rich animations.
+ */
+
+/* ──────── Google Font ──────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+
+:root {
+	--vp-font-family-base: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+	/* Brand Colors */
+	--vp-c-brand-1: #8b5cf6;
+	--vp-c-brand-2: #7c3aed;
+	--vp-c-brand-3: #6d28d9;
+	--vp-c-brand-soft: rgba(124, 58, 237, 0.14);
+
+	/* Backgrounds */
+	--vp-c-bg: #09090b;
+	--vp-c-bg-soft: #111113;
+	--vp-c-bg-mute: #1a1a1e;
+	--vp-c-bg-alt: #09090b;
+	--vp-c-bg-elv: #111113;
+
+	/* Typography */
+	--vp-c-text-1: #ede9fe;
+	--vp-c-text-2: #c4b5fd;
+	--vp-c-text-3: #8b7aab;
+
+	--vp-home-hero-name-color: transparent;
+	--vp-home-hero-name-background: linear-gradient(135deg,
+			#ffffff 0%,
+			#c4b5fd 30%,
+			#7c3aed 60%,
+			#1e1b4b 100%);
+
+	--vp-home-hero-image-background-image: radial-gradient(circle,
+			rgba(139, 92, 246, 0.35) 0%,
+			rgba(124, 58, 237, 0.12) 40%,
+			transparent 70%);
+	--vp-home-hero-image-filter: blur(72px) saturate(1.4);
+
+	/* Borders & Dividers */
+	--vp-c-divider: rgba(167, 139, 250, 0.08);
+	--vp-c-gutter: rgba(167, 139, 250, 0.04);
+
+	/* Code Blocks */
+	--vp-code-bg: #111113;
+	--vp-code-block-bg: #0c0c0e;
+
+	/* Buttons */
+	--vp-button-brand-border: transparent;
+	--vp-button-brand-text: #ffffff;
+	--vp-button-brand-bg: var(--vp-c-brand-2);
+	--vp-button-brand-hover-border: transparent;
+	--vp-button-brand-hover-text: #ffffff;
+	--vp-button-brand-hover-bg: var(--vp-c-brand-1);
+	--vp-button-alt-border: rgba(167, 139, 250, 0.2);
+	--vp-button-alt-text: var(--vp-c-text-1);
+	--vp-button-alt-bg: rgba(124, 58, 237, 0.08);
+	--vp-button-alt-hover-border: rgba(167, 139, 250, 0.35);
+	--vp-button-alt-hover-bg: rgba(124, 58, 237, 0.15);
+}
+
+/* ──────── GLOBAL ──────── */
+* {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* ──────── NAVBAR ──────── */
+.VPNavBar {
+	background: rgba(9, 9, 11, 0.75) !important;
+	backdrop-filter: blur(16px) saturate(1.6);
+	-webkit-backdrop-filter: blur(16px) saturate(1.6);
+	border-bottom: 1px solid var(--vp-c-divider) !important;
+}
+
+.VPNavBar .title {
+	font-weight: 700 !important;
+}
+
+.VPFlyout,
+.VPMenu {
+	transition: all 0.3s ease !important;
+}
+
+/* Navbar dropdown menu (flyout) styling */
+.VPNav .VPFlyout .menu {
+	background-color: var(--vp-c-bg-soft) !important;
+	border: 1px solid var(--vp-c-divider) !important;
+	border-radius: 12px !important;
+	box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Ensure the toggle button itself is transparent */
+.VPNav .VPFlyout button {
+	background-color: transparent !important;
+	border: none !important;
+}
+
+.VPMenuLink {
+	transition: all 0.3s ease !important;
+}
+
+.VPMenuLink:hover {
+	background-color: var(--vp-c-brand-soft) !important;
+	color: var(--vp-c-brand-1) !important;
+}
+
+/* ──────── SIDEBAR ──────── */
+.VPSidebar {
+	background: rgba(9, 9, 11, 0.85) !important;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border-right: 1px solid var(--vp-c-divider) !important;
+}
+
+/* ──────── HERO ──────── */
+.VPHero {
+	padding: 100px 0 80px !important;
+	position: relative;
+	overflow: hidden;
+	text-align: center;
+}
+
+.VPHero .container {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+	margin: 0 auto !important;
+	max-width: none !important;
+}
+
+.VPHero .main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	margin: 0 auto !important;
+	width: 100% !important;
+}
+
+/* Ambient glow behind hero */
+.VPHero::before {
+	content: "";
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	translate: -50% -50%;
+	width: 900px;
+	height: 600px;
+	background: conic-gradient(from 180deg at 50% 50%,
+			rgba(139, 92, 246, 0.22) 0deg,
+			rgba(124, 58, 237, 0.10) 120deg,
+			rgba(109, 40, 217, 0.18) 240deg,
+			rgba(139, 92, 246, 0.22) 360deg);
+	filter: blur(100px);
+	z-index: -1;
+	animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+	0% {
+		opacity: 0.55;
+		scale: 1;
+	}
+
+	100% {
+		opacity: 0.85;
+		scale: 1.15;
+	}
+}
+
+/* Hero image breathing animation removed as image is removed */
+
+.VPHero .name {
+	font-weight: 900 !important;
+	letter-spacing: -0.045em;
+	font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
+	line-height: 1.08;
+	margin: 0 auto !important;
+	text-align: center !important;
+}
+
+.VPHero .text {
+	color: var(--vp-c-text-2);
+	font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+	margin: 8px auto 0 !important;
+	font-weight: 500;
+	text-align: center !important;
+}
+
+.VPHero .tagline {
+	font-size: clamp(0.95rem, 2vw, 1.15rem);
+	color: var(--vp-c-text-3);
+	max-width: 680px;
+	line-height: 1.65;
+	margin: 16px auto 0 !important;
+	text-align: center !important;
+}
+
+.VPHero .actions {
+	justify-content: center;
+}
+
+/* Action buttons */
+.VPHero .actions .VPButton {
+	border-radius: 12px !important;
+	padding: 12px 28px !important;
+	font-weight: 600;
+	font-size: 0.9375rem;
+	transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.VPHero .actions .VPButton:hover {
+	box-shadow: 0 8px 24px -6px rgba(124, 58, 237, 0.45);
+}
+
+/* ──────── FEATURE CARDS ──────── */
+.VPFeature {
+	background: var(--vp-c-bg-soft) !important;
+	border: 1px solid var(--vp-c-divider) !important;
+	border-radius: 20px !important;
+	padding: 28px 24px !important;
+	transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+	position: relative;
+	overflow: hidden;
+}
+
+/* Top-edge shimmer on hover */
+.VPFeature::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg,
+			rgba(139, 92, 246, 0.06) 0%,
+			transparent 40%);
+	opacity: 0;
+	transition: opacity 0.5s;
+	pointer-events: none;
+}
+
+.VPFeature:hover {
+	border-color: rgba(139, 92, 246, 0.35) !important;
+	box-shadow: 0 24px 48px -12px rgba(124, 58, 237, 0.22);
+}
+
+.VPFeature:hover::before {
+	opacity: 1;
+}
+
+.VPFeature .title {
+	font-size: 1.125rem;
+	font-weight: 700;
+}
+
+.VPFeature .details {
+	color: var(--vp-c-text-2);
+	font-size: 0.9rem;
+	line-height: 1.65;
+}
+
+/* ──────── CUSTOM CONTAINERS ──────── */
+.custom-block.tip {
+	border-left: 4px solid var(--vp-c-brand-1);
+	background-color: var(--vp-c-brand-soft);
+	border-radius: 10px;
+	padding: 20px 24px;
+}
+
+.custom-block.warning {
+	border-radius: 10px;
+	padding: 20px 24px;
+}
+
+/* ──────── SCROLLBAR ──────── */
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(139, 92, 246, 0.18);
+	border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: rgba(139, 92, 246, 0.35);
+}
+
+/* ──────── TYPOGRAPHY ──────── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	letter-spacing: -0.025em;
+	font-weight: 800;
+}
+
+a {
+	text-decoration: none;
+	transition: color 0.25s;
+}
+
+/* ──────── ANIMATIONS ──────── */
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(32px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes slideRight {
+	from {
+		opacity: 0;
+		transform: translateX(-24px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes pulse {
+
+	0%,
+	100% {
+		box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.25);
+	}
+
+	50% {
+		box-shadow: 0 0 0 12px rgba(139, 92, 246, 0);
+	}
+}
+
+.VPFeature {
+	animation: slideUp 0.65s cubic-bezier(0.23, 1, 0.32, 1) backwards;
+}
+
+.VPFeature:nth-child(1) {
+	animation-delay: 0.05s;
+}
+
+.VPFeature:nth-child(2) {
+	animation-delay: 0.10s;
+}
+
+.VPFeature:nth-child(3) {
+	animation-delay: 0.15s;
+}
+
+.VPFeature:nth-child(4) {
+	animation-delay: 0.20s;
+}
+
+.VPFeature:nth-child(5) {
+	animation-delay: 0.25s;
+}
+
+.VPFeature:nth-child(6) {
+	animation-delay: 0.30s;
+}
+
+/* ──────── BADGE ──────── */
+.VPBadge {
+	border-radius: 100px;
+	padding: 3px 10px;
+	font-weight: 600;
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+
+.VPBadge.brand {
+	background-color: var(--vp-c-brand-soft);
+	color: var(--vp-c-brand-1);
+	border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* ──────── FOOTER ──────── */
+.VPFooter {
+	border-top: 1px solid var(--vp-c-divider) !important;
+}
+
+/* ──────── DOC CONTENT ──────── */
+.vp-doc h2 {
+	border-top: 1px solid var(--vp-c-divider);
+	padding-top: 24px;
+	margin-top: 40px;
+}
+
+/* ──────── SEARCH ──────── */
+.VPLocalSearchBox .shell {
+	border-radius: 16px !important;
+	border: 1px solid var(--vp-c-divider) !important;
+}
