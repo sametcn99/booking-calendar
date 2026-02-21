@@ -34,10 +34,14 @@ For detailed guides, API references, and deployment instructions, please visit o
 
 ## Quick Links
 
+- [Screenshots](https://booking-calendar-docs.vercel.app/pages/screenshots)
 - [Getting Started](https://booking-calendar-docs.vercel.app/guide/getting-started)
 - [Docker Deployment Guide](https://booking-calendar-docs.vercel.app/guide/deployment-docker)
 - [Environment Variables](https://booking-calendar-docs.vercel.app/guide/configuration)
 - [Contributing Guide](https://booking-calendar-docs.vercel.app/contributing)
+
+> [!TIP]
+> You can find detailed guides and screenshots for every page under the **Pages** category in the documentation.
 
 ## Tech Stack
 
