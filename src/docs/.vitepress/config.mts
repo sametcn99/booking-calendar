@@ -9,6 +9,9 @@ export default defineConfig({
 	lastUpdated: true,
 	cleanUrls: true,
 	appearance: false,
+	sitemap: {
+		hostname: "https://booking-calendar-docs.vercel.app/",
+	},
 	head: [
 		["link", { rel: "icon", href: "/favicon.ico" }],
 		[
@@ -31,12 +34,9 @@ export default defineConfig({
 		],
 		[
 			"link",
-			{
-				rel: "apple-touch-icon",
-				sizes: "180x180",
-				href: "/apple-touch-icon.png",
-			},
+			{ rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
 		],
+		["link", { rel: "manifest", href: "/manifest.json" }],
 		["meta", { name: "theme-color", content: "#7c3aed" }],
 
 		// Open Graph
@@ -94,7 +94,7 @@ export default defineConfig({
 			"link",
 			{
 				rel: "canonical",
-				href: "https://sametcn99.github.io/booking-calendar/",
+				href: "https://booking-calendar-docs.vercel.app/",
 			},
 		],
 	],
