@@ -29,6 +29,7 @@ nano .env
 ```
 
 Ensure you set the following correctly:
+
 - `BASE_URL`: Your public domain (e.g., `https://booking.example.com`)
 - `PORT`: Usually `3000`
 - `ADMIN_EMAIL` and `ADMIN_PASSWORD`: Your login credentials

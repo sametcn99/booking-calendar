@@ -31,6 +31,7 @@ We welcome contributions for new languages! Translation files are located in:
 - **Client:** `src/client/src/i18n/*.json`
 
 Each file contains key-value pairs. To add a new language:
+
 1. Copy `en.json`.
 2. Rename it to your locale (e.g., `de.json`, `fr.json`).
 3. Translate the values.

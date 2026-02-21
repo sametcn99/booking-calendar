@@ -26,7 +26,6 @@ features:
     details: Full ICS support. Sync your appointments with Google, Apple, or Outlook effortlessly.
   - title: 🥟 Optimized for Bun
     details: Built for high-performance with Bun, React, and TypeORM. Minimal footprint, maximum speed.
-
 ---
 
 <div class="home-content">

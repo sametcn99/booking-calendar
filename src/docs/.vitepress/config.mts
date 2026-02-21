@@ -31,13 +31,23 @@ export default defineConfig({
 		],
 		[
 			"link",
-			{ rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+			{
+				rel: "apple-touch-icon",
+				sizes: "180x180",
+				href: "/apple-touch-icon.png",
+			},
 		],
 		["meta", { name: "theme-color", content: "#7c3aed" }],
 
 		// Open Graph
 		["meta", { property: "og:type", content: "website" }],
-		["meta", { property: "og:title", content: "Booking Calendar — Self-Hosted Appointment Management" }],
+		[
+			"meta",
+			{
+				property: "og:title",
+				content: "Booking Calendar — Self-Hosted Appointment Management",
+			},
+		],
 		[
 			"meta",
 			{
@@ -52,7 +62,13 @@ export default defineConfig({
 
 		// Twitter Card
 		["meta", { name: "twitter:card", content: "summary_large_image" }],
-		["meta", { name: "twitter:title", content: "Booking Calendar — Self-Hosted Appointment Management" }],
+		[
+			"meta",
+			{
+				name: "twitter:title",
+				content: "Booking Calendar — Self-Hosted Appointment Management",
+			},
+		],
 		[
 			"meta",
 			{
@@ -74,7 +90,13 @@ export default defineConfig({
 		],
 		["meta", { name: "author", content: "sametcn99" }],
 		["meta", { name: "robots", content: "index, follow" }],
-		["link", { rel: "canonical", href: "https://sametcn99.github.io/booking-calendar/" }],
+		[
+			"link",
+			{
+				rel: "canonical",
+				href: "https://sametcn99.github.io/booking-calendar/",
+			},
+		],
 	],
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config

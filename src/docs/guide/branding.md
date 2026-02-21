@@ -5,6 +5,7 @@ Booking Calendar allows you to customize the look and feel of your instance to m
 ## Customizing Logos
 
 To change the logos used in the PWA and documentation:
+
 1. Replace the files in `src/client/public/`:
    - `favicon.ico`
    - `apple-touch-icon.png`
