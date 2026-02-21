@@ -154,7 +154,10 @@ export default defineConfig({
 				text: "Configuration",
 				collapsed: false,
 				items: [
-					{ text: "Environment Variables", link: "/guide/configuration" },
+					{
+						text: "Environment Variables",
+						link: "/guide/environment-variables",
+					},
 					{ text: "Web Push (VAPID)", link: "/guide/web-push" },
 					{ text: "Email System", link: "/guide/email-system" },
 				],

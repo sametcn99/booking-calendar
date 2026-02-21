@@ -69,6 +69,6 @@ Always set a strong `JWT_SECRET` and `ADMIN_PASSWORD` before exposing your insta
 
 ## Next Steps
 
-- [Configure Environment Variables](./configuration)
+- [Configure Environment Variables](./environment-variables)
 - [Set up Web Push Notifications](./web-push)
 - [Configure Email Notifications](./email-system)

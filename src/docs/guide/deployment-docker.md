@@ -31,7 +31,7 @@ services:
     environment:
       - PORT=3000
       - DATABASE_PATH=/app/data/database.sqlite
-      # See Section 3 for more configuration variables
+      # See Section 3 (Environment Variables) for more configuration variables
 ```
 
 Run the application:
@@ -81,25 +81,81 @@ The application will be accessible at `http://localhost:3000` (or the port you d
 
 ---
 
-## 3. Understanding variables
+## 3. Environment Variables
 
-There are two types of variables in Booking Calendar's Docker setup:
+For a complete list of all available settings, refer to the [Environment Variables](./environment-variables.md) documentation.
+
+In Docker, variables are categorized into two types:
 
 ### Build-time Variables (`VITE_`)
 
-These are embedded into the static JavaScript bundle during the build process. If you change these, **you must rebuild the image**.
+These are baked into the frontend bundle during the build process. If you change these, **you must rebuild the image** (e.g., `docker compose up -d --build`).
 
-- `VITE_SEO_TITLE`: Change the title of the public site.
-- `VITE_PUBLIC_URL`: Critical for assets and PWA manifests.
-- `VITE_VAPID_PUBLIC_KEY`: Used for Web Push notifications.
+- **`VITE_SEO_TITLE`**: Customizes the brand name/title in the browser.
+- **`VITE_PUBLIC_URL`**: The base URL of your deployment (e.g., `https://book.example.com`).
+- **`VITE_VAPID_PUBLIC_KEY`**: Public key for Web Push notifications.
 
 ### Runtime Variables
 
-These can be changed at any time by restarting the container.
+These can be updated by simply restarting the container.
 
-- `ADMIN_PASSWORD`: Your entry to the dashboard.
-- `SMTP_*`: Your mail server details.
-- `DB_PATH`: Location of the SQLite file (defaults to `/app/data/booking.db`).
+- **`ADMIN_PASSWORD`**: Required to access the management dashboard.
+- **`JWT_SECRET`**: Used for session security. Should be a long random string.
+- **`SMTP_*`**: Parameters for your email provider (host, port, user, pass).
+- **`DB_PATH`**: Internal path to the database (default: `/app/data/booking.db`).
+
+### Full Configuration Example
+
+A production-ready `docker-compose.yml` with all common variables:
+
+```yaml
+services:
+  app:
+    image: ghcr.io/sametcn99/booking-calendar:latest
+    container_name: booking-calendar
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      # --- CORE SETTINGS ---
+      - PORT=3000
+      - BASE_URL=https://booking.example.com
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=choose_a_strong_password
+      - JWT_SECRET=random_long_string_here
+
+      # --- DATABASE ---
+      - DB_PATH=/app/data/booking.db
+
+      # --- EMAIL (SMTP) ---
+      - SMTP_HOST=smtp.mailtrap.io
+      - SMTP_PORT=587
+      - SMTP_USER=your_username
+      - SMTP_PASS=your_password
+      - SMTP_FROM="Booking <noreply@example.com>"
+
+      # --- WEB PUSH (Optional) ---
+      - VITE_VAPID_PUBLIC_KEY=your_public_vapid_key
+      - VAPID_PRIVATE_KEY=your_private_vapid_key
+
+      # --- SEO (Build-time) ---
+      - VITE_SEO_TITLE="Premium Booking Service"
+      - VITE_SEO_DESCRIPTION="Book your appointment online easily."
+```
+
+::: tip USING A .ENV FILE
+Instead of listing all variables in `docker-compose.yml`, you can create a `.env` file in the same directory and use `env_file`:
+
+```yaml
+services:
+  app:
+    # ...
+    env_file: .env
+```
+
+:::
 
 ---
 
