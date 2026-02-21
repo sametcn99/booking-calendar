@@ -80,8 +80,7 @@ export default defineConfig({
 			"meta",
 			{
 				name: "twitter:description",
-				content:
-					"A modern, open-source, and privacy-focused booking system for professionals.",
+				content: "A modern, open-source, and privacy-focused booking system for professionals.",
 			},
 		],
 		["meta", { name: "twitter:image", content: "/android-chrome-512x512.png" }],
@@ -102,6 +101,15 @@ export default defineConfig({
 			{
 				rel: "canonical",
 				href: "https://booking-calendar-docs.vercel.app/",
+			},
+		],
+		// Umami analytics
+		[
+			"script",
+			{
+				src: "https://umami.sametcc.me/script.js",
+				"data-website-id": "0d31c0c8-e859-4933-af46-e88fe2b35996",
+				defer: "defer",
 			},
 		],
 	],
@@ -186,9 +194,7 @@ export default defineConfig({
 			},
 		],
 
-		socialLinks: [
-			{ icon: "github", link: "https://github.com/sametcn99/booking-calendar" },
-		],
+		socialLinks: [{ icon: "github", link: "https://github.com/sametcn99/booking-calendar" }],
 
 		footer: {
 			message: "Released under the GPL 3.0 License.",
@@ -199,8 +205,7 @@ export default defineConfig({
 		},
 
 		editLink: {
-			pattern:
-				"https://github.com/sametcn99/booking-calendar/edit/main/src/docs/:path",
+			pattern: "https://github.com/sametcn99/booking-calendar/edit/main/src/docs/:path",
 			text: "Edit this page on GitHub",
 		},
 	},
