@@ -2,6 +2,9 @@
 
 The Settings page is a high-density configuration hub that allows administrators to fine-tune every aspect of the application.
 
+![Settings](/screenshots/settings/settings.png)
+_The centralized control panel for security, notifications, and application-wide customization._
+
 ## Detailed Sections
 
 ### 1. Globalization & Identity

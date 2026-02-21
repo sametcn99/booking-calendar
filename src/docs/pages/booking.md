@@ -2,6 +2,9 @@
 
 This is the high-conversion landing page where external guests interact with the booking system. It is optimized for speed, clarity, and mobile responsiveness.
 
+![Booking Screen](/screenshots/appointments/appointment_booking.png)
+_The modern, minimalist booking interface where guests select their preferred time slots._
+
 ## Entry Logic & Validation
 
 The page is driven by a `slugId` parameter in the URL:

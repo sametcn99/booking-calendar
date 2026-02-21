@@ -1,6 +1,13 @@
-# Dashboard
-
 The Dashboard is the command center for administrators, providing high-level metrics and a comprehensive calendar view of all scheduling activities.
+
+![Monthly Dashboard](/screenshots/dashboard/dashboard_monthly.png)
+_The system-wide monthly calendar providing a high-level overview of availability and events._
+
+![Weekly Dashboard](/screenshots/dashboard/dashboard_weekly.png)
+_A more detailed weekly view for managing recurring patterns and density._
+
+![Daily Dashboard](/screenshots/dashboard/dashboard_daily.png)
+_The granular daily view showing specific slot transitions and appointment details._
 
 ## Overview
 

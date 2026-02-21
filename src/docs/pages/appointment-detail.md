@@ -2,6 +2,9 @@
 
 This is the private portal for a guest who has recently booked an appointment. It acts as their "digital receipt" and management hub.
 
+![Appointment Detail](/screenshots/appointments/appointment_link.png)
+_The secure guest portal providing persistent access to booking details and cancellation options._
+
 ## Information Transparency
 
 The guest can view all data associated with their booking:

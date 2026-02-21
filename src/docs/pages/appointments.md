@@ -2,6 +2,9 @@
 
 The Appointments page is a robust management interface designed to track, filter, and moderate guest bookings.
 
+![All Appointments](/screenshots/appointments/appointments_all.png)
+_The administrative interface for managing the lifecycle of all guest bookings._
+
 ## Key Features
 
 ### Advanced Filtering

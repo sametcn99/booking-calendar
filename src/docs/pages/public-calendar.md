@@ -2,6 +2,12 @@
 
 The Public Calendar is the read-only window into the system's schedule. It is designed for maximum accessibility and multi-view flexibility.
 
+![Calendar Sharing](/screenshots/calendar/calendar_sharing.png)
+_Integration and sharing options for the public booking calendar._
+
+![Public Calendar](/screenshots/dashboard/dashboard_monthly.png)
+_The clean, read-only interface used for guest-facing availability overview._
+
 ## Viewing Experience
 
 The calendar utilizes `react-big-calendar` with customized styling to match the application's premium aesthetic.

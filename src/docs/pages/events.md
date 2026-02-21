@@ -2,6 +2,9 @@
 
 Community Events are public gatherings or initiatives that rely on a crowdsourced approval model.
 
+![Community Events](/screenshots/events/events_all.png)
+_Administrative list view showing all community-proposed events and their approval status._
+
 ## The Approval Workflow
 
 1. **Creation**: An administrator or user proposes an event.
@@ -16,6 +19,9 @@ Community Events are public gatherings or initiatives that rely on a crowdsource
 
 - **Event List**: Shows all current proposals and their live approval count.
 - **Creation Form**: Dedicated interface to set event title, description, time, and the number of required approvals.
+
+![Create Event](/screenshots/events/events_create.png)
+_The creation form for proposing new events with customizable approval thresholds._
 
 ### `CommunityEventCard` (Internal)
 

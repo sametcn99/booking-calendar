@@ -2,6 +2,9 @@
 
 Slots are the foundational "Time Inventory" of the Booking Calendar system. This page is where administrators manufacture the time they want to sell or share.
 
+![Availability Slots](/screenshots/time_slots/time_slots.png)
+_Review and toggle the status of your predefined time inventory._
+
 ## The Concept of a "Slot"
 
 A slot is not an appointment; it is a **container of potential**.
@@ -17,6 +20,9 @@ A slot is not an appointment; it is a **container of potential**.
 - **Time Range**: Select specific start and end dates/times.
 - **Naming**: Optional descriptive name (e.g., "Monday Office Hours").
 - **Validation**: Ensures start time is before end time and not in the distant past.
+
+![Create Time Slot](/screenshots/time_slots/time_slots_create.png)
+_Precise configuration of slot ranges and recurring availability._
 
 ### Managing the List (`SlotsListSection`)
 

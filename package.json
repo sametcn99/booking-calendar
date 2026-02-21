@@ -10,6 +10,7 @@
 		"build": "bun run build:client",
 		"start": "NODE_ENV=production bun run src/server/index.ts",
 		"db:init": "bun run src/server/db/init.ts",
+		"db:seed": "bun run src/server/db/seed.ts",
 		"generate-vapid-keys": "bun run src/server/generate-vapid-keys.ts",
 		"check:i18n": "bun run scripts/check-i18n.ts",
 		"format:md": "prettier --write \"**/*.md\"",

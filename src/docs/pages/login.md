@@ -2,6 +2,9 @@
 
 The Login page is the secure gateway to the administrative backend. It is designed to be lightweight, secure, and focused.
 
+![Login](/screenshots/login/login.png)
+_A secure and minimalist gateway ensuring only authorized users can access the administrative dashboard._
+
 ## Security Architecture
 
 ### 1. Robust Authentication

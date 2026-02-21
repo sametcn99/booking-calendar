@@ -2,6 +2,9 @@
 
 The Planner is an internal-only scheduling tool designed for events that do not require guest interaction but consume the administrator's time.
 
+![Planner Overview](/screenshots/planner/planner_all.png)
+_Internal tracking for non-guest events like breaks or meetings._
+
 ## Planner Events vs. Appointments
 
 - **Planner Events**: Created by the Admin. No guest email/link needed. Ideal for breaks, personal meetings, or travel.
@@ -24,6 +27,9 @@ The Planner features a specialized time-based filtering bar:
 - **Description**: Optional field for detailed notes or agendas.
 - **Time Range**: Precise start and end times.
 - **Validation**: Prevents overlapping events if the administrator chooses to maintain a strict schedule.
+
+![Create Planner Entry](/screenshots/planner/planner_create.png)
+_Interface for adding private administrative events to the system calendar._
 
 ### `PlannerEventCard`
 

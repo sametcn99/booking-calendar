@@ -2,6 +2,9 @@
 
 Booking Links are the "Products" of your availability. This page allows administrators to bundle specific time slots into shareable, expiring URLs.
 
+![Links Overview](/screenshots/links/links.png)
+_A consolidated dashboard for managing the lifecycle and associations of booking links._
+
 ## Features & Configuration
 
 ### Link Creation (`CreateLinkModal`)
@@ -9,6 +12,9 @@ Booking Links are the "Products" of your availability. This page allows administ
 - **Name**: Internal identifier for the link (e.g., "Technical Interview - Samet").
 - **Expiration**: Set a lifespan in days. Once expired, the link automatically becomes invalid.
 - **Slot Association**: A multi-select interface to pick exactly which Availability Slots are accessible through this link.
+
+![Create Link](/screenshots/links/links_create.png)
+_Defining link parameters, including name, expiration, and associated availability slots._
 
 ### Link Lifecycle
 

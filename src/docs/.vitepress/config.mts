@@ -142,6 +142,7 @@ export default defineConfig({
 				items: [
 					{ text: "Getting Started", link: "/guide/getting-started" },
 					{ text: "Features", link: "/guide/features" },
+					{ text: "Screenshots", link: "/pages/screenshots" },
 					{ text: "Architecture", link: "/guide/architecture" },
 					{ text: "Localization", link: "/guide/localization" },
 					{ text: "Branding", link: "/guide/branding" },

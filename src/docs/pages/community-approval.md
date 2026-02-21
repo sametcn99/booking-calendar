@@ -2,6 +2,9 @@
 
 This specialized page is the public interface for the crowdsourced approval process. It is where "Pending" events become "Official".
 
+![Event Approval](/screenshots/events/event_approval.png)
+_The public-facing approval interface for community crowdsourcing._
+
 ## Page Anatomy
 
 ### 1. Header & Title
