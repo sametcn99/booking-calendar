@@ -10,7 +10,52 @@ Deploying Booking Calendar with Docker is the most reliable method for productio
 
 ---
 
-## 1. Fast Track (Standard Setup)
+## 1. Using Pre-built Images (Recommended)
+
+The easiest way to run Booking Calendar is by using the pre-built images from our GitHub Container Registry. This avoids the need to build the image locally and ensures you're running a verified version.
+
+### Docker Compose (Recommended)
+
+Create a `docker-compose.yml` file:
+
+```yaml
+services:
+  app:
+    image: ghcr.io/sametcn99/booking-calendar:latest
+    container_name: booking-calendar
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PORT=3000
+      - DATABASE_PATH=/app/data/database.sqlite
+      # See Section 3 for more configuration variables
+```
+
+Run the application:
+
+```bash
+docker compose up -d
+```
+
+### Docker Run
+
+If you prefer using a single command:
+
+```bash
+docker run -d \
+  --name booking-calendar \
+  -p 3000:3000 \
+  -v $(pwd)/data:/app/data \
+  -e DATABASE_PATH=/app/data/database.sqlite \
+  ghcr.io/sametcn99/booking-calendar:latest
+```
+
+---
+
+## 2. Manual Build (Custom Setup)
 
 ### Prepare Environment
 
@@ -36,7 +81,7 @@ The application will be accessible at `http://localhost:3000` (or the port you d
 
 ---
 
-## 2. Understanding variables
+## 3. Understanding variables
 
 There are two types of variables in Booking Calendar's Docker setup:
 
@@ -58,7 +103,7 @@ These can be changed at any time by restarting the container.
 
 ---
 
-## 3. Persistent Data (Volumes)
+## 4. Persistent Data (Volumes)
 
 Booking Calendar uses a Docker Volume to ensure your database and settings are not lost when the container is updated or removed.
 
@@ -73,7 +118,7 @@ The SQLite database is stored in `/app/data/booking.db` inside the container, wh
 
 ---
 
-## 4. Deploying on Coolify
+## 5. Deploying on Coolify
 
 Booking Calendar is optimized for **Coolify**. The `docker-compose.yml` uses `${VAR:-default}` syntax which Coolify automatically parses.
 
@@ -84,7 +129,7 @@ Booking Calendar is optimized for **Coolify**. The `docker-compose.yml` uses `${
 
 ---
 
-## 5. Reverse Proxy & SSL
+## 6. Reverse Proxy & SSL
 
 For production, you **must** use HTTPS. We recommend:
 
@@ -108,7 +153,7 @@ labels:
 
 ---
 
-## 6. Maintenance Commands
+## 7. Maintenance Commands
 
 | Command                                          | Description                   |
 | :----------------------------------------------- | :---------------------------- |
@@ -119,7 +164,7 @@ labels:
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 ### Container keeps restarting
 

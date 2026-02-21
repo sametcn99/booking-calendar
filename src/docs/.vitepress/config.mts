@@ -80,7 +80,8 @@ export default defineConfig({
 			"meta",
 			{
 				name: "twitter:description",
-				content: "A modern, open-source, and privacy-focused booking system for professionals.",
+				content:
+					"A modern, open-source, and privacy-focused booking system for professionals.",
 			},
 		],
 		["meta", { name: "twitter:image", content: "/android-chrome-512x512.png" }],
@@ -194,7 +195,9 @@ export default defineConfig({
 			},
 		],
 
-		socialLinks: [{ icon: "github", link: "https://github.com/sametcn99/booking-calendar" }],
+		socialLinks: [
+			{ icon: "github", link: "https://github.com/sametcn99/booking-calendar" },
+		],
 
 		footer: {
 			message: "Released under the GPL 3.0 License.",
@@ -205,7 +208,8 @@ export default defineConfig({
 		},
 
 		editLink: {
-			pattern: "https://github.com/sametcn99/booking-calendar/edit/main/src/docs/:path",
+			pattern:
+				"https://github.com/sametcn99/booking-calendar/edit/main/src/docs/:path",
 			text: "Edit this page on GitHub",
 		},
 	},
