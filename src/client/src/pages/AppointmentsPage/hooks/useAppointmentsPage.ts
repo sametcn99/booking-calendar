@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "../../../api";
+import { useListFilters } from "../../../hooks/useListFilters";
 
 export interface Appointment {
 	id: number;
@@ -76,7 +77,7 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		[loadAppointments, t],
 	);
 
-	const filteredAppointments = useMemo(() => {
+	const statusFilteredAppointments = useMemo(() => {
 		return appointments.filter((apt) => {
 			const isCanceled = Boolean(apt.canceled_at);
 			const isPast = isPastAppointment(apt);
@@ -88,11 +89,40 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		});
 	}, [appointments, statusFilter]);
 
+	const {
+		filteredItems: filteredAppointments,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+	} = useListFilters({
+		items: statusFilteredAppointments,
+		searchFields: ["name", "email", "meeting_place", "note"],
+		dateField: "start_at",
+	});
+
 	return {
 		filteredAppointments,
 		handleCancel,
 		handleDelete,
 		statusFilter,
 		setStatusFilter,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+		totalCount: statusFilteredAppointments.length,
 	};
 }

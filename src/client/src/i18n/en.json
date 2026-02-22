@@ -49,7 +49,8 @@
 			"note": "Note",
 			"status": "Status",
 			"timeLabel": "Time",
-			"close": "Close"
+			"close": "Close",
+			"filterHint": "Click on labels to toggle visibility"
 		},
 		"changePasswordWarning": "Please change your default password for security.",
 		"totalSlots": "Total Slots",
@@ -321,7 +322,17 @@
 		"confirmDisableMessage": "Are you sure you want to disable this item?",
 		"confirmCancelMessage": "Are you sure you want to cancel this appointment?",
 		"confirm": "Confirm",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+		"searchPlaceholder": "Search appointments, titles, locations...",
+		"sortNewest": "Newest first",
+		"sortOldest": "Oldest first",
+		"clearFilters": "Clear all filters",
+		"showingAll": "Showing all {count} items",
+		"showingResults": "Showing {count} of {total} items",
+		"activeFilters": "Active filters",
+		"search": "Search",
+		"dateRange": "Date Range",
+		"invalidDateRange": "Start date must be before end date"
 	},
 	"communityEvents": {
 		"title": "Community Events",

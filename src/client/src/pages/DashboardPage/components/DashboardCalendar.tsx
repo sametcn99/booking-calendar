@@ -72,40 +72,84 @@ export default function DashboardCalendar({
 		});
 	}, [appointments]);
 
-	const events: CalendarEvent[] = [
-		...slots.map((slot) => ({
-			id: `slot-${slot.id}`,
-			title: t("dashboard.calendar.availableSlot"),
-			start: new Date(slot.start_at),
-			end: new Date(slot.end_at),
-			type: "slot" as const,
-			data: slot,
-		})),
-		...activeAppointments.map((appt) => ({
-			id: `appt-${appt.id}`,
-			title: appt.name,
-			start: new Date(appt.start_at),
-			end: new Date(appt.end_at),
-			type: "appointment" as const,
-			data: appt,
-		})),
-		...plannerEvents.map((ev) => ({
-			id: `planner-${ev.id}`,
-			title: ev.title,
-			start: new Date(ev.start_at),
-			end: new Date(ev.end_at),
-			type: "planner" as const,
-			data: ev,
-		})),
-		...communityEvents.map((ev) => ({
-			id: `community-${ev.id}`,
-			title: ev.title,
-			start: new Date(ev.start_at),
-			end: new Date(ev.end_at),
-			type: "community" as const,
-			data: ev,
-		})),
-	];
+	const [visibleTypes, setVisibleTypes] = useState<Set<string>>(
+		new Set(["slot", "appointment", "planner", "community"]),
+	);
+
+	const toggleType = (type: string) => {
+		const next = new Set(visibleTypes);
+		if (next.has(type)) {
+			next.delete(type);
+		} else {
+			next.add(type);
+		}
+		setVisibleTypes(next);
+	};
+
+	const events = useMemo(() => {
+		const allEvents: CalendarEvent[] = [];
+
+		if (visibleTypes.has("slot")) {
+			allEvents.push(
+				...slots.map((slot) => ({
+					id: `slot-${slot.id}`,
+					title: t("dashboard.calendar.availableSlot"),
+					start: new Date(slot.start_at),
+					end: new Date(slot.end_at),
+					type: "slot" as const,
+					data: slot,
+				})),
+			);
+		}
+
+		if (visibleTypes.has("appointment")) {
+			allEvents.push(
+				...activeAppointments.map((appt) => ({
+					id: `appt-${appt.id}`,
+					title: appt.name,
+					start: new Date(appt.start_at),
+					end: new Date(appt.end_at),
+					type: "appointment" as const,
+					data: appt,
+				})),
+			);
+		}
+
+		if (visibleTypes.has("planner")) {
+			allEvents.push(
+				...plannerEvents.map((ev) => ({
+					id: `planner-${ev.id}`,
+					title: ev.title,
+					start: new Date(ev.start_at),
+					end: new Date(ev.end_at),
+					type: "planner" as const,
+					data: ev,
+				})),
+			);
+		}
+
+		if (visibleTypes.has("community")) {
+			allEvents.push(
+				...communityEvents.map((ev) => ({
+					id: `community-${ev.id}`,
+					title: ev.title,
+					start: new Date(ev.start_at),
+					end: new Date(ev.end_at),
+					type: "community" as const,
+					data: ev,
+				})),
+			);
+		}
+
+		return allEvents;
+	}, [
+		slots,
+		activeAppointments,
+		plannerEvents,
+		communityEvents,
+		visibleTypes,
+		t,
+	]);
 
 	const eventStyleGetter = (event: CalendarEvent) => {
 		if (event.type === "slot") {
@@ -236,59 +280,206 @@ export default function DashboardCalendar({
 						flexWrap: "wrap",
 					})}
 				>
-					<div
+					<button
+						type="button"
+						onClick={() => toggleType("slot")}
 						className={css({
-							padding: "6px 10px",
+							padding: "6px 14px",
 							borderRadius: "999px",
 							fontSize: "13px",
 							fontWeight: 600,
 							color: theme.colors.contentPositive,
-							backgroundColor: `${theme.colors.backgroundPositive}33`,
-							border: `1px solid ${theme.colors.borderPositive}`,
+							backgroundColor: visibleTypes.has("slot")
+								? `${theme.colors.backgroundPositive}33`
+								: "transparent",
+							border: `1px solid ${
+								visibleTypes.has("slot")
+									? theme.colors.borderPositive
+									: theme.colors.borderOpaque
+							}`,
+							cursor: "pointer",
+							transition: "all 0.2s ease",
+							display: "flex",
+							alignItems: "center",
+							gap: "6px",
+							opacity: visibleTypes.has("slot") ? 1 : 0.6,
+							outline: "none",
+							":focus": {
+								boxShadow: `0 0 0 2px ${theme.colors.accent}`,
+							},
+							":hover": {
+								backgroundColor: `${theme.colors.backgroundPositive}4d`,
+								transform: "translateY(-1px)",
+							},
 						})}
 					>
+						<div
+							className={css({
+								width: "8px",
+								height: "8px",
+								borderRadius: "50%",
+								backgroundColor: theme.colors.backgroundPositive,
+							})}
+						/>
 						{t("dashboard.calendar.availableLegend")}: {slots.length}
-					</div>
-					<div
+					</button>
+
+					<button
+						type="button"
+						onClick={() => toggleType("appointment")}
 						className={css({
-							padding: "6px 10px",
+							padding: "6px 14px",
 							borderRadius: "999px",
 							fontSize: "13px",
 							fontWeight: 600,
 							color: "var(--color-text-secondary)",
-							backgroundColor: theme.colors.accent700,
-							border: `1px solid ${theme.colors.accent}`,
+							backgroundColor: visibleTypes.has("appointment")
+								? theme.colors.accent700
+								: "transparent",
+							border: `1px solid ${
+								visibleTypes.has("appointment")
+									? theme.colors.accent
+									: theme.colors.borderOpaque
+							}`,
+							cursor: "pointer",
+							transition: "all 0.2s ease",
+							display: "flex",
+							alignItems: "center",
+							gap: "6px",
+							opacity: visibleTypes.has("appointment") ? 1 : 0.6,
+							outline: "none",
+							":focus": {
+								boxShadow: `0 0 0 2px ${theme.colors.accent}`,
+							},
+							":hover": {
+								backgroundColor: theme.colors.accent600,
+								transform: "translateY(-1px)",
+							},
 						})}
 					>
+						<div
+							className={css({
+								width: "8px",
+								height: "8px",
+								borderRadius: "50%",
+								backgroundColor: theme.colors.accent,
+							})}
+						/>
 						{t("dashboard.calendar.appointmentsLegend")}:{" "}
 						{activeAppointments.length}
-					</div>
-					<div
+					</button>
+
+					<button
+						type="button"
+						onClick={() => toggleType("planner")}
 						className={css({
-							padding: "6px 10px",
+							padding: "6px 14px",
 							borderRadius: "999px",
 							fontSize: "13px",
 							fontWeight: 600,
 							color: "var(--color-warning-light)",
-							backgroundColor: "var(--color-warning-bg)",
-							border: "1px solid var(--color-warning)",
+							backgroundColor: visibleTypes.has("planner")
+								? "var(--color-warning-bg)"
+								: "transparent",
+							border: `1px solid ${
+								visibleTypes.has("planner")
+									? "var(--color-warning)"
+									: theme.colors.borderOpaque
+							}`,
+							cursor: "pointer",
+							transition: "all 0.2s ease",
+							display: "flex",
+							alignItems: "center",
+							gap: "6px",
+							opacity: visibleTypes.has("planner") ? 1 : 0.6,
+							outline: "none",
+							":focus": {
+								boxShadow: `0 0 0 2px ${theme.colors.accent}`,
+							},
+							":hover": {
+								backgroundColor: "var(--color-warning-bg)",
+								opacity: 0.9,
+								transform: "translateY(-1px)",
+							},
 						})}
 					>
+						<div
+							className={css({
+								width: "8px",
+								height: "8px",
+								borderRadius: "50%",
+								backgroundColor: "var(--color-warning)",
+							})}
+						/>
 						{t("planner.plannerLegend")}: {plannerEvents.length}
-					</div>
-					<div
+					</button>
+
+					<button
+						type="button"
+						onClick={() => toggleType("community")}
 						className={css({
-							padding: "6px 10px",
+							padding: "6px 14px",
 							borderRadius: "999px",
 							fontSize: "13px",
 							fontWeight: 600,
 							color: "var(--color-error)",
-							backgroundColor: "var(--color-error-bg)",
-							border: "1px solid var(--color-error)",
+							backgroundColor: visibleTypes.has("community")
+								? "var(--color-error-bg)"
+								: "transparent",
+							border: `1px solid ${
+								visibleTypes.has("community")
+									? "var(--color-error)"
+									: theme.colors.borderOpaque
+							}`,
+							cursor: "pointer",
+							transition: "all 0.2s ease",
+							display: "flex",
+							alignItems: "center",
+							gap: "6px",
+							opacity: visibleTypes.has("community") ? 1 : 0.6,
+							outline: "none",
+							":focus": {
+								boxShadow: `0 0 0 2px ${theme.colors.accent}`,
+							},
+							":hover": {
+								backgroundColor: "var(--color-error-bg)",
+								opacity: 0.9,
+								transform: "translateY(-1px)",
+							},
 						})}
 					>
+						<div
+							className={css({
+								width: "8px",
+								height: "8px",
+								borderRadius: "50%",
+								backgroundColor: "var(--color-error)",
+							})}
+						/>
 						{t("communityEvents.title")}: {communityEvents.length}
-					</div>
+					</button>
+				</div>
+				<div
+					className={css({
+						width: "100%",
+						display: "flex",
+						justifyContent: "flex-end",
+						marginTop: "8px",
+					})}
+				>
+					<LabelMedium
+						overrides={{
+							Block: {
+								style: {
+									color: theme.colors.contentTertiary,
+									fontSize: "12px",
+									fontStyle: "italic",
+								},
+							},
+						}}
+					>
+						{t("dashboard.calendar.filterHint")}
+					</LabelMedium>
 				</div>
 			</div>
 

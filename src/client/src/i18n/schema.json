@@ -176,6 +176,9 @@
 						},
 						"close": {
 							"type": "string"
+						},
+						"filterHint": {
+							"type": "string"
 						}
 					},
 					"required": [
@@ -200,7 +203,8 @@
 						"note",
 						"status",
 						"timeLabel",
-						"close"
+						"close",
+						"filterHint"
 					],
 					"additionalProperties": false
 				},
@@ -1283,6 +1287,36 @@
 				},
 				"cancel": {
 					"type": "string"
+				},
+				"searchPlaceholder": {
+					"type": "string"
+				},
+				"sortNewest": {
+					"type": "string"
+				},
+				"sortOldest": {
+					"type": "string"
+				},
+				"clearFilters": {
+					"type": "string"
+				},
+				"showingAll": {
+					"type": "string"
+				},
+				"showingResults": {
+					"type": "string"
+				},
+				"activeFilters": {
+					"type": "string"
+				},
+				"search": {
+					"type": "string"
+				},
+				"dateRange": {
+					"type": "string"
+				},
+				"invalidDateRange": {
+					"type": "string"
 				}
 			},
 			"required": [
@@ -1292,7 +1326,17 @@
 				"confirmDisableMessage",
 				"confirmCancelMessage",
 				"confirm",
-				"cancel"
+				"cancel",
+				"searchPlaceholder",
+				"sortNewest",
+				"sortOldest",
+				"clearFilters",
+				"showingAll",
+				"showingResults",
+				"activeFilters",
+				"search",
+				"dateRange",
+				"invalidDateRange"
 			],
 			"additionalProperties": false
 		},

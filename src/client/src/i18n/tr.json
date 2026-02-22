@@ -49,7 +49,8 @@
 			"note": "Not",
 			"status": "Durum",
 			"timeLabel": "Zaman",
-			"close": "Kapat"
+			"close": "Kapat",
+			"filterHint": "Görünürlüğü değiştirmek için etiketlere tıklayın"
 		},
 		"changePasswordWarning": "Güvenlik için varsayılan şifrenizi değiştirin.",
 		"totalSlots": "Toplam Slot",
@@ -321,7 +322,17 @@
 		"confirmDisableMessage": "Bu öğeyi devre dışı bırakmak istediğinize emin misiniz?",
 		"confirmCancelMessage": "Bu randevuyu iptal etmek istediğinize emin misiniz?",
 		"confirm": "Onayla",
-		"cancel": "İptal"
+		"cancel": "İptal",
+		"searchPlaceholder": "Randevu, başlık, konum ara...",
+		"sortNewest": "Önce yeni",
+		"sortOldest": "Önce eski",
+		"clearFilters": "Filtreleri temizle",
+		"showingAll": "Tüm {count} öğe gösteriliyor",
+		"showingResults": "{total} öğeden {count} tanesi gösteriliyor",
+		"activeFilters": "Aktif filtreler",
+		"search": "Arama",
+		"dateRange": "Tarih Aralığı",
+		"invalidDateRange": "Başlangıç tarihi bitişten sonra olamaz"
 	},
 	"communityEvents": {
 		"title": "Topluluk Etkinlikleri",

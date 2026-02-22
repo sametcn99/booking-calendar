@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { type ApiPlannerEvent, api } from "../../../api";
+import { useListFilters } from "../../../hooks/useListFilters";
 import { APP_COLORS } from "../../../theme";
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -121,7 +122,7 @@ export function usePlannerPage(t: (key: string) => string) {
 		[],
 	);
 
-	const filteredEvents = useMemo(() => {
+	const statusFilteredEvents = useMemo(() => {
 		const now = Date.now();
 
 		return events.filter((event) => {
@@ -144,6 +145,24 @@ export function usePlannerPage(t: (key: string) => string) {
 		});
 	}, [events, statusFilter]);
 
+	const {
+		filteredItems: filteredEvents,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+	} = useListFilters({
+		items: statusFilteredEvents,
+		searchFields: ["title", "description"],
+		dateField: "start_at",
+	});
+
 	return {
 		editingEvent,
 		events,
@@ -159,5 +178,16 @@ export function usePlannerPage(t: (key: string) => string) {
 		setStatusFilter,
 		statusFilter,
 		updateForm,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+		totalCount: statusFilteredEvents.length,
 	};
 }

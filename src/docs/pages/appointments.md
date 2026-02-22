@@ -7,13 +7,20 @@ _The administrative interface for managing the lifecycle of all guest bookings._
 
 ## Key Features
 
-### Advanced Filtering
+### Global Filtering & Search
 
-The interface provides a tailored filtering system (`AppointmentsFilterSection`) to manage large volumes of data:
+The interface features a powerful, reusable filtering system (`ListFiltersBar`) that provides:
 
-- **Upcoming**: Focus on future commitments.
-- **Past**: Review history and completion rates.
-- **Canceled**: Audit trail of abandoned or revoked bookings.
+- **Full-Text Search**: Search by guest name, email, meeting place, or notes.
+- **Date Range Selection**: Filter appointments within a specific start and end date.
+- **Advanced Sorting**: Toggle between "Newest first" and "Oldest first" views.
+- **Smart Status Filters**: Quick buttons for `Active`, `Canceled`, and `Past` statuses.
+- **URL Persistence**: All active filters are automatically synchronized with the URL. This allows you to refresh the page or share a specific filtered view with other administrators.
+
+### Visibility Highlights
+
+- **`ListFiltersFeedback`**: Provides immediate feedback on how many results matched the current criteria vs. the total count.
+- **Empty States**: Contextual messages and "Clear All" actions when no items match the active filters.
 
 ### List Navigation
 
@@ -37,7 +44,7 @@ Appointments are displayed in a clean, detailed list (`AppointmentsListSection`)
 
 This hook manages the complex state of the appointment lifecycle:
 
-- **Filtering Logic**: Implements client-side filtering to ensure near-instant list updates.
+- **Filtering & Search**: Integrates the `useListFilters` hook to provide debounced search, date range filtering, and URL state management.
 - **API Orchestration**: Handles the sequence of API calls to `api.getAppointments()`, `api.cancelAppointment()`, and `api.deleteAppointment()`.
 - **Error Boundaries**: Captures and displays API failures via Toast notifications without breaking the UI.
 

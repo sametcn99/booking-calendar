@@ -10,14 +10,22 @@ _Internal tracking for non-guest events like breaks or meetings._
 - **Planner Events**: Created by the Admin. No guest email/link needed. Ideal for breaks, personal meetings, or travel.
 - **Appointments**: Created by Guests via links. Contains guest contact data and link-tracking.
 
-## Navigation & Discovery
+## Discovery & Smart Filtering
 
-The Planner features a specialized time-based filtering bar:
+The Planner features a comprehensive filtering system to manage administrative tasks efficiently:
 
-- **All**: The complete history and future of planner events.
-- **Upcoming**: Events scheduled for the future.
-- **Ongoing**: Events currently in progress based on the system clock.
-- **Past**: Historical events.
+### Status Quick Filters
+
+- **All**: View everything in the system.
+- **Upcoming**: Events focused on the future.
+- **Ongoing**: Real-time tracking of current activities.
+- **Past**: Historical record processing.
+
+### Advanced Search & Tools
+
+- **Deep Search**: Filter events by title or description content.
+- **Date Range**: Zoom into specific weeks or months using the range picker.
+- **Sort Persistence**: Toggle newest/oldest records with the state preserved in the URL for easy navigation.
 
 ## Creating & Editing Events
 
@@ -40,7 +48,8 @@ _Interface for adding private administrative events to the system calendar._
 
 ### State Logic: `usePlannerPage`
 
-- **Real-time Filtering**: Leverages the system's current time to categorize events into "Ongoing", "Past", or "Upcoming" without page reloads.
+- **Hybrid Filtering**: Combines real-time clock-based status filtering (`Ongoing`, `Past`, `Upcoming`) with the global `useListFilters` engine for search and date range constraints.
+- **URL Synchronization**: Ensures that as you filter your planner, your view is always bookmarkable.
 - **API Connectivity**: Maps directly to the `/api/planner` endpoints.
 - **Form Synchronization**: Handles complex date-time object manipulations between the UI and the database-ready JSON format.
 

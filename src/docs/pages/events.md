@@ -17,6 +17,8 @@ _Administrative list view showing all community-proposed events and their approv
 
 ### `CommunityEventsSection`
 
+- **Global Filters**: A standard `ListFiltersBar` allowing administrators to search through event titles/descriptions, filter by date range, and sort by creation time.
+- **Search & Sort Persistence**: User search queries and sort orders are preserved in the URL.
 - **Event List**: Shows all current proposals and their live approval count.
 - **Creation Form**: Dedicated interface to set event title, description, time, and the number of required approvals.
 
@@ -30,8 +32,7 @@ _The creation form for proposing new events with customizable approval threshold
 
 ## Technical Details
 
-### `useCommunityEvents` Logic
-
+- **Integrated Filtering**: Uses the `useListFilters` hook to manage the combined state of status filters (approval state) and active search/date parameters.
 - **Progress Tracking**: Calculates the percentage of approvals for visual progress bars.
 - **Status Updates**: Monitors the transition from pending to approved.
 - **API Mapping**: Uses `/api/community-events` for all CRUD operations.

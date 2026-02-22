@@ -1,6 +1,8 @@
 import { useStyletron } from "baseui";
 import type { Dispatch, SetStateAction } from "react";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import ListFiltersBar from "../../../components/ListFilters/ListFiltersBar";
+import ListFiltersFeedback from "../../../components/ListFilters/ListFiltersFeedback";
 import { useCommunityEventsSection } from "../hooks/useCommunityEventsSection";
 import CommunityEventCard from "./CommunityEventCard";
 import CommunityEventCreateModal from "./CommunityEventCreateModal";
@@ -41,6 +43,17 @@ export default function CommunityEventsSection({
 		startAt,
 		statusFilter,
 		title,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+		totalCount,
 	} = useCommunityEventsSection(t);
 
 	return (
@@ -65,9 +78,52 @@ export default function CommunityEventsSection({
 				title={title}
 			/>
 
-			<CommunityStatusFilterButtons
-				setStatusFilter={setStatusFilter}
-				statusFilter={statusFilter}
+			<div
+				className={css({
+					display: "flex",
+					flexDirection: "column",
+					gap: "16px",
+					marginBottom: "24px",
+				})}
+			>
+				<div
+					className={css({
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						flexWrap: "wrap",
+						gap: "12px",
+					})}
+				>
+					<CommunityStatusFilterButtons
+						setStatusFilter={setStatusFilter}
+						statusFilter={statusFilter}
+						t={t}
+					/>
+				</div>
+
+				<ListFiltersBar
+					search={search}
+					onSearchChange={setSearch}
+					sort={sort}
+					onSortChange={setSort}
+					from={from}
+					onFromChange={setFrom}
+					to={to}
+					onToChange={setTo}
+					onClear={clearFilters}
+					isActive={isActive}
+					t={t}
+				/>
+			</div>
+
+			<ListFiltersFeedback
+				count={filteredEvents.length}
+				totalCount={totalCount}
+				isActive={isActive}
+				search={search}
+				from={from}
+				to={to}
 				t={t}
 			/>
 
@@ -78,9 +134,14 @@ export default function CommunityEventsSection({
 						padding: "48px",
 						fontSize: "14px",
 						color: "var(--color-text-tertiary)",
+						backgroundColor: "var(--color-bg-secondary)",
+						borderRadius: "12px",
+						border: "1px dashed var(--color-border-primary)",
 					})}
 				>
-					{t("communityEvents.empty")}
+					{isActive
+						? t("appointments.empty") // Reuse common empty filter msg or add new
+						: t("communityEvents.empty")}
 				</div>
 			)}
 

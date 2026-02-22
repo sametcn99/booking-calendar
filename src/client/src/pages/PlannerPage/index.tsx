@@ -1,6 +1,8 @@
 import { useStyletron } from "baseui";
 import { Button, KIND, SIZE } from "baseui/button";
 import { PLACEMENT, ToasterContainer } from "baseui/toast";
+import ListFiltersBar from "../../components/ListFilters/ListFiltersBar";
+import ListFiltersFeedback from "../../components/ListFilters/ListFiltersFeedback";
 import { useI18n } from "../../context/I18nContext";
 import PlannerEventCard from "./components/PlannerEventCard";
 import PlannerEventModal from "./components/PlannerEventModal";
@@ -23,6 +25,17 @@ export default function PlannerPage() {
 		setStatusFilter,
 		statusFilter,
 		updateForm,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+		totalCount,
 	} = usePlannerPage(t);
 
 	const formatDate = (d: string) =>
@@ -74,51 +87,87 @@ export default function PlannerPage() {
 			<div
 				className={css({
 					display: "flex",
-					gap: "8px",
-					marginBottom: "20px",
-					flexWrap: "wrap",
+					flexDirection: "column",
+					gap: "16px",
+					marginBottom: "24px",
 				})}
 			>
-				<Button
-					kind={statusFilter === "all" ? KIND.primary : KIND.secondary}
-					size={SIZE.compact}
-					onClick={() => setStatusFilter("all")}
-				>
-					{t("planner.all")}
-				</Button>
-				<Button
-					kind={statusFilter === "upcoming" ? KIND.primary : KIND.secondary}
-					size={SIZE.compact}
-					onClick={() => setStatusFilter("upcoming")}
-				>
-					{t("planner.upcoming")}
-				</Button>
-				<Button
-					kind={statusFilter === "ongoing" ? KIND.primary : KIND.secondary}
-					size={SIZE.compact}
-					onClick={() => setStatusFilter("ongoing")}
-				>
-					{t("planner.ongoing")}
-				</Button>
-				<Button
-					kind={statusFilter === "past" ? KIND.primary : KIND.secondary}
-					size={SIZE.compact}
-					onClick={() => setStatusFilter("past")}
-				>
-					{t("planner.past")}
-				</Button>
-			</div>
-
-			{filteredEvents.length === 0 ? (
-				<p
+				<div
 					className={css({
-						color: "var(--color-text-muted)",
-						textAlign: "center",
-						padding: "48px 0",
+						display: "flex",
+						gap: "8px",
+						flexWrap: "wrap",
 					})}
 				>
-					{t("planner.empty")}
-				</p>
+					<Button
+						kind={statusFilter === "all" ? KIND.primary : KIND.secondary}
+						size={SIZE.compact}
+						onClick={() => setStatusFilter("all")}
+					>
+						{t("planner.all")}
+					</Button>
+					<Button
+						kind={statusFilter === "upcoming" ? KIND.primary : KIND.secondary}
+						size={SIZE.compact}
+						onClick={() => setStatusFilter("upcoming")}
+					>
+						{t("planner.upcoming")}
+					</Button>
+					<Button
+						kind={statusFilter === "ongoing" ? KIND.primary : KIND.secondary}
+						size={SIZE.compact}
+						onClick={() => setStatusFilter("ongoing")}
+					>
+						{t("planner.ongoing")}
+					</Button>
+					<Button
+						kind={statusFilter === "past" ? KIND.primary : KIND.secondary}
+						size={SIZE.compact}
+						onClick={() => setStatusFilter("past")}
+					>
+						{t("planner.past")}
+					</Button>
+				</div>
+
+				<ListFiltersBar
+					search={search}
+					onSearchChange={setSearch}
+					sort={sort}
+					onSortChange={setSort}
+					from={from}
+					onFromChange={setFrom}
+					to={to}
+					onToChange={setTo}
+					onClear={clearFilters}
+					isActive={isActive}
+					t={t}
+				/>
+			</div>
+
+			<ListFiltersFeedback
+				count={filteredEvents.length}
+				totalCount={totalCount}
+				isActive={isActive}
+				search={search}
+				from={from}
+				to={to}
+				t={t}
+			/>
+
+			{filteredEvents.length === 0 ? (
+				<div
+					className={css({
+						textAlign: "center",
+						padding: "48px",
+						fontSize: "14px",
+						color: "var(--color-text-tertiary)",
+						backgroundColor: "var(--color-bg-secondary)",
+						borderRadius: "12px",
+						border: "1px dashed var(--color-border-primary)",
+					})}
+				>
+					{isActive ? t("appointments.empty") : t("planner.empty")}
+				</div>
 			) : (
 				<div
 					className={css({

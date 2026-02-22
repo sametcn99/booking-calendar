@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { type ApiCommunityEvent, api } from "../../../api";
+import { useListFilters } from "../../../hooks/useListFilters";
 import { APP_COLORS } from "../../../theme";
 import type { CommunityStatusFilter } from "../components/types";
 
@@ -144,10 +145,28 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 		[getShareLink, t],
 	);
 
-	const filteredEvents = useMemo(() => {
+	const statusFilteredEvents = useMemo(() => {
 		if (statusFilter === "all") return events;
 		return events.filter((event) => event.status === statusFilter);
 	}, [events, statusFilter]);
+
+	const {
+		filteredItems: filteredEvents,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+	} = useListFilters({
+		items: statusFilteredEvents,
+		searchFields: ["title", "description"],
+		dateField: "start_at",
+	});
 
 	return {
 		color,
@@ -172,5 +191,16 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 		startAt,
 		statusFilter,
 		title,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+		totalCount: statusFilteredEvents.length,
 	};
 }

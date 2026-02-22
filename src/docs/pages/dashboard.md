@@ -37,13 +37,13 @@ The centerpiece of the dashboard, utilizing `react-big-calendar`:
 - **Unified View**: Merges Slots, Appointments, Planner Events, and Community Events into a single color-coded timeline.
 - **Interactivity**:
   - Click on slots/appointments to view quick details.
-  - Drag-and-drop support (where applicable) for rescheduling.
+  - **Type Filtering**: Legend badges at the top are interactive. Clicking a category badge (e.g., "Available Slots", "Appointments") toggles its visibility in the calendar, allowing for a focused view.
   - View switching: Month, Week, Day, and Agenda views.
 - **Color Coding**:
-  - <span style="color: #8b5cf6">●</span> **Slots**: Purple
-  - <span style="color: #10b981">●</span> **Appointments**: Green
-  - <span style="color: #3b82f6">●</span> **Planner**: Blue
-  - <span style="color: #f59e0b">●</span> **Community**: Orange
+  - <span style="color: #10b981">●</span> **Slots**: Green (Available)
+  - <span style="color: #8b5cf6">●</span> **Appointments**: Purple (Booked)
+  - <span style="color: #f59e0b">●</span> **Planner**: Orange (Internal)
+  - <span style="color: #ef4444">●</span> **Community**: Red/Yellow/Green (Community Events)
 
 ## Technical Implementation
 
