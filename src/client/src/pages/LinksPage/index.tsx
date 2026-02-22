@@ -12,6 +12,7 @@ export default function LinksPage() {
 		expiresDays,
 		generatedUrl,
 		handleCreate,
+		handleUpdate,
 		handleDelete,
 		linkName,
 		links,
@@ -25,6 +26,8 @@ export default function LinksPage() {
 		setModalOpen,
 		slots,
 		toggleSlotSelection,
+		editingLink,
+		openEditModal,
 	} = useLinksPage(t);
 
 	const formatDate = (d: string) =>
@@ -51,6 +54,7 @@ export default function LinksPage() {
 				formatDate={formatDate}
 				onCopy={copyToClipboard}
 				onDelete={handleDelete}
+				onEdit={openEditModal}
 				t={t}
 			/>
 
@@ -62,7 +66,7 @@ export default function LinksPage() {
 				loading={loading}
 				onClose={() => setModalOpen(false)}
 				onCopyGeneratedUrl={() => copyToClipboard(generatedUrl)}
-				onCreate={handleCreate}
+				onCreate={editingLink ? handleUpdate : handleCreate}
 				selectedSlotIds={selectedSlotIds}
 				setExpiresDays={setExpiresDays}
 				setLinkName={setLinkName}
@@ -70,6 +74,7 @@ export default function LinksPage() {
 				slots={slots}
 				t={t}
 				toggleSlotSelection={toggleSlotSelection}
+				isEditing={!!editingLink}
 			/>
 		</div>
 	);

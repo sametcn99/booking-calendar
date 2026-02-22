@@ -86,7 +86,6 @@
 		"empty": "No slots yet. Click \"Add Slot\" to create one.",
 		"name": "Slot Name",
 		"namePlaceholder": "e.g. Intro Call",
-		"saveName": "Save Name",
 		"active": "Active",
 		"inactive": "Inactive",
 		"disable": "Disable",
@@ -100,9 +99,12 @@
 		"startEndRequired": "Slot name, start time, and end time are required",
 		"nameRequired": "Slot name is required",
 		"created": "Slot created",
-		"nameUpdated": "Slot name updated",
 		"updated": "Slot updated",
-		"deleted": "Slot deleted"
+		"deleted": "Slot deleted",
+		"editTitle": "Edit Time Slot",
+		"edit": "Edit",
+		"save": "Save Changes",
+		"unnamedSlot": "Unnamed Slot"
 	},
 	"appointments": {
 		"title": "Appointments",
@@ -157,7 +159,11 @@
 		"createBtn": "Create",
 		"linkCreated": "Link created",
 		"linkDeleted": "Link deleted",
-		"copied": "Copied to clipboard!"
+		"copied": "Copied to clipboard!",
+		"editTitle": "Edit Booking Link",
+		"edit": "Edit",
+		"save": "Save Changes",
+		"linkUpdated": "Booking link updated"
 	},
 	"booking": {
 		"loading": "Loading...",
@@ -332,7 +338,8 @@
 		"activeFilters": "Active filters",
 		"search": "Search",
 		"dateRange": "Date Range",
-		"invalidDateRange": "Start date must be before end date"
+		"invalidDateRange": "Start date must be before end date",
+		"noResults": "No items found matching your filters."
 	},
 	"communityEvents": {
 		"title": "Community Events",

@@ -1,3 +1,4 @@
+import type { QueryDeepPartialEntity } from "typeorm";
 import { AppDataSource } from "../db/data-source";
 import { BookingLinkEntity } from "../entities/BookingLinkEntity";
 import type { BookingLink, CreateBookingLinkInput } from "../types";
@@ -72,5 +73,26 @@ export class BookingLinkRepository {
 	async delete(id: number): Promise<boolean> {
 		const result = await this.repo().delete(id);
 		return !!result.affected;
+	}
+
+	async update(
+		id: number,
+		payload: {
+			name?: string;
+			expires_at?: string;
+			allowed_slot_ids?: number[];
+		},
+	): Promise<BookingLink | null> {
+		const updatePayload: QueryDeepPartialEntity<BookingLinkEntity> = {};
+		if (payload.name !== undefined) updatePayload.name = payload.name;
+		if (payload.expires_at !== undefined)
+			updatePayload.expires_at = payload.expires_at;
+		if (payload.allowed_slot_ids !== undefined) {
+			updatePayload.allowed_slot_ids = JSON.stringify(payload.allowed_slot_ids);
+		}
+
+		await this.repo().update(id, updatePayload);
+		const updated = await this.repo().findOneBy({ id });
+		return updated ? this.toDomain(updated) : null;
 	}
 }

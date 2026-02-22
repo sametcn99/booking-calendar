@@ -111,4 +111,21 @@ export class SlotController {
 			};
 		}
 	}
+
+	async updateSlot(
+		id: number,
+		body: { name?: string; start_at?: string; end_at?: string },
+	): Promise<{ status: number; body: ApiResponse }> {
+		try {
+			const slot = await this.slotService.updateSlot(id, body);
+			return { status: 200, body: { success: true, data: slot } };
+		} catch (err: unknown) {
+			const message = getErrorMessage(err);
+			const status = message === t("slot.notFound") ? 404 : 400;
+			return {
+				status,
+				body: { success: false, error: message },
+			};
+		}
+	}
 }

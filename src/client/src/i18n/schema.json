@@ -340,9 +340,6 @@
 				"namePlaceholder": {
 					"type": "string"
 				},
-				"saveName": {
-					"type": "string"
-				},
 				"active": {
 					"type": "string"
 				},
@@ -382,13 +379,22 @@
 				"created": {
 					"type": "string"
 				},
-				"nameUpdated": {
-					"type": "string"
-				},
 				"updated": {
 					"type": "string"
 				},
 				"deleted": {
+					"type": "string"
+				},
+				"editTitle": {
+					"type": "string"
+				},
+				"edit": {
+					"type": "string"
+				},
+				"save": {
+					"type": "string"
+				},
+				"unnamedSlot": {
 					"type": "string"
 				}
 			},
@@ -400,7 +406,6 @@
 				"empty",
 				"name",
 				"namePlaceholder",
-				"saveName",
 				"active",
 				"inactive",
 				"disable",
@@ -414,9 +419,12 @@
 				"startEndRequired",
 				"nameRequired",
 				"created",
-				"nameUpdated",
 				"updated",
-				"deleted"
+				"deleted",
+				"editTitle",
+				"edit",
+				"save",
+				"unnamedSlot"
 			],
 			"additionalProperties": false
 		},
@@ -605,6 +613,18 @@
 				},
 				"copied": {
 					"type": "string"
+				},
+				"editTitle": {
+					"type": "string"
+				},
+				"edit": {
+					"type": "string"
+				},
+				"save": {
+					"type": "string"
+				},
+				"linkUpdated": {
+					"type": "string"
 				}
 			},
 			"required": [
@@ -636,7 +656,11 @@
 				"createBtn",
 				"linkCreated",
 				"linkDeleted",
-				"copied"
+				"copied",
+				"editTitle",
+				"edit",
+				"save",
+				"linkUpdated"
 			],
 			"additionalProperties": false
 		},
@@ -1317,6 +1341,9 @@
 				},
 				"invalidDateRange": {
 					"type": "string"
+				},
+				"noResults": {
+					"type": "string"
 				}
 			},
 			"required": [
@@ -1336,7 +1363,8 @@
 				"activeFilters",
 				"search",
 				"dateRange",
-				"invalidDateRange"
+				"invalidDateRange",
+				"noResults"
 			],
 			"additionalProperties": false
 		},

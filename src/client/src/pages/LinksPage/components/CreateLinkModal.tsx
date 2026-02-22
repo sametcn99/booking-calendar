@@ -30,6 +30,7 @@ interface Props {
 	t: (key: string) => string;
 	locale: string;
 	toggleSlotSelection: (slotId: number) => void;
+	isEditing?: boolean;
 }
 
 export default function CreateLinkModal({
@@ -48,6 +49,7 @@ export default function CreateLinkModal({
 	t,
 	locale,
 	toggleSlotSelection,
+	isEditing = false,
 }: Props) {
 	const [css] = useStyletron();
 	const [slotQuery, setSlotQuery] = useState("");
@@ -180,7 +182,9 @@ export default function CreateLinkModal({
 				},
 			}}
 		>
-			<ModalHeader>{t("links.createTitle")}</ModalHeader>
+			<ModalHeader>
+				{isEditing ? t("links.editTitle") : t("links.createTitle")}
+			</ModalHeader>
 			<ModalBody>
 				{!generatedUrl ? (
 					<div className={css({ display: "grid", gap: "12px" })}>
@@ -192,17 +196,19 @@ export default function CreateLinkModal({
 							/>
 						</FormControl>
 
-						<FormControl label={t("links.expiresInDays")}>
-							<IntegerInput
-								min={1}
-								step={1}
-								value={expiresDays}
-								onNumberChange={(val) => {
-									if (val !== "" && Number(val) < 1) return;
-									setExpiresDays(val);
-								}}
-							/>
-						</FormControl>
+						{!isEditing && (
+							<FormControl label={t("links.expiresInDays")}>
+								<IntegerInput
+									min={1}
+									step={1}
+									value={expiresDays}
+									onNumberChange={(val) => {
+										if (val !== "" && Number(val) < 1) return;
+										setExpiresDays(val);
+									}}
+								/>
+							</FormControl>
+						)}
 
 						<FormControl label={t("links.selectSlots")}>
 							<div className={css({ display: "grid", gap: "8px" })}>
@@ -373,7 +379,7 @@ export default function CreateLinkModal({
 				</ModalButton>
 				{!generatedUrl && (
 					<ModalButton onClick={onCreate} isLoading={loading}>
-						{t("links.create")}
+						{isEditing ? t("links.save") : t("links.create")}
 					</ModalButton>
 				)}
 			</ModalFooter>

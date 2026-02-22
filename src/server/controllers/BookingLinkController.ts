@@ -84,4 +84,33 @@ export class BookingLinkController {
 		}
 		return { status: 200, body: { success: true } };
 	}
+
+	async updateLink(
+		id: number,
+		body: {
+			name?: string;
+			expires_at?: string;
+			slot_ids?: number[];
+		},
+	): Promise<{ status: number; body: ApiResponse }> {
+		try {
+			const result = await this.linkService.updateLink(id, {
+				name: body.name,
+				expiresAt: body.expires_at,
+				allowedSlotIds: body.slot_ids,
+			});
+			if (!result) {
+				return {
+					status: 404,
+					body: { success: false, error: t("link.notFound") },
+				};
+			}
+			return { status: 200, body: { success: true, data: result } };
+		} catch (err: unknown) {
+			return {
+				status: 400,
+				body: { success: false, error: getErrorMessage(err) },
+			};
+		}
+	}
 }

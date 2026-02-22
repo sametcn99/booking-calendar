@@ -21,6 +21,7 @@ interface Props {
 	slotName: string;
 	startAt: string;
 	t: (key: string) => string;
+	isEditing?: boolean;
 }
 
 export default function CreateSlotModal({
@@ -35,6 +36,7 @@ export default function CreateSlotModal({
 	slotName,
 	startAt,
 	t,
+	isEditing = false,
 }: Props) {
 	return (
 		<Modal
@@ -49,7 +51,9 @@ export default function CreateSlotModal({
 				},
 			}}
 		>
-			<ModalHeader>{t("slots.createTitle")}</ModalHeader>
+			<ModalHeader>
+				{isEditing ? t("slots.editTitle") : t("slots.createTitle")}
+			</ModalHeader>
 			<ModalBody>
 				<FormControl label={t("slots.name")}>
 					<Input
@@ -104,7 +108,7 @@ export default function CreateSlotModal({
 						{t("slots.cancel")}
 					</ModalButton>
 					<ModalButton onClick={onCreate} isLoading={loading}>
-						{t("slots.create")}
+						{isEditing ? t("slots.save") : t("slots.create")}
 					</ModalButton>
 				</div>
 			</ModalFooter>

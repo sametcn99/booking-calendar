@@ -60,6 +60,28 @@ export class BookingLinkService {
 		return this.linkRepo.delete(id);
 	}
 
+	async updateLink(
+		id: number,
+		input: {
+			name?: string;
+			expiresAt?: string;
+			allowedSlotIds?: number[];
+		},
+	): Promise<BookingLink | null> {
+		const updatePayload: Parameters<typeof this.linkRepo.update>[1] = {};
+		if (input.name !== undefined) {
+			updatePayload.name = await this.resolveLinkName(input.name);
+		}
+		if (input.expiresAt !== undefined) {
+			updatePayload.expires_at = input.expiresAt;
+		}
+		if (input.allowedSlotIds !== undefined) {
+			updatePayload.allowed_slot_ids = [...new Set(input.allowedSlotIds)];
+		}
+
+		return this.linkRepo.update(id, updatePayload);
+	}
+
 	private async resolveLinkName(name?: string): Promise<string> {
 		const trimmed = name?.trim();
 		if (trimmed) {

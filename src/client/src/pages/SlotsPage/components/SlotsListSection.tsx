@@ -5,8 +5,8 @@ import SlotCard from "./SlotCard";
 interface Props {
 	formatDate: (d: string) => string;
 	onDelete: (id: number) => void;
-	onRename: (id: number, name: string) => void;
 	onToggle: (id: number, currentActive: number) => void;
+	onEdit: (slot: Slot) => void;
 	slots: Slot[];
 	t: (key: string) => string;
 }
@@ -14,8 +14,8 @@ interface Props {
 export default function SlotsListSection({
 	formatDate,
 	onDelete,
-	onRename,
 	onToggle,
+	onEdit,
 	slots,
 	t,
 }: Props) {
@@ -46,8 +46,8 @@ export default function SlotsListSection({
 					slot={slot}
 					formatDate={formatDate}
 					onToggle={onToggle}
-					onRename={onRename}
 					onDelete={onDelete}
+					onEdit={onEdit}
 					t={t}
 				/>
 			))}

@@ -86,7 +86,6 @@
 		"empty": "Henüz slot yok. Oluşturmak için \"Slot Ekle\"ye tıklayın.",
 		"name": "Slot İsmi",
 		"namePlaceholder": "Örn: Demo Toplantısı",
-		"saveName": "İsmi Kaydet",
 		"active": "Aktif",
 		"inactive": "Pasif",
 		"disable": "Devre Dışı Bırak",
@@ -100,9 +99,12 @@
 		"startEndRequired": "Slot ismi, başlangıç ve bitiş zamanı gereklidir",
 		"nameRequired": "Slot ismi gereklidir",
 		"created": "Slot oluşturuldu",
-		"nameUpdated": "Slot ismi güncellendi",
 		"updated": "Slot güncellendi",
-		"deleted": "Slot silindi"
+		"deleted": "Slot silindi",
+		"editTitle": "Zaman Aralığını Düzenle",
+		"edit": "Düzenle",
+		"save": "Değişiklikleri Kaydet",
+		"unnamedSlot": "İsimsiz Slot"
 	},
 	"appointments": {
 		"title": "Randevular",
@@ -157,7 +159,11 @@
 		"createBtn": "Oluştur",
 		"linkCreated": "Bağlantı oluşturuldu",
 		"linkDeleted": "Bağlantı silindi",
-		"copied": "Panoya kopyalandı!"
+		"copied": "Panoya kopyalandı!",
+		"editTitle": "Randevu Bağlantısını Düzenle",
+		"edit": "Düzenle",
+		"save": "Değişiklikleri Kaydet",
+		"linkUpdated": "Randevu bağlantısı güncellendi"
 	},
 	"booking": {
 		"loading": "Yükleniyor...",
@@ -332,7 +338,8 @@
 		"activeFilters": "Aktif filtreler",
 		"search": "Arama",
 		"dateRange": "Tarih Aralığı",
-		"invalidDateRange": "Başlangıç tarihi bitişten sonra olamaz"
+		"invalidDateRange": "Başlangıç tarihi bitişten sonra olamaz",
+		"noResults": "Filtrelerinize uygun öğe bulunamadı."
 	},
 	"communityEvents": {
 		"title": "Topluluk Etkinlikleri",

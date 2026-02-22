@@ -1,6 +1,5 @@
 import { useStyletron } from "baseui";
 import { Button, KIND, SIZE } from "baseui/button";
-import { Input } from "baseui/input";
 import { Tag } from "baseui/tag";
 import { useState } from "react";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
@@ -10,8 +9,8 @@ interface Props {
 	slot: Slot;
 	formatDate: (date: string) => string;
 	onDelete: (id: number) => void;
-	onRename: (id: number, name: string) => void;
 	onToggle: (id: number, currentActive: number) => void;
+	onEdit: (slot: Slot) => void;
 	t: (key: string) => string;
 }
 
@@ -19,18 +18,15 @@ export default function SlotCard({
 	slot,
 	formatDate,
 	onDelete,
-	onRename,
 	onToggle,
+	onEdit,
 	t,
 }: Props) {
 	const [css] = useStyletron();
-	const [nameDraft, setNameDraft] = useState(slot.name || "");
 	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [confirmMode, setConfirmMode] = useState<"delete" | "disable" | null>(
 		null,
 	);
-
-	const hasNameChange = nameDraft.trim() !== (slot.name || "").trim();
 
 	const openDeleteConfirmation = () => {
 		setConfirmMode("delete");
@@ -76,35 +72,19 @@ export default function SlotCard({
 				<div className={css({ flex: 1, minWidth: "240px" })}>
 					<div
 						className={css({
-							display: "flex",
-							gap: "8px",
-							alignItems: "center",
-							marginBottom: "8px",
+							fontSize: "18px",
+							fontWeight: 700,
+							color: "var(--color-text-primary)",
+							marginBottom: "4px",
 						})}
 					>
-						<Input
-							value={nameDraft}
-							placeholder={t("slots.namePlaceholder")}
-							onChange={(e) => setNameDraft(e.currentTarget.value)}
-							overrides={{
-								Root: {
-									style: { maxWidth: "260px" },
-								},
-							}}
-						/>
-						<Button
-							kind={KIND.secondary}
-							size={SIZE.compact}
-							onClick={() => onRename(slot.id, nameDraft)}
-							disabled={!hasNameChange}
-						>
-							{t("slots.saveName")}
-						</Button>
+						{slot.name || t("slots.unnamedSlot")}
 					</div>
 					<div
 						className={css({
 							fontWeight: 600,
-							color: "var(--color-text-primary)",
+							color: "var(--color-text-secondary)",
+							fontSize: "14px",
 						})}
 					>
 						{formatDate(slot.start_at)} - {formatDate(slot.end_at)}
@@ -138,6 +118,13 @@ export default function SlotCard({
 					>
 						{slot.is_active ? t("slots.active") : t("slots.inactive")}
 					</Tag>
+					<Button
+						kind={KIND.secondary}
+						size={SIZE.compact}
+						onClick={() => onEdit(slot)}
+					>
+						{t("slots.edit")}
+					</Button>
 					<Button
 						kind={KIND.secondary}
 						size={SIZE.compact}

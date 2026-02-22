@@ -27,14 +27,18 @@ _Precise configuration of slot ranges and recurring availability._
 ### Managing the List (`SlotsListSection`)
 
 - **Toggle Status**: Instantly enable/disable a slot. Disabled slots disappear from all public booking pages.
-- **Renaming**: Edit the internal name without affecting the time range.
-- **Deletion**: Remove the slot (Note: This does not delete existing appointments made within that time frame).
+- **Editing**: Full control over an existing slot's name, start time, and end time via the Edit modal.
+- **Deletion & Archiving**: Administrators can remove slots. If a slot already has associated appointments, the system automatically **archives** it (marking it as inactive) to preserve historical data while preventing new bookings.
 
 ## Filtering & Search
 
-- **Active**: Slots that are currently enabled and in the future.
-- **Inactive**: Manually disabled slots.
-- **Past**: Archived slots that have already occurred.
+The interface provides multi-layered filtering to help find specific blocks of time:
+
+- **Status Filters**: Quick toggles for **Active** (future enabled), **Inactive** (manually disabled), and **All** slots.
+- **Search Bar**: Live search across slot names.
+- **Sorting**: Order by newest or oldest start times.
+- **Date Range**: Filter for slots occurring within a specific temporal window.
+- **Filter Feedback**: Real-time count of visible items versus the total inventory.
 
 ## Technical Workflow
 
@@ -42,7 +46,8 @@ _Precise configuration of slot ranges and recurring availability._
 
 Managed by `useSlotsPage`, which interacts with `/api/slots`:
 
-- **Real-time Status Sync**: Updates the list state immediately upon toggle or rename.
+- **Real-time Status Sync**: Updates the list state immediately upon toggle or update.
+- **Update Logic**: Seamlessly handles modifications to existing slots without disrupting the overall schedule.
 - **Date Localization**: Uses the administrator's locale to display readable time ranges.
 
 ### Integration

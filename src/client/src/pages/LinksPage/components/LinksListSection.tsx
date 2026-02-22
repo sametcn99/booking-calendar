@@ -7,6 +7,7 @@ interface Props {
 	links: BookingLink[];
 	onCopy: (text: string) => void;
 	onDelete: (id: number) => void;
+	onEdit: (link: BookingLink) => void;
 	t: (key: string) => string;
 }
 
@@ -15,6 +16,7 @@ export default function LinksListSection({
 	links,
 	onCopy,
 	onDelete,
+	onEdit,
 	t,
 }: Props) {
 	const [css] = useStyletron();
@@ -40,6 +42,7 @@ export default function LinksListSection({
 					formatDate={formatDate}
 					onCopy={onCopy}
 					onDelete={onDelete}
+					onEdit={onEdit}
 					t={t}
 				/>
 			))}

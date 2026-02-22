@@ -104,9 +104,57 @@ export class SlotService {
 		return this.slotRepo.update(id, { name: slotName });
 	}
 
+	async updateSlot(
+		id: number,
+		input: Partial<CreateSlotInput>,
+	): Promise<AvailabilitySlot | null> {
+		const slot = await this.slotRepo.findById(id);
+		if (!slot) throw new Error(t("slot.notFound"));
+
+		const updatePayload: Parameters<typeof this.slotRepo.update>[1] = {};
+
+		if (input.name !== undefined) {
+			const name = input.name.trim();
+			if (!name) throw new Error(t("slot.nameRequired"));
+			updatePayload.name = name;
+		}
+
+		if (input.start_at !== undefined || input.end_at !== undefined) {
+			const startAt = input.start_at ?? slot.start_at;
+			const endAt = input.end_at ?? slot.end_at;
+
+			const startDate = new Date(startAt);
+			const endDate = new Date(endAt);
+
+			if (
+				Number.isNaN(startDate.getTime()) ||
+				Number.isNaN(endDate.getTime())
+			) {
+				throw new Error(t("slot.invalidDate"));
+			}
+
+			if (endDate <= startDate) {
+				throw new Error(t("slot.endAfterStart"));
+			}
+
+			updatePayload.start_at = startAt;
+			updatePayload.end_at = endAt;
+		}
+
+		return this.slotRepo.update(id, updatePayload);
+	}
+
 	async deleteSlot(id: number): Promise<boolean> {
 		const slot = await this.slotRepo.findById(id);
 		if (!slot) throw new Error(t("slot.notFound"));
+
+		const appointmentCount = await this.appointmentRepo.countBySlotId(id);
+		if (appointmentCount > 0) {
+			// If there are appointments, archive the slot instead of deleting it
+			await this.slotRepo.update(id, { is_active: false });
+			return true;
+		}
+
 		return this.slotRepo.delete(id);
 	}
 }

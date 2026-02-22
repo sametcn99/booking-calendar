@@ -56,14 +56,30 @@ export class SlotRepository {
 
 	async update(
 		id: number,
-		payload: { is_active?: boolean; name?: string },
+		payload: {
+			is_active?: boolean;
+			name?: string;
+			start_at?: string;
+			end_at?: string;
+		},
 	): Promise<AvailabilitySlot | null> {
-		const updatePayload: { is_active?: number; name?: string } = {};
+		const updatePayload: {
+			is_active?: number;
+			name?: string;
+			start_at?: string;
+			end_at?: string;
+		} = {};
 		if (payload.is_active !== undefined) {
 			updatePayload.is_active = payload.is_active ? 1 : 0;
 		}
 		if (payload.name !== undefined) {
 			updatePayload.name = payload.name;
+		}
+		if (payload.start_at !== undefined) {
+			updatePayload.start_at = payload.start_at;
+		}
+		if (payload.end_at !== undefined) {
+			updatePayload.end_at = payload.end_at;
 		}
 
 		await this.repo().update(id, updatePayload);

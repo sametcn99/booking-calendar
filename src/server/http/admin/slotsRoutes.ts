@@ -43,5 +43,16 @@ export const handleAdminSlotRoutes: AdminRouteHandler = async (args) => {
 		return jsonResponse(result.status, result.body, corsHeaders);
 	}
 
+	if (matchRoute(pathname, "/api/admin/slots/:id") && method === "PUT") {
+		const id = Number(extractPathParam(pathname, "/api/admin/slots/:id"));
+		const body = await parseJsonBody<{
+			name?: string;
+			start_at?: string;
+			end_at?: string;
+		}>(args.request);
+		const result = await args.slotController.updateSlot(id, body);
+		return jsonResponse(result.status, result.body, corsHeaders);
+	}
+
 	return null;
 };

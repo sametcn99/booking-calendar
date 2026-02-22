@@ -200,4 +200,8 @@ export class AppointmentRepository {
 		const result = await this.repo().delete({ slug_id: slugId });
 		return !!result.affected;
 	}
+
+	async countBySlotId(slotId: number): Promise<number> {
+		return this.repo().count({ where: { slot_id: slotId } });
+	}
 }

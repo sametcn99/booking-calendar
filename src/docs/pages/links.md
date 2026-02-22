@@ -12,6 +12,7 @@ _A consolidated dashboard for managing the lifecycle and associations of booking
 - **Name**: Internal identifier for the link (e.g., "Technical Interview - Samet").
 - **Expiration**: Set a lifespan in days. Once expired, the link automatically becomes invalid.
 - **Slot Association**: A multi-select interface to pick exactly which Availability Slots are accessible through this link.
+- **Editing Existing Links**: Admins can revisit any link to update its name or modify the set of associated slots at any time.
 
 ![Create Link](/screenshots/links/links_create.png)
 _Defining link parameters, including name, expiration, and associated availability slots._
@@ -24,11 +25,12 @@ _Defining link parameters, including name, expiration, and associated availabili
 
 ## User Interface Actions
 
-| Action         | Description                                           | Component          |
-| :------------- | :---------------------------------------------------- | :----------------- |
-| **Copy URL**   | Copies the full public booking URL to the clipboard.  | `LinksListSection` |
-| **Delete**     | Removes the link and invalidates the URL immediately. | `LinksListSection` |
-| **Reset Form** | Clears the modal for a fresh link creation.           | `LinksHeader`      |
+| Action         | Description                                                           | Component          |
+| :------------- | :-------------------------------------------------------------------- | :----------------- |
+| **Copy URL**   | Copies the full public booking URL to the clipboard.                  | `LinksListSection` |
+| **Edit**       | Modifies the link name or slot associations via the Edit modal.       | `LinksListSection` |
+| **Delete**     | Removes the link and invalidates the URL immediately.                 | `LinksListSection` |
+| **Reset Form** | Clears the modal environment for new creation or fresh link-building. | `LinksHeader`      |
 
 ## Technical Implementation
 

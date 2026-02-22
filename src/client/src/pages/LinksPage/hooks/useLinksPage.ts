@@ -25,6 +25,7 @@ export function useLinksPage(t: (key: string) => string) {
 	const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [generatedUrl, setGeneratedUrl] = useState("");
+	const [editingLink, setEditingLink] = useState<BookingLink | null>(null);
 
 	const loadLinks = useCallback(async () => {
 		try {
@@ -75,6 +76,30 @@ export function useLinksPage(t: (key: string) => string) {
 		}
 	}, [expiresDays, linkName, loadLinks, selectedSlotIds, t]);
 
+	const handleUpdate = useCallback(async () => {
+		if (!editingLink) return;
+		if (selectedSlotIds.length === 0) {
+			toaster.negative(t("links.selectAtLeastOneSlot"), {});
+			return;
+		}
+
+		setLoading(true);
+		try {
+			await api.updateLink(editingLink.id, {
+				name: linkName.trim() || undefined,
+				slot_ids: selectedSlotIds,
+			});
+			toaster.positive(t("links.linkUpdated"), {});
+			setModalOpen(false);
+			setEditingLink(null);
+			await loadLinks();
+		} catch (err: unknown) {
+			toaster.negative(getErrorMessage(err, t("common.error")), {});
+		} finally {
+			setLoading(false);
+		}
+	}, [editingLink, linkName, loadLinks, selectedSlotIds, t]);
+
 	const handleDelete = useCallback(
 		async (id: number) => {
 			try {
@@ -110,6 +135,15 @@ export function useLinksPage(t: (key: string) => string) {
 		setLinkName("");
 		setSelectedSlotIds([]);
 		setExpiresDays("7");
+		setEditingLink(null);
+	}, []);
+
+	const openEditModal = useCallback((link: BookingLink) => {
+		setEditingLink(link);
+		setLinkName(link.name);
+		setSelectedSlotIds(link.allowed_slot_ids);
+		setGeneratedUrl("");
+		setModalOpen(true);
 	}, []);
 
 	return {
@@ -117,6 +151,7 @@ export function useLinksPage(t: (key: string) => string) {
 		expiresDays,
 		generatedUrl,
 		handleCreate,
+		handleUpdate,
 		handleDelete,
 		linkName,
 		links,
@@ -130,5 +165,7 @@ export function useLinksPage(t: (key: string) => string) {
 		setModalOpen,
 		slots,
 		toggleSlotSelection,
+		editingLink,
+		openEditModal,
 	};
 }

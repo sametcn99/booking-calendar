@@ -30,5 +30,16 @@ export const handleAdminLinkRoutes: AdminRouteHandler = async (args) => {
 		return jsonResponse(result.status, result.body, corsHeaders);
 	}
 
+	if (matchRoute(pathname, "/api/admin/links/:id") && method === "PUT") {
+		const id = Number(extractPathParam(pathname, "/api/admin/links/:id"));
+		const body = await parseJsonBody<{
+			name?: string;
+			expires_at?: string;
+			slot_ids?: number[];
+		}>(args.request);
+		const result = await args.bookingLinkController.updateLink(id, body);
+		return jsonResponse(result.status, result.body, corsHeaders);
+	}
+
 	return null;
 };

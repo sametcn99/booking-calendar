@@ -211,6 +211,15 @@ export const api = {
 			method: "DELETE",
 		}),
 
+	updateSlot: (
+		id: number,
+		data: { name?: string; start_at?: string; end_at?: string },
+	) =>
+		request<ApiResponse<ApiSlot>>(`/admin/slots/${id}`, {
+			method: "PUT",
+			body: JSON.stringify(data),
+		}),
+
 	// Admin - Appointments
 	getAppointments: () =>
 		request<ApiResponse<ApiAppointment[]>>("/admin/appointments"),
@@ -251,6 +260,19 @@ export const api = {
 	deleteLink: (id: number) =>
 		request<{ success: boolean }>(`/admin/links/${id}`, {
 			method: "DELETE",
+		}),
+
+	updateLink: (
+		id: number,
+		input: {
+			name?: string;
+			expires_at?: string;
+			slot_ids?: number[];
+		},
+	) =>
+		request<ApiResponse<ApiBookingLink>>(`/admin/links/${id}`, {
+			method: "PUT",
+			body: JSON.stringify(input),
 		}),
 
 	// Public

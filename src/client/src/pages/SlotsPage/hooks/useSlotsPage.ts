@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "../../../api";
+import { useListFilters } from "../../../hooks/useListFilters";
 
 export interface Slot {
 	id: number;
@@ -26,6 +27,7 @@ export function useSlotsPage(t: (key: string) => string) {
 	const [endAt, setEndAt] = useState("");
 	const [slotName, setSlotName] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [editingSlot, setEditingSlot] = useState<Slot | null>(null);
 
 	const loadSlots = useCallback(async () => {
 		try {
@@ -66,23 +68,33 @@ export function useSlotsPage(t: (key: string) => string) {
 		}
 	}, [endAt, loadSlots, slotName, startAt, t]);
 
-	const handleRename = useCallback(
-		async (id: number, name: string) => {
-			if (!name.trim()) {
-				toaster.negative(t("slots.nameRequired"), {});
-				return;
-			}
+	const handleUpdate = useCallback(async () => {
+		if (!editingSlot) return;
+		if (!slotName.trim() || !startAt || !endAt) {
+			toaster.negative(t("slots.startEndRequired"), {});
+			return;
+		}
 
-			try {
-				await api.renameSlot(id, name.trim());
-				toaster.positive(t("slots.nameUpdated"), {});
-				await loadSlots();
-			} catch (err: unknown) {
-				toaster.negative(getErrorMessage(err, t("common.error")), {});
-			}
-		},
-		[loadSlots, t],
-	);
+		setLoading(true);
+		try {
+			await api.updateSlot(editingSlot.id, {
+				name: slotName.trim(),
+				start_at: new Date(startAt).toISOString(),
+				end_at: new Date(endAt).toISOString(),
+			});
+			toaster.positive(t("slots.updated"), {});
+			setModalOpen(false);
+			setEditingSlot(null);
+			setSlotName("");
+			setStartAt("");
+			setEndAt("");
+			await loadSlots();
+		} catch (err: unknown) {
+			toaster.negative(getErrorMessage(err, t("common.error")), {});
+		} finally {
+			setLoading(false);
+		}
+	}, [editingSlot, endAt, loadSlots, slotName, startAt, t]);
 
 	const handleToggle = useCallback(
 		async (id: number, currentActive: number) => {
@@ -110,7 +122,15 @@ export function useSlotsPage(t: (key: string) => string) {
 		[loadSlots, t],
 	);
 
-	const filteredSlots = useMemo(() => {
+	const openEditModal = useCallback((slot: Slot) => {
+		setEditingSlot(slot);
+		setSlotName(slot.name || "");
+		setStartAt(new Date(slot.start_at).toISOString().slice(0, 16));
+		setEndAt(new Date(slot.end_at).toISOString().slice(0, 16));
+		setModalOpen(true);
+	}, []);
+
+	const statusFilteredSlots = useMemo(() => {
 		return slots.filter((slot) => {
 			if (statusFilter === "active") {
 				return Boolean(slot.is_active);
@@ -124,11 +144,29 @@ export function useSlotsPage(t: (key: string) => string) {
 		});
 	}, [slots, statusFilter]);
 
+	const {
+		filteredItems: filteredSlots,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+	} = useListFilters({
+		items: statusFilteredSlots,
+		searchFields: ["name"],
+		dateField: "start_at",
+	});
+
 	return {
 		endAt,
 		handleCreate,
+		handleUpdate,
 		handleDelete,
-		handleRename,
 		handleToggle,
 		filteredSlots,
 		loading,
@@ -142,5 +180,18 @@ export function useSlotsPage(t: (key: string) => string) {
 		slots,
 		startAt,
 		statusFilter,
+		editingSlot,
+		openEditModal,
+		search,
+		setSearch,
+		sort,
+		setSort,
+		from,
+		setFrom,
+		to,
+		setTo,
+		clearFilters,
+		isActive,
+		totalCount: statusFilteredSlots.length,
 	};
 }

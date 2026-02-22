@@ -9,6 +9,7 @@ interface Props {
 	formatDate: (date: string) => string;
 	onCopy: (text: string) => void;
 	onDelete: (id: number) => void;
+	onEdit: (link: BookingLink) => void;
 	t: (key: string) => string;
 }
 
@@ -17,6 +18,7 @@ export default function LinkCard({
 	formatDate,
 	onCopy,
 	onDelete,
+	onEdit,
 	t,
 }: Props) {
 	const [css] = useStyletron();
@@ -99,6 +101,13 @@ export default function LinkCard({
 							onClick={() => onCopy(url)}
 						>
 							{t("links.copy")}
+						</Button>
+						<Button
+							kind={KIND.secondary}
+							size={SIZE.compact}
+							onClick={() => onEdit(link)}
+						>
+							{t("links.edit")}
 						</Button>
 						<Button
 							kind={KIND.secondary}
