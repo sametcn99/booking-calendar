@@ -3,6 +3,11 @@ import { SlotRepository } from "../repositories/SlotRepository";
 import { BookingLinkService } from "../services/BookingLinkService";
 import type { ApiResponse } from "../types";
 
+function getErrorMessage(error: unknown): string {
+	if (error instanceof Error) return error.message;
+	return t("error.unexpected");
+}
+
 export class BookingLinkController {
 	private linkService: BookingLinkService;
 	private slotRepo: SlotRepository;
@@ -41,12 +46,19 @@ export class BookingLinkController {
 			};
 		}
 
-		const result = await this.linkService.createLinkWithConfig({
-			expiresInDays: body.expires_in_days || 7,
-			name: body.name,
-			allowedSlotIds: slotIds,
-		});
-		return { status: 201, body: { success: true, data: result } };
+		try {
+			const result = await this.linkService.createLinkWithConfig({
+				expiresInDays: body.expires_in_days,
+				name: body.name,
+				allowedSlotIds: slotIds,
+			});
+			return { status: 201, body: { success: true, data: result } };
+		} catch (err: unknown) {
+			return {
+				status: 400,
+				body: { success: false, error: getErrorMessage(err) },
+			};
+		}
 	}
 
 	async validateToken(

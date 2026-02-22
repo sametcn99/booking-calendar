@@ -42,6 +42,7 @@
 		"notFound": "Link not found",
 		"slotSelectionRequired": "At least one slot must be selected",
 		"invalidSlots": "Invalid slot selection",
+		"invalidExpiresDays": "Validity period must be at least 1 day",
 		"defaultNamePrefix": "Untitled Link"
 	},
 	"general": {

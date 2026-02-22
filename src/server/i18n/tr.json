@@ -42,6 +42,7 @@
 		"notFound": "Bağlantı bulunamadı",
 		"slotSelectionRequired": "En az bir slot seçilmelidir",
 		"invalidSlots": "Geçersiz slot seçimi",
+		"invalidExpiresDays": "Geçerlilik süresi en az 1 gün olmalıdır",
 		"defaultNamePrefix": "Isimsiz Baglanti"
 	},
 	"general": {

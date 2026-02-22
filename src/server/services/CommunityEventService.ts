@@ -166,7 +166,11 @@ export class CommunityEventService {
 		}
 
 		const requiredApprovals = input.required_approvals ?? 3;
-		if (requiredApprovals < 1) {
+		if (
+			typeof requiredApprovals !== "number" ||
+			!Number.isSafeInteger(requiredApprovals) ||
+			requiredApprovals < 1
+		) {
 			throw new Error(t("communityEvent.minApprovals"));
 		}
 

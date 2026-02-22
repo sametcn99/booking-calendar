@@ -9,6 +9,7 @@ import {
 	ModalHeader,
 } from "baseui/modal";
 import { Textarea } from "baseui/textarea";
+import IntegerInput from "../../../components/IntegerInput";
 
 interface Props {
 	color: string;
@@ -194,13 +195,11 @@ export default function CommunityEventCreateModal({
 							>
 								{t("communityEvents.requiredApprovals")}
 							</div>
-							<Input
+							<IntegerInput
 								value={String(requiredApprovals)}
-								onChange={(e) =>
-									setRequiredApprovals(Number(e.currentTarget.value) || 1)
-								}
-								type="number"
-								min={1}
+								onNumberChange={(val) => {
+									setRequiredApprovals(Number(val) || 1);
+								}}
 								size={SIZE.compact}
 							/>
 						</div>

@@ -12,6 +12,7 @@ import {
 } from "baseui/modal";
 import { useCallback, useMemo, useState } from "react";
 import type { ApiSlot } from "../../../api";
+import IntegerInput from "../../../components/IntegerInput";
 
 interface Props {
 	expiresDays: string;
@@ -192,10 +193,14 @@ export default function CreateLinkModal({
 						</FormControl>
 
 						<FormControl label={t("links.expiresInDays")}>
-							<Input
-								type="number"
+							<IntegerInput
+								min={1}
+								step={1}
 								value={expiresDays}
-								onChange={(e) => setExpiresDays(e.currentTarget.value)}
+								onNumberChange={(val) => {
+									if (val !== "" && Number(val) < 1) return;
+									setExpiresDays(val);
+								}}
 							/>
 						</FormControl>
 

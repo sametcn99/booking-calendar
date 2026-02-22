@@ -34,7 +34,7 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 			const result = await api.getCommunityEvents();
 			setEvents(result.data);
 		} catch {
-			// Keep silent to preserve existing behavior on initial load failures.
+			// Keep silent
 		}
 	}, []);
 
@@ -70,8 +70,28 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 				});
 				toaster.positive(t("communityEvents.created"), {});
 				toaster.info(
-					`${t("communityEvents.shareLink")}: ${getShareLink(created.data.slug_id)}`,
-					{},
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "2px",
+						}}
+					>
+						<div style={{ fontWeight: 600, fontSize: "14px" }}>
+							{t("communityEvents.shareLink")}
+						</div>
+						<div
+							style={{
+								fontSize: "12px",
+								opacity: 0.8,
+								wordBreak: "break-all",
+								lineHeight: "1.2",
+							}}
+						>
+							{getShareLink(created.data.slug_id)}
+						</div>
+					</div>,
+					{ autoHideDuration: 10000 },
 				);
 				resetForm();
 				onCreated();

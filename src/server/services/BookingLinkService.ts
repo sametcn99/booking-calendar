@@ -25,6 +25,15 @@ export class BookingLinkService {
 	}> {
 		const slugId = await this.generateUniqueSlugId();
 		const expiresInDays = input.expiresInDays ?? 7;
+
+		if (
+			typeof expiresInDays !== "number" ||
+			!Number.isSafeInteger(expiresInDays) ||
+			expiresInDays < 1
+		) {
+			throw new Error(t("link.invalidExpiresDays"));
+		}
+
 		const expiresAt = new Date();
 		expiresAt.setDate(expiresAt.getDate() + expiresInDays);
 		const allowedSlotIds = [...new Set(input.allowedSlotIds)];

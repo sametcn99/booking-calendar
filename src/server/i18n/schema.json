@@ -167,6 +167,9 @@
 				"invalidSlots": {
 					"type": "string"
 				},
+				"invalidExpiresDays": {
+					"type": "string"
+				},
 				"defaultNamePrefix": {
 					"type": "string"
 				}
@@ -176,6 +179,7 @@
 				"notFound",
 				"slotSelectionRequired",
 				"invalidSlots",
+				"invalidExpiresDays",
 				"defaultNamePrefix"
 			],
 			"additionalProperties": false
@@ -424,17 +428,39 @@
 				"communityEvent": {
 					"type": "object",
 					"properties": {
-						"titleLabel": { "type": "string" },
-						"startTime": { "type": "string" },
-						"endTime": { "type": "string" },
-						"approverActivatedSubject": { "type": "string" },
-						"approverActivatedMessage": { "type": "string" },
-						"adminActivatedSubject": { "type": "string" },
-						"adminActivatedMessage": { "type": "string" },
-						"approverCanceledSubject": { "type": "string" },
-						"approverCanceledMessage": { "type": "string" },
-						"adminCanceledSubject": { "type": "string" },
-						"adminCanceledMessage": { "type": "string" }
+						"titleLabel": {
+							"type": "string"
+						},
+						"startTime": {
+							"type": "string"
+						},
+						"endTime": {
+							"type": "string"
+						},
+						"approverActivatedSubject": {
+							"type": "string"
+						},
+						"approverActivatedMessage": {
+							"type": "string"
+						},
+						"adminActivatedSubject": {
+							"type": "string"
+						},
+						"adminActivatedMessage": {
+							"type": "string"
+						},
+						"approverCanceledSubject": {
+							"type": "string"
+						},
+						"approverCanceledMessage": {
+							"type": "string"
+						},
+						"adminCanceledSubject": {
+							"type": "string"
+						},
+						"adminCanceledMessage": {
+							"type": "string"
+						}
 					},
 					"required": [
 						"titleLabel",
@@ -464,8 +490,12 @@
 		"planner": {
 			"type": "object",
 			"properties": {
-				"fieldsRequired": { "type": "string" },
-				"notFound": { "type": "string" }
+				"fieldsRequired": {
+					"type": "string"
+				},
+				"notFound": {
+					"type": "string"
+				}
 			},
 			"required": ["fieldsRequired", "notFound"],
 			"additionalProperties": false
@@ -533,16 +563,36 @@
 		"communityEvent": {
 			"type": "object",
 			"properties": {
-				"fieldsRequired": { "type": "string" },
-				"notFound": { "type": "string" },
-				"alreadyCanceled": { "type": "string" },
-				"alreadyActive": { "type": "string" },
-				"mustBeFuture": { "type": "string" },
-				"minApprovals": { "type": "string" },
-				"fullNameRequired": { "type": "string" },
-				"fullNameInvalid": { "type": "string" },
-				"fullNameAlreadyApproved": { "type": "string" },
-				"emailAlreadyApproved": { "type": "string" }
+				"fieldsRequired": {
+					"type": "string"
+				},
+				"notFound": {
+					"type": "string"
+				},
+				"alreadyCanceled": {
+					"type": "string"
+				},
+				"alreadyActive": {
+					"type": "string"
+				},
+				"mustBeFuture": {
+					"type": "string"
+				},
+				"minApprovals": {
+					"type": "string"
+				},
+				"fullNameRequired": {
+					"type": "string"
+				},
+				"fullNameInvalid": {
+					"type": "string"
+				},
+				"fullNameAlreadyApproved": {
+					"type": "string"
+				},
+				"emailAlreadyApproved": {
+					"type": "string"
+				}
 			},
 			"required": [
 				"fieldsRequired",
