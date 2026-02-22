@@ -218,7 +218,9 @@ export default function AppointmentCard({
 								<Button
 									kind={KIND.secondary}
 									size={SIZE.compact}
-									onClick={() => onApprove(appointment.slug_id)}
+									onClick={() =>
+										appointment.slug_id && onApprove(appointment.slug_id)
+									}
 									overrides={{
 										BaseButton: {
 											style: {
