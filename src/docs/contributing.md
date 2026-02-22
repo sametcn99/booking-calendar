@@ -12,8 +12,8 @@ Before contributing, it's helpful to be familiar with our stack:
 
 - **Runtime**: [Bun](https://bun.sh/) (Fast all-in-one JavaScript runtime)
 - **Backend**: TypeScript, [TypeORM](https://typeorm.io/) (SQLite persistence)
-- **Frontend**: [React 19](https://react.dev/), [Vite](https://vitejs.dev/), [Base Web](https://baseweb.design/) (UI Framework)
-- **Styling**: Styletron (CSS-in-JS used by Base Web)
+- **Frontend**: [React 19](https://react.dev/), [Vite](https://vitejs.dev/), [BasUI](https://base-ui.com/) (UI Framework)
+- **Styling**: Styletron (CSS-in-JS used by BasUI)
 - **Linting/Formatting**: [Biome](https://biomejs.dev/) (Speedy alternative to ESLint/Prettier)
 - **Icons**: [Lucide React](https://lucide.dev/)
 
