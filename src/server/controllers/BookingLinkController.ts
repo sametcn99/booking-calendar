@@ -26,6 +26,7 @@ export class BookingLinkController {
 		expires_in_days?: number;
 		name?: string;
 		slot_ids?: number[];
+		requires_approval?: boolean;
 	}): Promise<{ status: number; body: ApiResponse }> {
 		const slotIds = Array.isArray(body.slot_ids)
 			? [...new Set(body.slot_ids.filter((value) => Number.isInteger(value)))]
@@ -51,6 +52,7 @@ export class BookingLinkController {
 				expiresInDays: body.expires_in_days,
 				name: body.name,
 				allowedSlotIds: slotIds,
+				requiresApproval: body.requires_approval,
 			});
 			return { status: 201, body: { success: true, data: result } };
 		} catch (err: unknown) {
@@ -91,6 +93,7 @@ export class BookingLinkController {
 			name?: string;
 			expires_at?: string;
 			slot_ids?: number[];
+			requires_approval?: boolean;
 		},
 	): Promise<{ status: number; body: ApiResponse }> {
 		try {
@@ -98,6 +101,7 @@ export class BookingLinkController {
 				name: body.name,
 				expiresAt: body.expires_at,
 				allowedSlotIds: body.slot_ids,
+				requiresApproval: body.requires_approval,
 			});
 			if (!result) {
 				return {

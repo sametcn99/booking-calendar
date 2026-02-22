@@ -5,12 +5,14 @@ import StatusFilterButtons from "./StatusFilterButtons";
 interface Props {
 	onChange: (value: AppointmentStatusFilter) => void;
 	statusFilter: AppointmentStatusFilter;
+	pendingCount: number;
 	t: (key: string) => string;
 }
 
 export default function AppointmentsFilterSection({
 	onChange,
 	statusFilter,
+	pendingCount,
 	t,
 }: Props) {
 	const [css] = useStyletron();
@@ -27,6 +29,7 @@ export default function AppointmentsFilterSection({
 			<StatusFilterButtons
 				statusFilter={statusFilter}
 				onChange={onChange}
+				pendingCount={pendingCount}
 				t={t}
 			/>
 		</div>

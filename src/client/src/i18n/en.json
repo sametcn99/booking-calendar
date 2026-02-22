@@ -113,6 +113,7 @@
 		"active": "Active",
 		"past": "Past",
 		"canceled": "Canceled",
+		"rejected": "Rejected",
 		"empty": "No appointments in this filter.",
 		"noEmail": "No email provided",
 		"pastStatus": "Past",
@@ -127,8 +128,13 @@
 		"alreadyCanceled": "This appointment is already canceled.",
 		"cancelBtn": "Cancel",
 		"deleteBtn": "Delete",
+		"approveBtn": "Approve",
+		"rejectBtn": "Reject",
+		"pendingApproval": "Pending Approval",
 		"appointmentCanceled": "Appointment canceled",
-		"appointmentDeleted": "Appointment deleted"
+		"appointmentDeleted": "Appointment deleted",
+		"appointmentApproved": "Appointment approved",
+		"appointmentRejected": "Appointment rejected"
 	},
 	"links": {
 		"title": "Booking Links",
@@ -163,7 +169,8 @@
 		"editTitle": "Edit Booking Link",
 		"edit": "Edit",
 		"save": "Save Changes",
-		"linkUpdated": "Booking link updated"
+		"linkUpdated": "Booking link updated",
+		"requiresApproval": "Require admin approval for all bookings"
 	},
 	"booking": {
 		"loading": "Loading...",
@@ -171,6 +178,8 @@
 		"invalidMessage": "This booking link is no longer valid. Please request a new one.",
 		"successTitle": "Appointment Booked!",
 		"successMessage": "A confirmation email with calendar details has been sent.",
+		"successTitlePending": "Request Sent!",
+		"successMessagePending": "Your appointment request has been sent for admin approval. You will be notified via email once it is approved.",
 		"title": "Book Appointment",
 		"subtitle": "Select an available time slot and fill in your information.",
 		"availableTimes": "Available Times",
@@ -194,7 +203,8 @@
 		"occupiedTimes": "Occupied time ranges in this slot",
 		"noOccupiedTimes": "No active appointments inside this slot.",
 		"overlapOccupied": "Selected range overlaps an occupied time range",
-		"slotFullyOccupied": "This slot is fully occupied"
+		"slotFullyOccupied": "This slot is fully occupied",
+		"emailRequiredForApproval": "Email is required because this booking needs admin approval"
 	},
 	"settings": {
 		"title": "Settings",
@@ -327,6 +337,7 @@
 		"confirmDeleteMessage": "Are you sure you want to delete this item?",
 		"confirmDisableMessage": "Are you sure you want to disable this item?",
 		"confirmCancelMessage": "Are you sure you want to cancel this appointment?",
+		"confirmRejectMessage": "Are you sure you want to reject this appointment?",
 		"confirm": "Confirm",
 		"cancel": "Cancel",
 		"searchPlaceholder": "Search appointments, titles, locations...",

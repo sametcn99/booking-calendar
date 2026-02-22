@@ -23,7 +23,7 @@ export const handlePublicCalendarRoutes: PublicRouteHandler = async (args) => {
 	const [slotsResult, appointmentsResult, plannerResult, communityResult] =
 		await Promise.all([
 			args.slotController.getAllSlots(),
-			args.appointmentController.getAllAppointments(),
+			args.appointmentController.getAllAppointments({ status: "approved" }),
 			args.plannerController.getAllEvents(),
 			args.communityEventController.getAllEvents(),
 		]);

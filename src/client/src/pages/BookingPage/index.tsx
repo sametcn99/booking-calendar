@@ -34,6 +34,7 @@ export default function BookingPage() {
 		setSelectedEndAt,
 		setSelectedStartAt,
 		slots,
+		requiresApproval,
 		createdAppointmentToken,
 		valid,
 	} = useBookingPage(slugId, t);
@@ -117,6 +118,7 @@ export default function BookingPage() {
 						setNote={setNote}
 						setSelectedEndAt={setSelectedEndAt}
 						setSelectedStartAt={setSelectedStartAt}
+						requiresApproval={requiresApproval}
 						t={t}
 					/>
 				)}

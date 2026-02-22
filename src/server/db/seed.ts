@@ -390,6 +390,9 @@ async function seedAppointments(slots: AvailabilitySlotEntity[]) {
 			start_at: slot.start_at,
 			end_at: slot.end_at,
 			slug_id: randomId(16),
+			status: isPast
+				? pick(["approved", "approved", "approved", "rejected"])
+				: pick(["approved", "approved", "pending"]),
 		};
 
 		if (isCanceled) {
@@ -422,108 +425,126 @@ async function seedBookingLinks(slots: AvailabilitySlotEntity[]) {
 			slug_id: "general-booking",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 30)),
 			expires_at: isoDate(shift(base, 30)),
+			requires_approval: false,
 		},
 		{
 			name: "VIP Clients",
 			slug_id: "vip-clients",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 50)),
 			expires_at: isoDate(shift(base, 60)),
+			requires_approval: true,
 		},
 		{
 			name: "Technical Support Booking",
 			slug_id: "tech-support",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(10, 40)),
 			expires_at: isoDate(shift(base, 14)),
+			requires_approval: false,
 		},
 		{
 			name: "Demo Presentation",
 			slug_id: "demo-presentation",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(20, 45)),
 			expires_at: isoDate(shift(base, 21)),
+			requires_approval: true,
 		},
 		{
 			name: "Training Session",
 			slug_id: "training-session",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(5, 35)),
 			expires_at: isoDate(shift(base, 45)),
+			requires_approval: false,
 		},
 		{
 			name: "Quick Consultation",
 			slug_id: "quick-consultation",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 20)),
 			expires_at: isoDate(shift(base, 7)),
+			requires_approval: false,
 		},
 		{
 			name: "Project Evaluation",
 			slug_id: "project-evaluation",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(5, 40)),
 			expires_at: isoDate(shift(base, 90)),
+			requires_approval: true,
 		},
 		{
 			name: "Client Meeting",
 			slug_id: "client-meeting",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 60)),
 			expires_at: isoDate(shift(base, 15)),
+			requires_approval: true,
 		},
 		{
 			name: "Strategy Workshop",
 			slug_id: "strategy-workshop",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(15, 50)),
 			expires_at: isoDate(shift(base, 35)),
+			requires_approval: true,
 		},
 		{
 			name: "Product Feedback Session",
 			slug_id: "product-feedback",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 25)),
 			expires_at: isoDate(shift(base, 20)),
+			requires_approval: false,
 		},
 		{
 			name: "Sales Discovery Call",
 			slug_id: "sales-discovery",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(10, 55)),
 			expires_at: isoDate(shift(base, 45)),
+			requires_approval: false,
 		},
 		{
 			name: "New Hire Onboarding",
 			slug_id: "new-hire-onboarding",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 15)),
 			expires_at: isoDate(shift(base, 60)),
+			requires_approval: true,
 		},
 		{
 			name: "Executive Briefing",
 			slug_id: "executive-briefing",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(20, 35)),
 			expires_at: isoDate(shift(base, 30)),
+			requires_approval: true,
 		},
 		{
 			name: "Design Review Slot",
 			slug_id: "design-review",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(5, 30)),
 			expires_at: isoDate(shift(base, 25)),
+			requires_approval: false,
 		},
 		{
 			name: "Investor Meeting",
 			slug_id: "investor-meeting",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 10)),
 			expires_at: isoDate(shift(base, 14)),
+			requires_approval: true,
 		},
 		{
 			name: "Partner Integration Call",
 			slug_id: "partner-integration",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(30, 55)),
 			expires_at: isoDate(shift(base, 40)),
+			requires_approval: false,
 		},
 		{
 			name: "Customer Success Review",
 			slug_id: "customer-success",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(0, 40)),
 			expires_at: isoDate(shift(base, 50)),
+			requires_approval: false,
 		},
 		{
 			name: "Architecture Review",
 			slug_id: "architecture-review",
 			allowed_slot_ids: JSON.stringify(activeSlotIds.slice(10, 25)),
 			expires_at: isoDate(shift(base, 28)),
+			requires_approval: true,
 		},
 		// Expired links
 		{
@@ -531,30 +552,35 @@ async function seedBookingLinks(slots: AvailabilitySlotEntity[]) {
 			slug_id: "expired-link",
 			allowed_slot_ids: JSON.stringify([]),
 			expires_at: isoDate(shift(base, -5)),
+			requires_approval: false,
 		},
 		{
 			name: "Old Campaign",
 			slug_id: "old-campaign",
 			allowed_slot_ids: JSON.stringify([]),
 			expires_at: isoDate(shift(base, -20)),
+			requires_approval: false,
 		},
 		{
 			name: "Black Friday Special",
 			slug_id: "black-friday-special",
 			allowed_slot_ids: JSON.stringify([]),
 			expires_at: isoDate(shift(base, -30)),
+			requires_approval: false,
 		},
 		{
 			name: "Holiday Promo",
 			slug_id: "holiday-promo",
 			allowed_slot_ids: JSON.stringify([]),
 			expires_at: isoDate(shift(base, -15)),
+			requires_approval: false,
 		},
 		{
 			name: "Beta User Access",
 			slug_id: "beta-user-access",
 			allowed_slot_ids: JSON.stringify([]),
 			expires_at: isoDate(shift(base, -45)),
+			requires_approval: false,
 		},
 	];
 
@@ -1010,6 +1036,7 @@ async function seedCommunityEvents() {
 			.slice(0, t.currentApprovals)
 			.map((email, j) => ({
 				email,
+				full_name: randomName(j + i * 10),
 				approved_at: isoDate(shift(base, -(j + 1) * 2)),
 			}));
 

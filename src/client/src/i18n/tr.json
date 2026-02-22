@@ -113,6 +113,7 @@
 		"active": "Aktif",
 		"past": "Tarihi Geçenler",
 		"canceled": "İptal Edilenler",
+		"rejected": "Reddedilenler",
 		"empty": "Bu filtrede randevu yok.",
 		"noEmail": "E-posta belirtilmedi",
 		"pastStatus": "Tarihi Geçti",
@@ -127,8 +128,13 @@
 		"alreadyCanceled": "Bu randevu zaten iptal edilmiş.",
 		"cancelBtn": "İptal Et",
 		"deleteBtn": "Sil",
+		"approveBtn": "Onayla",
+		"rejectBtn": "Reddet",
+		"pendingApproval": "Onay Bekliyor",
 		"appointmentCanceled": "Randevu iptal edildi",
-		"appointmentDeleted": "Randevu silindi"
+		"appointmentDeleted": "Randevu silindi",
+		"appointmentApproved": "Randevu onaylandı",
+		"appointmentRejected": "Randevu reddedildi"
 	},
 	"links": {
 		"title": "Randevu Bağlantıları",
@@ -163,7 +169,8 @@
 		"editTitle": "Randevu Bağlantısını Düzenle",
 		"edit": "Düzenle",
 		"save": "Değişiklikleri Kaydet",
-		"linkUpdated": "Randevu bağlantısı güncellendi"
+		"linkUpdated": "Randevu bağlantısı güncellendi",
+		"requiresApproval": "Tüm randevular için admin onayı zorunlu olsun"
 	},
 	"booking": {
 		"loading": "Yükleniyor...",
@@ -171,6 +178,8 @@
 		"invalidMessage": "Bu randevu bağlantısı artık geçerli değil. Lütfen yeni bir tane isteyin.",
 		"successTitle": "Randevu Alındı!",
 		"successMessage": "Takvim detaylarını içeren bir onay e-postası gönderildi.",
+		"successTitlePending": "Talep Gönderildi!",
+		"successMessagePending": "Randevu talebiniz admin onayına gönderildi. Onaylandığında e-posta ile bilgilendirileceksiniz.",
 		"title": "Randevu Al",
 		"subtitle": "Müsait bir zaman aralığı seçin ve bilgilerinizi doldurun.",
 		"availableTimes": "Müsait Zamanlar",
@@ -194,7 +203,8 @@
 		"occupiedTimes": "Bu slot içindeki dolu zaman aralıkları",
 		"noOccupiedTimes": "Bu slot içinde aktif randevu yok.",
 		"overlapOccupied": "Seçilen aralık dolu bir zaman aralığı ile çakışıyor",
-		"slotFullyOccupied": "Bu slot tamamen dolu"
+		"slotFullyOccupied": "Bu slot tamamen dolu",
+		"emailRequiredForApproval": "Bu randevu admin onayı gerektirdiği için e-posta adresi zorunludur"
 	},
 	"settings": {
 		"title": "Ayarlar",
@@ -327,6 +337,7 @@
 		"confirmDeleteMessage": "Bu öğeyi silmek istediğinize emin misiniz?",
 		"confirmDisableMessage": "Bu öğeyi devre dışı bırakmak istediğinize emin misiniz?",
 		"confirmCancelMessage": "Bu randevuyu iptal etmek istediğinize emin misiniz?",
+		"confirmRejectMessage": "Bu randevuyu reddetmek istediğinize emin misiniz?",
 		"confirm": "Onayla",
 		"cancel": "İptal",
 		"searchPlaceholder": "Randevu, başlık, konum ara...",

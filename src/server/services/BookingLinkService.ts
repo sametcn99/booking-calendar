@@ -19,6 +19,7 @@ export class BookingLinkService {
 		expiresInDays?: number;
 		name?: string;
 		allowedSlotIds: number[];
+		requiresApproval?: boolean;
 	}): Promise<{
 		link: BookingLink;
 		url: string;
@@ -45,6 +46,7 @@ export class BookingLinkService {
 			slug_id: slugId,
 			allowed_slot_ids: allowedSlotIds,
 			expires_at: expiresAt.toISOString(),
+			requires_approval: input.requiresApproval,
 		});
 
 		const url = `${config.baseUrl}/book/${slugId}`;
@@ -66,6 +68,7 @@ export class BookingLinkService {
 			name?: string;
 			expiresAt?: string;
 			allowedSlotIds?: number[];
+			requiresApproval?: boolean;
 		},
 	): Promise<BookingLink | null> {
 		const updatePayload: Parameters<typeof this.linkRepo.update>[1] = {};
@@ -77,6 +80,9 @@ export class BookingLinkService {
 		}
 		if (input.allowedSlotIds !== undefined) {
 			updatePayload.allowed_slot_ids = [...new Set(input.allowedSlotIds)];
+		}
+		if (input.requiresApproval !== undefined) {
+			updatePayload.requires_approval = input.requiresApproval;
 		}
 
 		return this.linkRepo.update(id, updatePayload);

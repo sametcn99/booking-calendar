@@ -7,6 +7,8 @@ interface Props {
 	formatDate: (d: string) => string;
 	onCancel: (slugId: string) => void;
 	onDelete: (slugId: string) => void;
+	onApprove: (slugId: string) => void;
+	onReject: (slugId: string) => void;
 	isPastAppointment: (appointment: Appointment) => boolean;
 	canDeleteAppointment: (appointment: Appointment) => boolean;
 	t: (key: string) => string;
@@ -17,6 +19,8 @@ export default function AppointmentsListSection({
 	formatDate,
 	onCancel,
 	onDelete,
+	onApprove,
+	onReject,
 	isPastAppointment,
 	canDeleteAppointment,
 	t,
@@ -44,6 +48,8 @@ export default function AppointmentsListSection({
 					formatDate={formatDate}
 					onCancel={onCancel}
 					onDelete={onDelete}
+					onApprove={onApprove}
+					onReject={onReject}
 					isPast={isPastAppointment(apt)}
 					canDelete={canDeleteAppointment(apt)}
 					t={t}

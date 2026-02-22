@@ -25,6 +25,7 @@ export class BookingLinkRepository {
 			slug_id: entity.slug_id,
 			allowed_slot_ids: allowedSlotIds,
 			expires_at: entity.expires_at,
+			requires_approval: entity.requires_approval,
 			created_at: entity.created_at,
 		};
 	}
@@ -65,6 +66,7 @@ export class BookingLinkRepository {
 			slug_id: input.slug_id,
 			allowed_slot_ids: JSON.stringify(input.allowed_slot_ids),
 			expires_at: input.expires_at,
+			requires_approval: input.requires_approval ?? false,
 		});
 		const saved = await this.repo().save(created);
 		return this.toDomain(saved);
@@ -81,6 +83,7 @@ export class BookingLinkRepository {
 			name?: string;
 			expires_at?: string;
 			allowed_slot_ids?: number[];
+			requires_approval?: boolean;
 		},
 	): Promise<BookingLink | null> {
 		const updatePayload: QueryDeepPartialEntity<BookingLinkEntity> = {};
@@ -89,6 +92,9 @@ export class BookingLinkRepository {
 			updatePayload.expires_at = payload.expires_at;
 		if (payload.allowed_slot_ids !== undefined) {
 			updatePayload.allowed_slot_ids = JSON.stringify(payload.allowed_slot_ids);
+		}
+		if (payload.requires_approval !== undefined) {
+			updatePayload.requires_approval = payload.requires_approval;
 		}
 
 		await this.repo().update(id, updatePayload);

@@ -7,7 +7,8 @@ Booking Calendar is packed with features designed to make appointment management
 A powerful dashboard to manage your availability and bookings.
 
 - **Dynamic Slots:** Create and manage booking slots with customizable durations.
-- **Appointment Management:** View, approve, or cancel appointments.
+- **Appointment Management:** View, approve, reject, or cancel appointments.
+- **Admin Approval:** Optional moderation layer for guest-created bookings.
 - **Shareable Links:** Generate persistent links for your booking page.
 
 ## 📅 Public Booking Page

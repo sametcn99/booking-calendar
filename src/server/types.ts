@@ -22,6 +22,7 @@ export interface BookingLink {
 	slug_id: string;
 	allowed_slot_ids: number[];
 	expires_at: string;
+	requires_approval: boolean;
 	created_at: string;
 }
 
@@ -35,6 +36,7 @@ export interface Appointment {
 	start_at: string;
 	end_at: string;
 	slug_id: string | null;
+	status: "pending" | "approved" | "rejected";
 	canceled_at: string | null;
 	canceled_by: string | null;
 	created_at: string;
@@ -51,6 +53,7 @@ export interface CreateSlotInput {
 export interface CreateAppointmentInput {
 	slot_id: number;
 	name: string;
+	status?: "pending" | "approved" | "rejected";
 	email?: string;
 	meeting_place?: string;
 	note?: string;
@@ -63,6 +66,7 @@ export interface CreateBookingLinkInput {
 	slug_id: string;
 	allowed_slot_ids: number[];
 	expires_at: string;
+	requires_approval?: boolean;
 }
 
 export interface LoginInput {

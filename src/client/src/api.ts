@@ -35,6 +35,7 @@ export interface ApiAppointment {
 	start_at: string;
 	end_at: string;
 	slug_id: string | null;
+	status: "pending" | "approved" | "rejected";
 	canceled_at: string | null;
 	canceled_by: string | null;
 	created_at: string;
@@ -46,6 +47,7 @@ export interface ApiBookingLink {
 	slug_id: string;
 	allowed_slot_ids: number[];
 	expires_at: string;
+	requires_approval: boolean;
 	created_at: string;
 }
 
@@ -221,8 +223,14 @@ export const api = {
 		}),
 
 	// Admin - Appointments
-	getAppointments: () =>
-		request<ApiResponse<ApiAppointment[]>>("/admin/appointments"),
+	getAppointments: (status?: "pending" | "approved" | "rejected" | "all") => {
+		const params = new URLSearchParams();
+		if (status) params.set("status", status);
+		const query = params.toString();
+		return request<ApiResponse<ApiAppointment[]>>(
+			`/admin/appointments${query ? `?${query}` : ""}`,
+		);
+	},
 
 	deleteAppointment: (slugId: string) =>
 		request<{ success: boolean }>(`/admin/appointments/${slugId}`, {
@@ -236,6 +244,20 @@ export const api = {
 				method: "PATCH",
 			},
 		),
+	approveAppointment: (slugId: string) =>
+		request<ApiResponse<ApiAppointment>>(
+			`/admin/appointments/${slugId}/approve`,
+			{
+				method: "POST",
+			},
+		),
+	rejectAppointment: (slugId: string) =>
+		request<ApiResponse<ApiAppointment>>(
+			`/admin/appointments/${slugId}/reject`,
+			{
+				method: "POST",
+			},
+		),
 
 	// Admin - Links
 	getLinks: () => request<ApiResponse<ApiBookingLink[]>>("/admin/links"),
@@ -244,6 +266,7 @@ export const api = {
 		expires_in_days?: number;
 		name?: string;
 		slot_ids: number[];
+		requires_approval?: boolean;
 	}) =>
 		request<ApiResponse<{ link: ApiBookingLink; url: string }>>(
 			"/admin/links",
@@ -253,6 +276,7 @@ export const api = {
 					expires_in_days: input.expires_in_days ?? 7,
 					name: input.name,
 					slot_ids: input.slot_ids,
+					requires_approval: input.requires_approval,
 				}),
 			},
 		),
@@ -268,6 +292,7 @@ export const api = {
 			name?: string;
 			expires_at?: string;
 			slot_ids?: number[];
+			requires_approval?: boolean;
 		},
 	) =>
 		request<ApiResponse<ApiBookingLink>>(`/admin/links/${id}`, {

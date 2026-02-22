@@ -35,7 +35,9 @@
 		"notFound": "Randevu bulunamadı",
 		"deleteOnlyPastOrCanceled": "Sadece tarihi geçmiş veya iptal edilmiş randevular silinebilir",
 		"alreadyCanceled": "Randevu zaten iptal edilmiş",
-		"invalidCancelLink": "Geçersiz iptal bağlantısı"
+		"invalidCancelLink": "Geçersiz iptal bağlantısı",
+		"notPending": "Bu randevu onay bekleyen bir randevu değil",
+		"emailRequiredForApproval": "Onay gerektiren randevular için e-posta adresi zorunludur"
 	},
 	"link": {
 		"invalidToken": "Geçersiz veya süresi dolmuş token",
@@ -79,6 +81,15 @@
 			"meetingPlace": "Görüşme Yeri",
 			"note": "Not",
 			"cancelBtn": "Randevuyu İptal Et"
+		},
+		"rejection": {
+			"subject": "Randevu Talebi Güncellemesi",
+			"title": "Randevu Talebi Reddedildi",
+			"greeting": "Merhaba",
+			"message": "Randevu talebiniz reddedilmiştir.",
+			"startTime": "Başlangıç Zamanı",
+			"endTime": "Bitiş Zamanı",
+			"meetingPlace": "Görüşme Yeri"
 		},
 		"adminNotification": {
 			"subject": "Yeni Randevu Kaydı",
@@ -129,6 +140,8 @@
 		"subscriptionSaved": "Push aboneliği kaydedildi",
 		"newBookingTitle": "Yeni Randevu",
 		"newBookingBody": "Tarafından yeni bir randevu alındı:",
+		"newPendingBookingTitle": "Yeni Randevu (Onay Bekliyor)",
+		"newPendingBookingBody": "Tarafından yeni bir randevu alındı ve onayınızı bekliyor:",
 		"cancellationTitle": "Randevu İptal Edildi",
 		"cancellationBody": "Tarafından bir randevu iptal edildi:",
 		"communityEventActivatedTitle": "Topluluk Etkinliği Aktif",

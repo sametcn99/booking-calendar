@@ -26,6 +26,8 @@ export default function LinksPage() {
 		setModalOpen,
 		slots,
 		toggleSlotSelection,
+		requiresApproval,
+		setRequiresApproval,
 		editingLink,
 		openEditModal,
 	} = useLinksPage(t);
@@ -74,6 +76,8 @@ export default function LinksPage() {
 				slots={slots}
 				t={t}
 				toggleSlotSelection={toggleSlotSelection}
+				requiresApproval={requiresApproval}
+				setRequiresApproval={setRequiresApproval}
 				isEditing={!!editingLink}
 			/>
 		</div>

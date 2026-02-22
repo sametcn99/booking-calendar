@@ -15,8 +15,10 @@ export class AppointmentRepository {
 			: AppDataSource.getRepository(AppointmentEntity);
 	}
 
-	async findAll(): Promise<AppointmentWithSlot[]> {
-		const rows = await this.repo()
+	async findAll(options?: {
+		status?: "pending" | "approved" | "rejected" | "all";
+	}): Promise<AppointmentWithSlot[]> {
+		const query = this.repo()
 			.createQueryBuilder("a")
 			.leftJoin("availability_slots", "s", "s.id = a.slot_id")
 			.select([
@@ -29,10 +31,17 @@ export class AppointmentRepository {
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
 				"a.slug_id as slug_id",
+				"a.status as status",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
-			])
+			]);
+
+		if (options?.status && options.status !== "all") {
+			query.andWhere("a.status = :status", { status: options.status });
+		}
+
+		const rows = await query
 			.orderBy("a.created_at", "DESC")
 			.getRawMany<AppointmentWithSlot>();
 
@@ -53,6 +62,7 @@ export class AppointmentRepository {
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
 				"a.slug_id as slug_id",
+				"a.status as status",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
@@ -73,6 +83,7 @@ export class AppointmentRepository {
 			.createQueryBuilder("a")
 			.where("a.slot_id = :slotId", { slotId })
 			.andWhere("a.canceled_at IS NULL")
+			.andWhere("a.status != 'rejected'")
 			.andWhere("NOT (a.end_at <= :startAt OR a.start_at >= :endAt)", {
 				startAt,
 				endAt,
@@ -99,6 +110,7 @@ export class AppointmentRepository {
 			])
 			.where("a.slot_id IN (:...slotIds)", { slotIds })
 			.andWhere("a.canceled_at IS NULL")
+			.andWhere("a.status != 'rejected'")
 			.andWhere("a.end_at >= :now", { now: new Date().toISOString() })
 			.orderBy("a.start_at", "ASC")
 			.getRawMany<{ slot_id: number; start_at: string; end_at: string }>();
@@ -122,6 +134,7 @@ export class AppointmentRepository {
 			start_at: input.start_at,
 			end_at: input.end_at,
 			slug_id: slugId,
+			status: input.status || "approved",
 			canceled_at: null,
 			canceled_by: null,
 		});
@@ -136,6 +149,7 @@ export class AppointmentRepository {
 			start_at: saved.start_at || input.start_at,
 			end_at: saved.end_at || input.end_at,
 			slug_id: saved.slug_id,
+			status: saved.status,
 			canceled_at: saved.canceled_at,
 			canceled_by: saved.canceled_by,
 			created_at: saved.created_at,
@@ -156,6 +170,7 @@ export class AppointmentRepository {
 				"COALESCE(a.start_at, s.start_at) as start_at",
 				"COALESCE(a.end_at, s.end_at) as end_at",
 				"a.slug_id as slug_id",
+				"a.status as status",
 				"a.canceled_at as canceled_at",
 				"a.canceled_by as canceled_by",
 				"a.created_at as created_at",
@@ -174,6 +189,14 @@ export class AppointmentRepository {
 			canceled_at: new Date().toISOString(),
 			canceled_by: canceledBy,
 		});
+		return this.findById(id);
+	}
+
+	async updateStatus(
+		id: number,
+		status: "pending" | "approved" | "rejected",
+	): Promise<AppointmentWithSlot | null> {
+		await this.repo().update(id, { status });
 		return this.findById(id);
 	}
 

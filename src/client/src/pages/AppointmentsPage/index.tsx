@@ -19,6 +19,8 @@ export default function AppointmentsPage() {
 		filteredAppointments,
 		handleCancel,
 		handleDelete,
+		handleApprove,
+		handleReject,
 		setStatusFilter,
 		statusFilter,
 		search,
@@ -32,6 +34,7 @@ export default function AppointmentsPage() {
 		clearFilters,
 		isActive,
 		totalCount,
+		pendingCount,
 	} = useAppointmentsPage(t);
 
 	const formatDate = (d: string) =>
@@ -60,6 +63,7 @@ export default function AppointmentsPage() {
 				<AppointmentsFilterSection
 					statusFilter={statusFilter}
 					onChange={setStatusFilter}
+					pendingCount={pendingCount}
 					t={t}
 				/>
 
@@ -108,6 +112,8 @@ export default function AppointmentsPage() {
 					formatDate={formatDate}
 					onCancel={handleCancel}
 					onDelete={handleDelete}
+					onApprove={handleApprove}
+					onReject={handleReject}
 					isPastAppointment={isPastAppointment}
 					canDeleteAppointment={canDeleteAppointment}
 					t={t}

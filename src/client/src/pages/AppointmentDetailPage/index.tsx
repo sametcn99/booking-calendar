@@ -107,6 +107,7 @@ export default function AppointmentDetailPage() {
 	}
 
 	const isCanceled = Boolean(appointment.canceled_at);
+	const isPending = appointment.status === "pending";
 
 	return (
 		<div
@@ -130,6 +131,40 @@ export default function AppointmentDetailPage() {
 					padding: "24px",
 				})}
 			>
+				{isPending && (
+					<div
+						className={css({
+							backgroundColor: "var(--color-warning-dark-bg)",
+							border: "1px solid var(--color-warning-light)",
+							borderRadius: "10px",
+							padding: "20px",
+							marginBottom: "24px",
+							textAlign: "center",
+						})}
+					>
+						<h2
+							className={css({
+								fontSize: "18px",
+								color: "var(--color-warning-light)",
+								marginBottom: "8px",
+								fontWeight: 700,
+							})}
+						>
+							{t("booking.successTitlePending")}
+						</h2>
+						<p
+							className={css({
+								fontSize: "14px",
+								color: "var(--color-text-secondary)",
+								margin: 0,
+								lineHeight: "1.5",
+							})}
+						>
+							{t("booking.successMessagePending")}
+						</p>
+					</div>
+				)}
+
 				<h1
 					className={css({
 						fontSize: "24px",
@@ -155,6 +190,25 @@ export default function AppointmentDetailPage() {
 						<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
 						{new Date(appointment.start_at).toLocaleString(locale)} -{" "}
 						{new Date(appointment.end_at).toLocaleString(locale)}
+					</div>
+					<div className={css({ color: "var(--color-text-secondary)" })}>
+						<strong>{t("dashboard.calendar.status")}:</strong>{" "}
+						<span
+							className={css({
+								color: isCanceled
+									? "var(--color-error-text)"
+									: isPending
+										? "var(--color-warning-light)"
+										: "var(--color-success-text)",
+								fontWeight: 600,
+							})}
+						>
+							{isCanceled
+								? t("appointments.canceledBy")
+								: isPending
+									? t("appointments.pendingApproval")
+									: t("slots.active")}
+						</span>
 					</div>
 					{appointment.meeting_place && (
 						<div className={css({ color: "var(--color-text-secondary)" })}>

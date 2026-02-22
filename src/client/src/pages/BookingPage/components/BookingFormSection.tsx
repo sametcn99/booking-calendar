@@ -19,6 +19,7 @@ interface Props {
 	setNote: (value: string) => void;
 	setSelectedEndAt: (value: string) => void;
 	setSelectedStartAt: (value: string) => void;
+	requiresApproval: boolean;
 	t: (key: string) => string;
 }
 
@@ -37,6 +38,7 @@ export default function BookingFormSection({
 	setNote,
 	setSelectedEndAt,
 	setSelectedStartAt,
+	requiresApproval,
 	t,
 }: Props) {
 	const [css] = useStyletron();
@@ -107,12 +109,18 @@ export default function BookingFormSection({
 				/>
 			</FormControl>
 
-			<FormControl label={t("booking.email")} caption={t("booking.emailHelp")}>
+			<FormControl
+				label={
+					requiresApproval ? `${t("booking.email")} *` : t("booking.email")
+				}
+				caption={t("booking.emailHelp")}
+			>
 				<Input
 					value={email}
 					onChange={(e) => setEmail(e.currentTarget.value)}
 					placeholder="your@email.com"
 					type="email"
+					required={requiresApproval}
 				/>
 			</FormControl>
 

@@ -11,6 +11,8 @@ interface Props {
 	formatDate: (date: string) => string;
 	onCancel: (slugId: string) => void;
 	onDelete: (slugId: string) => void;
+	onApprove: (slugId: string) => void;
+	onReject: (slugId: string) => void;
 	isPast: boolean;
 	canDelete: boolean;
 	t: (key: string) => string;
@@ -21,15 +23,17 @@ export default function AppointmentCard({
 	formatDate,
 	onCancel,
 	onDelete,
+	onApprove,
+	onReject,
 	isPast,
 	canDelete,
 	t,
 }: Props) {
 	const [css] = useStyletron();
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [confirmMode, setConfirmMode] = useState<"delete" | "cancel" | null>(
-		null,
-	);
+	const [confirmMode, setConfirmMode] = useState<
+		"delete" | "cancel" | "reject" | null
+	>(null);
 	const appointmentLink = appointment.slug_id
 		? `${window.location.origin}/appointment/${appointment.slug_id}`
 		: null;
@@ -54,6 +58,15 @@ export default function AppointmentCard({
 		setConfirmOpen(false);
 	};
 
+	const handleConfirmReject = () => {
+		if (appointment.slug_id) {
+			onReject(appointment.slug_id);
+		}
+		setConfirmOpen(false);
+	};
+
+	const isPending = appointment.status === "pending";
+
 	return (
 		<>
 			<div
@@ -61,7 +74,9 @@ export default function AppointmentCard({
 					backgroundColor: "var(--color-bg-secondary)",
 					borderRadius: "8px",
 					padding: "20px",
-					border: "1px solid var(--color-bg-quaternary)",
+					border: isPending
+						? "1px solid var(--color-warning-light)"
+						: "1px solid var(--color-bg-quaternary)",
 				})}
 			>
 				<div
@@ -102,18 +117,57 @@ export default function AppointmentCard({
 							{formatDate(appointment.start_at)} -{" "}
 							{formatDate(appointment.end_at)}
 						</div>
-						{isPast && !appointment.canceled_at && (
+						{isPending && (
 							<div
 								className={css({
 									fontSize: "13px",
 									color: "var(--color-warning-light)",
 									marginTop: "8px",
 									fontWeight: 600,
+									display: "inline-flex",
+									alignItems: "center",
+									gap: "6px",
+									backgroundColor: "var(--color-warning-dark-bg)",
+									borderRadius: "6px",
+									padding: "2px 10px",
 								})}
 							>
-								{t("appointments.pastStatus")}
+								{t("appointments.pendingApproval")}
 							</div>
 						)}
+						{appointment.status === "rejected" && (
+							<div
+								className={css({
+									fontSize: "13px",
+									color: "var(--color-error-text)",
+									marginTop: "8px",
+									fontWeight: 600,
+									display: "inline-flex",
+									alignItems: "center",
+									gap: "6px",
+									backgroundColor: "var(--color-error-bg)",
+									borderRadius: "6px",
+									padding: "2px 10px",
+								})}
+							>
+								{t("appointments.appointmentRejected")}
+							</div>
+						)}
+						{isPast &&
+							!appointment.canceled_at &&
+							!isPending &&
+							appointment.status !== "rejected" && (
+								<div
+									className={css({
+										fontSize: "13px",
+										color: "var(--color-warning-light)",
+										marginTop: "8px",
+										fontWeight: 600,
+									})}
+								>
+									{t("appointments.pastStatus")}
+								</div>
+							)}
 						{appointment.canceled_at && (
 							<div
 								className={css({
@@ -159,6 +213,49 @@ export default function AppointmentCard({
 							flexWrap: "wrap",
 						})}
 					>
+						{isPending && appointment.slug_id && (
+							<>
+								<Button
+									kind={KIND.secondary}
+									size={SIZE.compact}
+									onClick={() => onApprove(appointment.slug_id)}
+									overrides={{
+										BaseButton: {
+											style: {
+												backgroundColor: "var(--color-success-bg)",
+												color: "var(--color-success-text)",
+												":hover": {
+													backgroundColor: "var(--color-success-hover)",
+												},
+											},
+										},
+									}}
+								>
+									{t("appointments.approveBtn")}
+								</Button>
+								<Button
+									kind={KIND.secondary}
+									size={SIZE.compact}
+									onClick={() => {
+										setConfirmMode("reject");
+										setConfirmOpen(true);
+									}}
+									overrides={{
+										BaseButton: {
+											style: {
+												backgroundColor: "var(--color-error-bg)",
+												color: "var(--color-error-text)",
+												":hover": {
+													backgroundColor: "var(--color-error-hover)",
+												},
+											},
+										},
+									}}
+								>
+									{t("appointments.rejectBtn")}
+								</Button>
+							</>
+						)}
 						{appointmentLink && (
 							<>
 								<Button
@@ -232,12 +329,18 @@ export default function AppointmentCard({
 				message={
 					confirmMode === "cancel"
 						? t("common.confirmCancelMessage")
-						: t("common.confirmDeleteMessage")
+						: confirmMode === "reject"
+							? t("common.confirmRejectMessage")
+							: t("common.confirmDeleteMessage")
 				}
 				confirmLabel={t("common.confirm")}
 				cancelLabel={t("common.cancel")}
 				onConfirm={
-					confirmMode === "cancel" ? handleConfirmCancel : handleConfirmDelete
+					confirmMode === "cancel"
+						? handleConfirmCancel
+						: confirmMode === "reject"
+							? handleConfirmReject
+							: handleConfirmDelete
 				}
 				onClose={() => {
 					setConfirmOpen(false);

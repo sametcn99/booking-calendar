@@ -97,6 +97,7 @@ export function useBookingPage(
 ) {
 	const [valid, setValid] = useState<boolean | null>(null);
 	const [slots, setSlots] = useState<Slot[]>([]);
+	const [requiresApproval, setRequiresApproval] = useState(false);
 	const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -125,8 +126,9 @@ export function useBookingPage(
 		}
 
 		try {
-			await api.validateToken(slugId);
+			const linkInfo = await api.validateToken(slugId);
 			setValid(true);
+			setRequiresApproval(linkInfo.data.requires_approval);
 			const result = await api.getAvailableSlots(slugId);
 			setSlots(result.data);
 		} catch {
@@ -199,6 +201,11 @@ export function useBookingPage(
 				return;
 			}
 
+			if (requiresApproval && !email.trim()) {
+				toaster.negative(t("booking.emailRequiredForApproval"), {});
+				return;
+			}
+
 			if (!selectedSlotData) {
 				toaster.negative(t("booking.slotNotFound"), {});
 				return;
@@ -261,6 +268,7 @@ export function useBookingPage(
 			selectedStartAt,
 			t,
 			slugId,
+			requiresApproval,
 		],
 	);
 
@@ -283,6 +291,7 @@ export function useBookingPage(
 		setSelectedEndAt: setSelectedEndAtSafe,
 		setSelectedStartAt: setSelectedStartAtSafe,
 		slots,
+		requiresApproval,
 		createdAppointmentToken,
 		valid,
 	};

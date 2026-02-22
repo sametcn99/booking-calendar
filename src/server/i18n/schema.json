@@ -132,6 +132,12 @@
 				},
 				"invalidCancelLink": {
 					"type": "string"
+				},
+				"notPending": {
+					"type": "string"
+				},
+				"emailRequiredForApproval": {
+					"type": "string"
 				}
 			},
 			"required": [
@@ -148,7 +154,9 @@
 				"notFound",
 				"deleteOnlyPastOrCanceled",
 				"alreadyCanceled",
-				"invalidCancelLink"
+				"invalidCancelLink",
+				"notPending",
+				"emailRequiredForApproval"
 			],
 			"additionalProperties": false
 		},
@@ -325,6 +333,42 @@
 					],
 					"additionalProperties": false
 				},
+				"rejection": {
+					"type": "object",
+					"properties": {
+						"subject": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"greeting": {
+							"type": "string"
+						},
+						"message": {
+							"type": "string"
+						},
+						"startTime": {
+							"type": "string"
+						},
+						"endTime": {
+							"type": "string"
+						},
+						"meetingPlace": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"subject",
+						"title",
+						"greeting",
+						"message",
+						"startTime",
+						"endTime",
+						"meetingPlace"
+					],
+					"additionalProperties": false
+				},
 				"adminNotification": {
 					"type": "object",
 					"properties": {
@@ -481,6 +525,7 @@
 			"required": [
 				"common",
 				"confirmation",
+				"rejection",
 				"adminNotification",
 				"cancellation",
 				"communityEvent"
@@ -518,6 +563,12 @@
 				"newBookingBody": {
 					"type": "string"
 				},
+				"newPendingBookingTitle": {
+					"type": "string"
+				},
+				"newPendingBookingBody": {
+					"type": "string"
+				},
 				"cancellationTitle": {
 					"type": "string"
 				},
@@ -549,6 +600,8 @@
 				"subscriptionSaved",
 				"newBookingTitle",
 				"newBookingBody",
+				"newPendingBookingTitle",
+				"newPendingBookingBody",
 				"cancellationTitle",
 				"cancellationBody",
 				"communityEventActivatedTitle",

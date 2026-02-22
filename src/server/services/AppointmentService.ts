@@ -35,8 +35,10 @@ export class AppointmentService {
 		return value === "true";
 	}
 
-	async getAllAppointments(): Promise<AppointmentWithSlot[]> {
-		return this.appointmentRepo.findAll();
+	async getAllAppointments(options?: {
+		status?: "pending" | "approved" | "rejected" | "all";
+	}): Promise<AppointmentWithSlot[]> {
+		return this.appointmentRepo.findAll(options);
 	}
 
 	async getAppointmentBySlugId(slugId: string): Promise<AppointmentWithSlot> {
@@ -62,6 +64,11 @@ export class AppointmentService {
 			!link.allowed_slot_ids.includes(input.slot_id)
 		) {
 			throw new Error(t("appointment.slotNotAllowedForLink"));
+		}
+
+		// Require guestEmail if requiresApproval is true
+		if (link.requires_approval && !input.email?.trim()) {
+			throw new Error(t("appointment.emailRequiredForApproval"));
 		}
 
 		// Validate slot exists and is active
@@ -100,7 +107,15 @@ export class AppointmentService {
 				throw new Error(t("appointment.overlap"));
 			}
 
-			return this.appointmentRepo.create(input, manager);
+			const status = link.requires_approval ? "pending" : "approved";
+
+			return this.appointmentRepo.create(
+				{
+					...input,
+					status,
+				},
+				manager,
+			);
 		});
 
 		// Get the full appointment with slot details
@@ -112,13 +127,19 @@ export class AppointmentService {
 		// Send emails asynchronously - do not block the response
 		const emailEnabled = await this.isEmailEnabled();
 		if (emailEnabled) {
-			if (fullAppointment.email) {
-				this.mailService
-					.sendBookingConfirmation(fullAppointment)
-					.catch((err) =>
-						console.error("Failed to send confirmation email:", err),
-					);
+			if (fullAppointment.status === "approved") {
+				if (fullAppointment.email) {
+					this.mailService
+						.sendBookingConfirmation(fullAppointment)
+						.catch((err) =>
+							console.error("Failed to send confirmation email:", err),
+						);
+				}
+			} else if (fullAppointment.status === "pending") {
+				// Maybe a "Pending approval" email here?
+				// For now let's just send admin notification
 			}
+
 			this.mailService
 				.sendAdminNotification(fullAppointment)
 				.catch((err) =>
@@ -128,10 +149,19 @@ export class AppointmentService {
 
 		const pushEnabled = await this.isPushEnabled();
 		if (pushEnabled) {
+			const title =
+				fullAppointment.status === "pending"
+					? t("push.newPendingBookingTitle")
+					: t("push.newBookingTitle");
+			const body =
+				fullAppointment.status === "pending"
+					? `${t("push.newPendingBookingBody")} ${fullAppointment.name}`
+					: `${t("push.newBookingBody")} ${fullAppointment.name}`;
+
 			this.pushService
 				.sendToAll({
-					title: t("push.newBookingTitle"),
-					body: `${t("push.newBookingBody")} ${fullAppointment.name}`,
+					title,
+					body,
 					url: "/admin/appointments",
 				})
 				.catch((err) =>
@@ -140,6 +170,60 @@ export class AppointmentService {
 		}
 
 		return fullAppointment;
+	}
+
+	async approveAppointmentBySlugId(
+		slugId: string,
+	): Promise<AppointmentWithSlot> {
+		const appointment = await this.appointmentRepo.findBySlugId(slugId);
+		if (!appointment) throw new Error(t("appointment.notFound"));
+		if (appointment.status !== "pending") {
+			throw new Error(t("appointment.notPending"));
+		}
+
+		const approved = await this.appointmentRepo.updateStatus(
+			appointment.id,
+			"approved",
+		);
+		if (!approved) throw new Error(t("appointment.loadError"));
+
+		// Send notification
+		const emailEnabled = await this.isEmailEnabled();
+		if (emailEnabled && approved.email) {
+			this.mailService
+				.sendBookingConfirmation(approved)
+				.catch((err) =>
+					console.error("Failed to send confirmation email:", err),
+				);
+		}
+
+		return approved;
+	}
+
+	async rejectAppointmentBySlugId(
+		slugId: string,
+	): Promise<AppointmentWithSlot> {
+		const appointment = await this.appointmentRepo.findBySlugId(slugId);
+		if (!appointment) throw new Error(t("appointment.notFound"));
+		if (appointment.status !== "pending") {
+			throw new Error(t("appointment.notPending"));
+		}
+
+		const rejected = await this.appointmentRepo.updateStatus(
+			appointment.id,
+			"rejected",
+		);
+		if (!rejected) throw new Error(t("appointment.loadError"));
+
+		// Send notification
+		const emailEnabled = await this.isEmailEnabled();
+		if (emailEnabled && rejected.email) {
+			this.mailService
+				.sendBookingRejection(rejected)
+				.catch((err) => console.error("Failed to send rejection email:", err));
+		}
+
+		return rejected;
 	}
 
 	async deleteAppointmentBySlugId(slugId: string): Promise<boolean> {

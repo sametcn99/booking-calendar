@@ -24,13 +24,16 @@ Email settings are managed through environment variables:
 
 Templates are located in `src/server/mail/templates` and are written using Handlebars (`.hbs`):
 
-1. **`booking-confirmation.hbs`:** Sent to the guest after they request a slot.
-2. **`admin-notification.hbs`:** Sent to the admin when a new booking is requested.
-3. **`cancellation-notification.hbs`:** Sent when an appointment is cancelled.
+1. **`booking-confirmation.hbs`**: Sent to the guest after an appointment is **Approved**. (Includes ICS attachment).
+2. **`admin-notification.hbs`**: Sent to the admin when a new booking is created (Approved or Pending).
+3. **`rejection-notification.hbs`**: Sent to the guest if the admin **Rejects** a `pending` booking.
+4. **`cancellation-notification.hbs`**: Sent when an appointment is cancelled by either the guest or the admin.
 
 ## Calendar Integration
 
-Every confirmation email includes an **ICS attachment**. When opened, it allows the guest to add the appointment directly to their calendar app (Google, Apple, Outlook, etc.).
+When an appointment is **Approved** (either automatically or by the admin), a confirmation email includes an **ICS attachment**. When opened, it allows the guest to add the appointment directly to their calendar app (Google, Apple, Outlook, etc.).
+
+_Note: Pending bookings do not receive an ICS file until they are explicitly approved by the administrator._
 
 ## Token-based Cancellations
 

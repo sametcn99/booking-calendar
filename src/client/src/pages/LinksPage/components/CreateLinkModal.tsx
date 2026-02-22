@@ -30,6 +30,8 @@ interface Props {
 	t: (key: string) => string;
 	locale: string;
 	toggleSlotSelection: (slotId: number) => void;
+	requiresApproval: boolean;
+	setRequiresApproval: (value: boolean) => void;
 	isEditing?: boolean;
 }
 
@@ -49,6 +51,8 @@ export default function CreateLinkModal({
 	t,
 	locale,
 	toggleSlotSelection,
+	requiresApproval,
+	setRequiresApproval,
 	isEditing = false,
 }: Props) {
 	const [css] = useStyletron();
@@ -209,6 +213,15 @@ export default function CreateLinkModal({
 								/>
 							</FormControl>
 						)}
+
+						<FormControl>
+							<Checkbox
+								checked={requiresApproval}
+								onChange={(e) => setRequiresApproval(e.currentTarget.checked)}
+							>
+								{t("links.requiresApproval")}
+							</Checkbox>
+						</FormControl>
 
 						<FormControl label={t("links.selectSlots")}>
 							<div className={css({ display: "grid", gap: "8px" })}>

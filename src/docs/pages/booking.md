@@ -26,6 +26,7 @@ The page is driven by a `slugId` parameter in the URL:
 ### Phase 2: Guest Information (`BookingFormSection`)
 
 - **Identity**: Name and Email (Validated for format).
+  - **Note**: If the booking link requires **Admin Approval**, an email address is **mandatory** for communication.
 - **Logistics**: Meeting Place (Physical or Virtual).
 - **Communication**: A "Note" field for special requests or context.
 
@@ -33,9 +34,18 @@ The page is driven by a `slugId` parameter in the URL:
 
 Upon successful submission:
 
-1. The API creates a new `Appointment` record.
-2. A unique `createdAppointmentToken` is generated.
-3. The guest is automatically redirected to their private **Appointment Detail** page.
+1.  The API creates a new `Appointment` record.
+2.  If Approval is **NOT** Required:
+    - Status is `approved`.
+    - Guest receives a "Success" message and is redirected to their **Appointment Detail** page.
+    - Confirmation email with `.ics` is sent immediately.
+3.  If Approval **IS** Required:
+    - Status is `pending`.
+    - Guest receives a "Request Sent" notification.
+    - Admin is notified (Email/Push) that a new booking is awaiting review.
+    - The slot is temporarily held until the Admin approves or rejects.
+4.  A unique `createdAppointmentToken` is generated.
+5.  Guest is redirected to the Private Detail page for their current state info.
 
 ## Technical Details
 

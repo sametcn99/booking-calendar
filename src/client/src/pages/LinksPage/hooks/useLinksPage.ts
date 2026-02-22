@@ -8,6 +8,7 @@ export interface BookingLink {
 	slug_id: string;
 	allowed_slot_ids: number[];
 	expires_at: string;
+	requires_approval: boolean;
 	created_at: string;
 }
 
@@ -25,6 +26,7 @@ export function useLinksPage(t: (key: string) => string) {
 	const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [generatedUrl, setGeneratedUrl] = useState("");
+	const [requiresApproval, setRequiresApproval] = useState(false);
 	const [editingLink, setEditingLink] = useState<BookingLink | null>(null);
 
 	const loadLinks = useCallback(async () => {
@@ -65,6 +67,7 @@ export function useLinksPage(t: (key: string) => string) {
 				expires_in_days: Number.parseInt(expiresDays, 10) || 7,
 				name: linkName.trim() || undefined,
 				slot_ids: selectedSlotIds,
+				requires_approval: requiresApproval,
 			});
 			setGeneratedUrl(result.data.url);
 			toaster.positive(t("links.linkCreated"), {});
@@ -74,7 +77,7 @@ export function useLinksPage(t: (key: string) => string) {
 		} finally {
 			setLoading(false);
 		}
-	}, [expiresDays, linkName, loadLinks, selectedSlotIds, t]);
+	}, [expiresDays, linkName, loadLinks, selectedSlotIds, t, requiresApproval]);
 
 	const handleUpdate = useCallback(async () => {
 		if (!editingLink) return;
@@ -88,6 +91,7 @@ export function useLinksPage(t: (key: string) => string) {
 			await api.updateLink(editingLink.id, {
 				name: linkName.trim() || undefined,
 				slot_ids: selectedSlotIds,
+				requires_approval: requiresApproval,
 			});
 			toaster.positive(t("links.linkUpdated"), {});
 			setModalOpen(false);
@@ -98,7 +102,7 @@ export function useLinksPage(t: (key: string) => string) {
 		} finally {
 			setLoading(false);
 		}
-	}, [editingLink, linkName, loadLinks, selectedSlotIds, t]);
+	}, [editingLink, linkName, loadLinks, selectedSlotIds, t, requiresApproval]);
 
 	const handleDelete = useCallback(
 		async (id: number) => {
@@ -135,6 +139,7 @@ export function useLinksPage(t: (key: string) => string) {
 		setLinkName("");
 		setSelectedSlotIds([]);
 		setExpiresDays("7");
+		setRequiresApproval(false);
 		setEditingLink(null);
 	}, []);
 
@@ -142,6 +147,7 @@ export function useLinksPage(t: (key: string) => string) {
 		setEditingLink(link);
 		setLinkName(link.name);
 		setSelectedSlotIds(link.allowed_slot_ids);
+		setRequiresApproval(link.requires_approval);
 		setGeneratedUrl("");
 		setModalOpen(true);
 	}, []);
@@ -165,6 +171,8 @@ export function useLinksPage(t: (key: string) => string) {
 		setModalOpen,
 		slots,
 		toggleSlotSelection,
+		requiresApproval,
+		setRequiresApproval,
 		editingLink,
 		openEditModal,
 	};

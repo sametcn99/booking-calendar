@@ -13,19 +13,30 @@ export interface Appointment {
 	start_at: string;
 	end_at: string;
 	slug_id: string | null;
+	status: "pending" | "approved" | "rejected";
 	canceled_at: string | null;
 	canceled_by: string | null;
 	created_at: string;
 }
 
-export type AppointmentStatusFilter = "all" | "active" | "past" | "canceled";
+export type AppointmentStatusFilter =
+	| "all"
+	| "active"
+	| "past"
+	| "canceled"
+	| "pending"
+	| "rejected";
 
 export function isPastAppointment(appointment: Appointment): boolean {
 	return new Date(appointment.end_at).getTime() < Date.now();
 }
 
 export function canDeleteAppointment(appointment: Appointment): boolean {
-	return Boolean(appointment.canceled_at) || isPastAppointment(appointment);
+	return (
+		Boolean(appointment.canceled_at) ||
+		isPastAppointment(appointment) ||
+		appointment.status === "rejected"
+	);
 }
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -40,7 +51,7 @@ export function useAppointmentsPage(t: (key: string) => string) {
 
 	const loadAppointments = useCallback(async () => {
 		try {
-			const result = await api.getAppointments();
+			const result = await api.getAppointments("all");
 			setAppointments(result.data);
 		} catch (err: unknown) {
 			toaster.negative(getErrorMessage(err, t("common.error")), {});
@@ -77,14 +88,46 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		[loadAppointments, t],
 	);
 
+	const handleApprove = useCallback(
+		async (slugId: string) => {
+			try {
+				await api.approveAppointment(slugId);
+				toaster.positive(t("appointments.appointmentApproved"), {});
+				await loadAppointments();
+			} catch (err: unknown) {
+				toaster.negative(getErrorMessage(err, t("common.error")), {});
+			}
+		},
+		[loadAppointments, t],
+	);
+
+	const handleReject = useCallback(
+		async (slugId: string) => {
+			try {
+				await api.rejectAppointment(slugId);
+				toaster.positive(t("appointments.appointmentRejected"), {});
+				await loadAppointments();
+			} catch (err: unknown) {
+				toaster.negative(getErrorMessage(err, t("common.error")), {});
+			}
+		},
+		[loadAppointments, t],
+	);
+
 	const statusFilteredAppointments = useMemo(() => {
 		return appointments.filter((apt) => {
 			const isCanceled = Boolean(apt.canceled_at);
+			if (statusFilter === "canceled") return isCanceled;
+			if (statusFilter === "rejected") return apt.status === "rejected";
+
 			const isPast = isPastAppointment(apt);
 
-			if (statusFilter === "active") return !isCanceled && !isPast;
-			if (statusFilter === "past") return !isCanceled && isPast;
-			if (statusFilter === "canceled") return !!apt.canceled_at;
+			if (statusFilter === "pending")
+				return apt.status === "pending" && !isCanceled;
+			if (statusFilter === "active")
+				return apt.status === "approved" && !isCanceled && !isPast;
+			if (statusFilter === "past")
+				return apt.status === "approved" && !isCanceled && isPast;
 			return true;
 		});
 	}, [appointments, statusFilter]);
@@ -107,10 +150,19 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		dateField: "start_at",
 	});
 
+	const pendingCount = useMemo(
+		() =>
+			appointments.filter((a) => a.status === "pending" && !a.canceled_at)
+				.length,
+		[appointments],
+	);
+
 	return {
 		filteredAppointments,
 		handleCancel,
 		handleDelete,
+		handleApprove,
+		handleReject,
 		statusFilter,
 		setStatusFilter,
 		search,
@@ -124,5 +176,6 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		clearFilters,
 		isActive,
 		totalCount: statusFilteredAppointments.length,
+		pendingCount,
 	};
 }

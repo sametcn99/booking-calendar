@@ -37,6 +37,9 @@ export class AppointmentEntity {
 	@Column({ type: "text", nullable: true, unique: true })
 	slug_id!: string | null;
 
+	@Column({ type: "text", default: "approved" })
+	status!: "pending" | "approved" | "rejected";
+
 	@Column({ type: "text", nullable: true })
 	canceled_at!: string | null;
 

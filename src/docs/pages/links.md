@@ -12,10 +12,11 @@ _A consolidated dashboard for managing the lifecycle and associations of booking
 - **Name**: Internal identifier for the link (e.g., "Technical Interview - Samet").
 - **Expiration**: Set a lifespan in days. Once expired, the link automatically becomes invalid.
 - **Slot Association**: A multi-select interface to pick exactly which Availability Slots are accessible through this link.
-- **Editing Existing Links**: Admins can revisit any link to update its name or modify the set of associated slots at any time.
+- **Requires Admin Approval**: If enabled, every booking created through this link will start with a `pending` status instead of `approved`. The guest is notified that the request has been sent for review.
+- **Editing Existing Links**: Admins can revisit any link to update its name, expiration, or modify the set of associated slots at any time.
 
 ![Create Link](/screenshots/links/links_create.png)
-_Defining link parameters, including name, expiration, and associated availability slots._
+_Defining link parameters, including accessibility slots and the Optional Admin Approval layer._
 
 ### Link Lifecycle
 

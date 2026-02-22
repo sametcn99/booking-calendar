@@ -35,7 +35,9 @@
 		"notFound": "Appointment not found",
 		"deleteOnlyPastOrCanceled": "Only past or canceled appointments can be deleted",
 		"alreadyCanceled": "Appointment is already canceled",
-		"invalidCancelLink": "Invalid cancellation link"
+		"invalidCancelLink": "Invalid cancellation link",
+		"notPending": "This appointment is not pending approval",
+		"emailRequiredForApproval": "Email is required for appointments that need approval"
 	},
 	"link": {
 		"invalidToken": "Invalid or expired token",
@@ -79,6 +81,15 @@
 			"meetingPlace": "Meeting Place",
 			"note": "Note",
 			"cancelBtn": "Cancel Appointment"
+		},
+		"rejection": {
+			"subject": "Appointment Request Update",
+			"title": "Booking Request Rejected",
+			"greeting": "Hello",
+			"message": "Your appointment request has been rejected.",
+			"startTime": "Start Time",
+			"endTime": "End Time",
+			"meetingPlace": "Meeting Place"
 		},
 		"adminNotification": {
 			"subject": "New Booking",
@@ -129,6 +140,8 @@
 		"subscriptionSaved": "Push subscription saved",
 		"newBookingTitle": "New Booking",
 		"newBookingBody": "A new appointment has been booked by",
+		"newPendingBookingTitle": "New Booking (Pending Approval)",
+		"newPendingBookingBody": "A new appointment is awaiting approval from",
 		"cancellationTitle": "Appointment Canceled",
 		"cancellationBody": "An appointment has been canceled by",
 		"communityEventActivatedTitle": "Community Event Active",

@@ -449,6 +449,9 @@
 				"canceled": {
 					"type": "string"
 				},
+				"rejected": {
+					"type": "string"
+				},
 				"empty": {
 					"type": "string"
 				},
@@ -496,6 +499,21 @@
 				},
 				"appointmentDeleted": {
 					"type": "string"
+				},
+				"approveBtn": {
+					"type": "string"
+				},
+				"rejectBtn": {
+					"type": "string"
+				},
+				"pendingApproval": {
+					"type": "string"
+				},
+				"appointmentApproved": {
+					"type": "string"
+				},
+				"appointmentRejected": {
+					"type": "string"
 				}
 			},
 			"required": [
@@ -505,6 +523,7 @@
 				"active",
 				"past",
 				"canceled",
+				"rejected",
 				"empty",
 				"noEmail",
 				"pastStatus",
@@ -519,8 +538,13 @@
 				"alreadyCanceled",
 				"cancelBtn",
 				"deleteBtn",
+				"approveBtn",
+				"rejectBtn",
+				"pendingApproval",
 				"appointmentCanceled",
-				"appointmentDeleted"
+				"appointmentDeleted",
+				"appointmentApproved",
+				"appointmentRejected"
 			],
 			"additionalProperties": false
 		},
@@ -625,6 +649,9 @@
 				},
 				"linkUpdated": {
 					"type": "string"
+				},
+				"requiresApproval": {
+					"type": "string"
 				}
 			},
 			"required": [
@@ -660,7 +687,8 @@
 				"editTitle",
 				"edit",
 				"save",
-				"linkUpdated"
+				"linkUpdated",
+				"requiresApproval"
 			],
 			"additionalProperties": false
 		},
@@ -680,6 +708,12 @@
 					"type": "string"
 				},
 				"successMessage": {
+					"type": "string"
+				},
+				"successTitlePending": {
+					"type": "string"
+				},
+				"successMessagePending": {
 					"type": "string"
 				},
 				"title": {
@@ -713,6 +747,9 @@
 					"type": "string"
 				},
 				"emailHelp": {
+					"type": "string"
+				},
+				"emailRequiredForApproval": {
 					"type": "string"
 				},
 				"meetingPlace": {
@@ -761,6 +798,8 @@
 				"invalidMessage",
 				"successTitle",
 				"successMessage",
+				"successTitlePending",
+				"successMessagePending",
 				"title",
 				"subtitle",
 				"availableTimes",
@@ -772,6 +811,7 @@
 				"fullNamePlaceholder",
 				"email",
 				"emailHelp",
+				"emailRequiredForApproval",
 				"meetingPlace",
 				"meetingPlacePlaceholder",
 				"note",
@@ -1306,6 +1346,9 @@
 				"confirmCancelMessage": {
 					"type": "string"
 				},
+				"confirmRejectMessage": {
+					"type": "string"
+				},
 				"confirm": {
 					"type": "string"
 				},
@@ -1352,6 +1395,7 @@
 				"confirmDeleteMessage",
 				"confirmDisableMessage",
 				"confirmCancelMessage",
+				"confirmRejectMessage",
 				"confirm",
 				"cancel",
 				"searchPlaceholder",

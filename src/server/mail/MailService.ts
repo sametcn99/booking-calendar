@@ -111,6 +111,36 @@ export class MailService {
 		});
 	}
 
+	async sendBookingRejection(appointment: AppointmentWithSlot): Promise<void> {
+		if (!appointment.email) return;
+		if (!(await this.isMailServiceEnabled())) return;
+
+		const startDate = new Date(appointment.start_at);
+		const endDate = new Date(appointment.end_at);
+
+		const html = await this.renderTemplate("booking-rejection", {
+			t: {
+				title: t("mail.rejection.title"),
+				greeting: t("mail.rejection.greeting"),
+				message: t("mail.rejection.message"),
+				startTime: t("mail.rejection.startTime"),
+				endTime: t("mail.rejection.endTime"),
+				meetingPlace: t("mail.rejection.meetingPlace"),
+			},
+			name: appointment.name,
+			start: startDate.toLocaleString(),
+			end: endDate.toLocaleString(),
+			meetingPlace: appointment.meeting_place ?? undefined,
+		});
+
+		await this.transporter.sendMail({
+			from: config.smtp.from,
+			to: appointment.email,
+			subject: t("mail.rejection.subject"),
+			html,
+		});
+	}
+
 	async sendAdminNotification(appointment: AppointmentWithSlot): Promise<void> {
 		const adminEmail = await this.getAdminEmail();
 		if (!adminEmail) return;

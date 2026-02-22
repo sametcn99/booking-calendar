@@ -24,6 +24,9 @@ export class BookingLinkEntity {
 	@Column({ type: "text" })
 	expires_at!: string;
 
+	@Column({ type: "boolean", default: false })
+	requires_approval!: boolean;
+
 	@CreateDateColumn({ type: "datetime" })
 	created_at!: string;
 }

@@ -14,8 +14,12 @@ export class AppointmentController {
 		this.appointmentService = new AppointmentService();
 	}
 
-	async getAllAppointments(): Promise<{ status: number; body: ApiResponse }> {
-		const appointments = await this.appointmentService.getAllAppointments();
+	async getAllAppointments(query?: {
+		status?: "pending" | "approved" | "rejected" | "all";
+	}): Promise<{ status: number; body: ApiResponse }> {
+		const appointments = await this.appointmentService.getAllAppointments({
+			status: query?.status,
+		});
 		return { status: 200, body: { success: true, data: appointments } };
 	}
 
@@ -143,6 +147,36 @@ export class AppointmentController {
 			return {
 				status,
 				body: { success: false, error: message },
+			};
+		}
+	}
+
+	async approveAppointment(
+		slugId: string,
+	): Promise<{ status: number; body: ApiResponse }> {
+		try {
+			const appointment =
+				await this.appointmentService.approveAppointmentBySlugId(slugId);
+			return { status: 200, body: { success: true, data: appointment } };
+		} catch (err: unknown) {
+			return {
+				status: 400,
+				body: { success: false, error: getErrorMessage(err) },
+			};
+		}
+	}
+
+	async rejectAppointment(
+		slugId: string,
+	): Promise<{ status: number; body: ApiResponse }> {
+		try {
+			const appointment =
+				await this.appointmentService.rejectAppointmentBySlugId(slugId);
+			return { status: 200, body: { success: true, data: appointment } };
+		} catch (err: unknown) {
+			return {
+				status: 400,
+				body: { success: false, error: getErrorMessage(err) },
 			};
 		}
 	}
