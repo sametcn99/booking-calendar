@@ -97,6 +97,9 @@ The private portal for guests to review their specific booking and manage its st
 ![Appointment Detail](/screenshots/appointments/appointment_link.png)
 _The guest's personal "digital receipt" and self-service management hub._
 
+![Pending Approval](/screenshots/appointments/appointment_link_need_approve.png)
+_The view for appointments requiring administrative approval before confirmation._
+
 ## Community Approval
 
 The crowdsourced voting interface where pending events reach their activation threshold.

@@ -37,6 +37,8 @@ The page identifies the appointment via a unique `slugId` rather than an integer
 ### Dynamic States
 
 - **Loading**: Fetching appointment data from `api.getPublicAppointment(slugId)`.
+- **Pending Approval**: If the booking requires administrative review, a "Request Sent!" notice is shown to the guest.
+  ![Pending Approval](/screenshots/appointments/appointment_link_need_approve.png)
 - **Already Canceled**: If the appointment is canceled, the interface transforms to show a status notice, and the "Cancel" button is removed.
 - **Error Handling**: Displays clear messages if the appointment cannot be found or the link is invalid.
 
