@@ -2,6 +2,7 @@ import { setLanguage, t } from "../../i18n";
 import { SettingsRepository } from "../../repositories/SettingsRepository";
 import {
 	isValidWebhookUrl,
+	isWebhookInboundScope,
 	WebhookService,
 } from "../../services/WebhookService";
 import { parseThemeColorsFromUnknown } from "../../theme/appColors";
@@ -190,12 +191,19 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 
 	if (pathname === "/api/admin/settings/webhook" && method === "PUT") {
 		const body = await parseJsonBody<{
-			enabled?: boolean;
-			url?: string;
-			secret?: string;
+			outbound?: {
+				enabled?: boolean;
+				url?: string;
+				secret?: string;
+			};
+			inbound?: {
+				enabled?: boolean;
+				secret?: string;
+				scopes?: string[];
+			};
 		}>(args.request);
 
-		if (typeof body.enabled !== "boolean") {
+		if (!body.outbound && !body.inbound) {
 			return jsonResponse(
 				400,
 				{ success: false, error: t("general.invalidRequest") },
@@ -204,14 +212,22 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 		}
 
 		const current = await webhookService.getPublicSettings();
-		const normalizedUrl =
-			typeof body.url === "string" ? body.url.trim() : current.url;
-		const normalizedSecret =
-			typeof body.secret === "string" ? body.secret.trim() : "";
-		const willClearSecret =
-			typeof body.secret === "string" && normalizedSecret.length === 0;
+		const outboundEnabled =
+			typeof body.outbound?.enabled === "boolean"
+				? body.outbound.enabled
+				: current.outbound.enabled;
+		const outboundUrl =
+			typeof body.outbound?.url === "string"
+				? body.outbound.url.trim()
+				: current.outbound.url;
+		const outboundSecret =
+			typeof body.outbound?.secret === "string"
+				? body.outbound.secret.trim()
+				: "";
+		const willClearOutboundSecret =
+			typeof body.outbound?.secret === "string" && outboundSecret.length === 0;
 
-		if (normalizedUrl.length > 0 && !isValidWebhookUrl(normalizedUrl)) {
+		if (outboundUrl.length > 0 && !isValidWebhookUrl(outboundUrl)) {
 			return jsonResponse(
 				400,
 				{ success: false, error: t("general.invalidWebhookUrl") },
@@ -220,8 +236,8 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 		}
 
 		if (
-			normalizedSecret.length > 0 &&
-			!webhookService.isSecretStrong(normalizedSecret)
+			outboundSecret.length > 0 &&
+			!webhookService.isSecretStrong(outboundSecret)
 		) {
 			return jsonResponse(
 				400,
@@ -230,10 +246,11 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 			);
 		}
 
-		const hasSecretAfterUpdate =
-			normalizedSecret.length > 0 || (current.has_secret && !willClearSecret);
+		const hasOutboundSecretAfterUpdate =
+			outboundSecret.length > 0 ||
+			(current.outbound.has_secret && !willClearOutboundSecret);
 
-		if (body.enabled && (!normalizedUrl || !hasSecretAfterUpdate)) {
+		if (outboundEnabled && (!outboundUrl || !hasOutboundSecretAfterUpdate)) {
 			return jsonResponse(
 				400,
 				{ success: false, error: t("general.webhookRequiresUrlAndSecret") },
@@ -241,11 +258,76 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 			);
 		}
 
+		const inboundEnabled =
+			typeof body.inbound?.enabled === "boolean"
+				? body.inbound.enabled
+				: current.inbound.enabled;
+		const inboundSecret =
+			typeof body.inbound?.secret === "string"
+				? body.inbound.secret.trim()
+				: "";
+		const willClearInboundSecret =
+			typeof body.inbound?.secret === "string" && inboundSecret.length === 0;
+		const inboundScopes = Array.isArray(body.inbound?.scopes)
+			? [...new Set(body.inbound.scopes)]
+			: current.inbound.scopes;
+
+		if (
+			inboundSecret.length > 0 &&
+			!webhookService.isSecretStrong(inboundSecret)
+		) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.webhookSecretTooShort") },
+				corsHeaders,
+			);
+		}
+
+		if (!inboundScopes.every((scope) => isWebhookInboundScope(scope))) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidWebhookScope") },
+				corsHeaders,
+			);
+		}
+
+		const hasInboundSecretAfterUpdate =
+			inboundSecret.length > 0 ||
+			(current.inbound.has_secret && !willClearInboundSecret);
+
+		if (
+			inboundEnabled &&
+			(!hasInboundSecretAfterUpdate || inboundScopes.length === 0)
+		) {
+			return jsonResponse(
+				400,
+				{
+					success: false,
+					error: t("general.webhookInboundRequiresSecretAndScopes"),
+				},
+				corsHeaders,
+			);
+		}
+
 		const data = await webhookService.updateSettings({
-			enabled: body.enabled,
-			url: normalizedUrl,
-			secret: normalizedSecret,
-			clearSecret: willClearSecret,
+			outbound: body.outbound
+				? {
+						enabled: body.outbound.enabled,
+						url: outboundUrl,
+						secret: outboundSecret,
+						clearSecret: willClearOutboundSecret,
+					}
+				: undefined,
+			inbound: body.inbound
+				? {
+						enabled: body.inbound.enabled,
+						secret: inboundSecret,
+						clearSecret: willClearInboundSecret,
+						scopes: inboundScopes.filter((scope) =>
+							isWebhookInboundScope(scope),
+						),
+					}
+				: undefined,
 		});
 
 		return jsonResponse(200, { success: true, data }, corsHeaders);

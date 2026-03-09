@@ -59,6 +59,13 @@
 		"invalidWebhookUrl": "Webhook URL must be https, or http on localhost",
 		"webhookSecretTooShort": "Webhook secret must be at least 16 characters",
 		"webhookRequiresUrlAndSecret": "Webhook requires both URL and secret when enabled",
+		"webhookInboundDisabled": "Inbound webhook integration is disabled or incomplete",
+		"invalidWebhookSignature": "Invalid webhook signature",
+		"webhookTimestampExpired": "Webhook timestamp is too old or too far in the future",
+		"webhookReplayDetected": "Webhook request replay detected",
+		"invalidWebhookScope": "Invalid webhook scope selection",
+		"webhookInboundRequiresSecretAndScopes": "Inbound webhook requires a secret and at least one allowed scope when enabled",
+		"webhookActionNotAllowed": "Webhook action is not allowed by current inbound scope settings",
 		"isActiveRequired": "is_active is required",
 		"invalidLanguage": "Invalid language. Supported: en, tr",
 		"invalidRequest": "Invalid request"

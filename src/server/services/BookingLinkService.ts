@@ -3,12 +3,15 @@ import { t } from "../i18n";
 import { BookingLinkRepository } from "../repositories/BookingLinkRepository";
 import type { BookingLink } from "../types";
 import { generateUniqueSlugId } from "../utils/slug";
+import { WebhookService } from "./WebhookService";
 
 export class BookingLinkService {
 	private linkRepo: BookingLinkRepository;
+	private webhookService: WebhookService;
 
 	constructor() {
 		this.linkRepo = new BookingLinkRepository();
+		this.webhookService = new WebhookService();
 	}
 
 	async getAllLinks(): Promise<BookingLink[]> {
@@ -51,6 +54,12 @@ export class BookingLinkService {
 
 		const url = `${config.baseUrl}/book/${slugId}`;
 
+		this.webhookService
+			.sendEvent("booking_link.created", { link, url })
+			.catch((error) =>
+				console.error("Failed to send booking_link.created webhook:", error),
+			);
+
 		return { link, url };
 	}
 
@@ -59,7 +68,17 @@ export class BookingLinkService {
 	}
 
 	async deleteLink(id: number): Promise<boolean> {
-		return this.linkRepo.delete(id);
+		const links = await this.linkRepo.findAll();
+		const existing = links.find((link) => link.id === id) ?? null;
+		const deleted = await this.linkRepo.delete(id);
+		if (deleted && existing) {
+			this.webhookService
+				.sendEvent("booking_link.deleted", { link: existing })
+				.catch((error) =>
+					console.error("Failed to send booking_link.deleted webhook:", error),
+				);
+		}
+		return deleted;
 	}
 
 	async updateLink(
@@ -85,7 +104,18 @@ export class BookingLinkService {
 			updatePayload.requires_approval = input.requiresApproval;
 		}
 
-		return this.linkRepo.update(id, updatePayload);
+		const updated = await this.linkRepo.update(id, updatePayload);
+		if (updated) {
+			this.webhookService
+				.sendEvent("booking_link.updated", {
+					link: updated,
+					changed_fields: Object.keys(updatePayload),
+				})
+				.catch((error) =>
+					console.error("Failed to send booking_link.updated webhook:", error),
+				);
+		}
+		return updated;
 	}
 
 	private async resolveLinkName(name?: string): Promise<string> {

@@ -136,11 +136,34 @@ export function createOpenApiDocument(): Record<string, unknown> {
 				},
 				WebhookSettingsData: {
 					type: "object",
-					required: ["enabled", "url", "has_secret"],
+					required: ["outbound", "inbound", "supported_actions"],
 					properties: {
-						enabled: { type: "boolean" },
-						url: { type: "string" },
-						has_secret: { type: "boolean" },
+						outbound: {
+							type: "object",
+							required: ["enabled", "url", "has_secret"],
+							properties: {
+								enabled: { type: "boolean" },
+								url: { type: "string" },
+								has_secret: { type: "boolean" },
+							},
+						},
+						inbound: {
+							type: "object",
+							required: ["enabled", "endpoint", "has_secret", "scopes"],
+							properties: {
+								enabled: { type: "boolean" },
+								endpoint: { type: "string" },
+								has_secret: { type: "boolean" },
+								scopes: {
+									type: "array",
+									items: { type: "string" },
+								},
+							},
+						},
+						supported_actions: {
+							type: "array",
+							items: { type: "string" },
+						},
 					},
 				},
 				LoginData: {
@@ -1033,11 +1056,26 @@ export function createOpenApiDocument(): Record<string, unknown> {
 							"application/json": {
 								schema: {
 									type: "object",
-									required: ["enabled"],
 									properties: {
-										enabled: { type: "boolean" },
-										url: { type: "string" },
-										secret: { type: "string" },
+										outbound: {
+											type: "object",
+											properties: {
+												enabled: { type: "boolean" },
+												url: { type: "string" },
+												secret: { type: "string" },
+											},
+										},
+										inbound: {
+											type: "object",
+											properties: {
+												enabled: { type: "boolean" },
+												secret: { type: "string" },
+												scopes: {
+													type: "array",
+													items: { type: "string" },
+												},
+											},
+										},
 									},
 								},
 							},
@@ -1053,6 +1091,46 @@ export function createOpenApiDocument(): Record<string, unknown> {
 					security: [{ BearerAuth: [] }],
 					responses: {
 						"200": { description: "Test event sent" },
+					},
+				},
+			},
+			"/api/public/webhooks/inbound": {
+				post: {
+					tags: ["Public"],
+					summary: "Execute an inbound signed webhook command",
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: {
+									type: "object",
+									required: ["action"],
+									properties: {
+										action: { type: "string" },
+										params: {
+											type: "object",
+											additionalProperties: true,
+										},
+										data: {
+											oneOf: [
+												{ type: "object", additionalProperties: true },
+												{ type: "array", items: {} },
+												{ type: "string" },
+												{ type: "number" },
+												{ type: "boolean" },
+											],
+										},
+									},
+								},
+							},
+						},
+					},
+					responses: {
+						"200": { description: "Command executed" },
+						"401": { description: "Invalid signature or replay detected" },
+						"403": {
+							description: "Inbound webhook disabled or action forbidden",
+						},
 					},
 				},
 			},

@@ -7,6 +7,7 @@ import { SettingsRepository } from "../repositories/SettingsRepository";
 import { SlotRepository } from "../repositories/SlotRepository";
 import type { AppointmentWithSlot, CreateAppointmentInput } from "../types";
 import { PushService } from "./PushService";
+import { WebhookService } from "./WebhookService";
 
 export class AppointmentService {
 	private appointmentRepo: AppointmentRepository;
@@ -15,6 +16,7 @@ export class AppointmentService {
 	private mailService: MailService;
 	private pushService: PushService;
 	private settingsRepo: SettingsRepository;
+	private webhookService: WebhookService;
 
 	constructor() {
 		this.appointmentRepo = new AppointmentRepository();
@@ -23,6 +25,7 @@ export class AppointmentService {
 		this.mailService = new MailService();
 		this.pushService = new PushService();
 		this.settingsRepo = new SettingsRepository();
+		this.webhookService = new WebhookService();
 	}
 
 	private async isPushEnabled(): Promise<boolean> {
@@ -169,6 +172,15 @@ export class AppointmentService {
 				);
 		}
 
+		this.webhookService
+			.sendEvent("appointment.created", {
+				appointment: fullAppointment,
+				booking_link_slug_id: slugId,
+			})
+			.catch((err) =>
+				console.error("Failed to send appointment.created webhook:", err),
+			);
+
 		return fullAppointment;
 	}
 
@@ -197,6 +209,12 @@ export class AppointmentService {
 				);
 		}
 
+		this.webhookService
+			.sendEvent("appointment.approved", { appointment: approved })
+			.catch((err) =>
+				console.error("Failed to send appointment.approved webhook:", err),
+			);
+
 		return approved;
 	}
 
@@ -223,6 +241,12 @@ export class AppointmentService {
 				.catch((err) => console.error("Failed to send rejection email:", err));
 		}
 
+		this.webhookService
+			.sendEvent("appointment.rejected", { appointment: rejected })
+			.catch((err) =>
+				console.error("Failed to send appointment.rejected webhook:", err),
+			);
+
 		return rejected;
 	}
 
@@ -236,7 +260,15 @@ export class AppointmentService {
 			throw new Error(t("appointment.deleteOnlyPastOrCanceled"));
 		}
 
-		return this.appointmentRepo.deleteBySlugId(slugId);
+		const deleted = await this.appointmentRepo.deleteBySlugId(slugId);
+		if (deleted) {
+			this.webhookService
+				.sendEvent("appointment.deleted", { appointment })
+				.catch((err) =>
+					console.error("Failed to send appointment.deleted webhook:", err),
+				);
+		}
+		return deleted;
 	}
 
 	async cancelAppointmentBySlugIdForAdmin(
@@ -275,6 +307,15 @@ export class AppointmentService {
 					console.error("Failed to send push notification:", err),
 				);
 		}
+
+		this.webhookService
+			.sendEvent("appointment.canceled", {
+				appointment: canceled,
+				canceled_by: "admin",
+			})
+			.catch((err) =>
+				console.error("Failed to send appointment.canceled webhook:", err),
+			);
 
 		return canceled;
 	}
@@ -315,6 +356,15 @@ export class AppointmentService {
 					console.error("Failed to send push notification:", err),
 				);
 		}
+
+		this.webhookService
+			.sendEvent("appointment.canceled", {
+				appointment: canceled,
+				canceled_by: "guest",
+			})
+			.catch((err) =>
+				console.error("Failed to send appointment.canceled webhook:", err),
+			);
 
 		return canceled;
 	}

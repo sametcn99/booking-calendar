@@ -963,6 +963,12 @@
 				"webhookDescription": {
 					"type": "string"
 				},
+				"webhookOutboundTitle": {
+					"type": "string"
+				},
+				"webhookOutboundDescription": {
+					"type": "string"
+				},
 				"webhookEnabled": {
 					"type": "string"
 				},
@@ -1000,6 +1006,42 @@
 					"type": "string"
 				},
 				"webhookTestSent": {
+					"type": "string"
+				},
+				"webhookInboundTitle": {
+					"type": "string"
+				},
+				"webhookInboundDescription": {
+					"type": "string"
+				},
+				"webhookInboundEnabled": {
+					"type": "string"
+				},
+				"webhookInboundDisabled": {
+					"type": "string"
+				},
+				"webhookInboundEndpoint": {
+					"type": "string"
+				},
+				"webhookInboundEndpointHint": {
+					"type": "string"
+				},
+				"webhookInboundSecret": {
+					"type": "string"
+				},
+				"webhookInboundSecretHint": {
+					"type": "string"
+				},
+				"webhookInboundSecretPlaceholder": {
+					"type": "string"
+				},
+				"webhookInboundSecretConfigured": {
+					"type": "string"
+				},
+				"webhookInboundScopes": {
+					"type": "string"
+				},
+				"webhookInboundScopesHint": {
 					"type": "string"
 				},
 				"version": {
@@ -1159,6 +1201,8 @@
 				"emailNotificationsSaved",
 				"webhook",
 				"webhookDescription",
+				"webhookOutboundTitle",
+				"webhookOutboundDescription",
 				"webhookEnabled",
 				"webhookDisabled",
 				"webhookUrl",
@@ -1172,6 +1216,18 @@
 				"webhookSaved",
 				"webhookSendTest",
 				"webhookTestSent",
+				"webhookInboundTitle",
+				"webhookInboundDescription",
+				"webhookInboundEnabled",
+				"webhookInboundDisabled",
+				"webhookInboundEndpoint",
+				"webhookInboundEndpointHint",
+				"webhookInboundSecret",
+				"webhookInboundSecretHint",
+				"webhookInboundSecretPlaceholder",
+				"webhookInboundSecretConfigured",
+				"webhookInboundScopes",
+				"webhookInboundScopesHint",
 				"version",
 				"versionDescription",
 				"currentVersion",

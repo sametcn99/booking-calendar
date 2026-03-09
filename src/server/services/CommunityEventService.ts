@@ -40,6 +40,12 @@ export class CommunityEventService {
 		const latest = await this.repo.findById(eventId);
 		if (!latest) return;
 
+		this.webhookService
+			.sendEvent("community_event.activated", { event: latest })
+			.catch((err) =>
+				console.error("Failed to send community_event.activated webhook:", err),
+			);
+
 		const emailEnabled = await this.isEmailEnabled();
 		if (emailEnabled) {
 			this.mailService
@@ -69,6 +75,12 @@ export class CommunityEventService {
 	private async notifyEventCanceled(eventId: number): Promise<void> {
 		const latest = await this.repo.findById(eventId);
 		if (!latest) return;
+
+		this.webhookService
+			.sendEvent("community_event.canceled", { event: latest })
+			.catch((err) =>
+				console.error("Failed to send community_event.canceled webhook:", err),
+			);
 
 		const emailEnabled = await this.isEmailEnabled();
 		if (emailEnabled) {
@@ -179,7 +191,7 @@ export class CommunityEventService {
 			return Boolean(existing);
 		});
 
-		return this.repo.create({
+		const event = await this.repo.create({
 			title: input.title,
 			description: input.description,
 			start_at: input.start_at,
@@ -188,6 +200,14 @@ export class CommunityEventService {
 			required_approvals: requiredApprovals,
 			slug_id: slugId,
 		});
+
+		this.webhookService
+			.sendEvent("community_event.created", { event })
+			.catch((err) =>
+				console.error("Failed to send community_event.created webhook:", err),
+			);
+
+		return event;
 	}
 
 	async getBySlugId(slugId: string) {
@@ -292,6 +312,11 @@ export class CommunityEventService {
 			await this.notifyEventCanceled(event.id);
 		}
 		await this.repo.deleteBySlugId(slugId);
+		this.webhookService
+			.sendEvent("community_event.deleted", { event })
+			.catch((err) =>
+				console.error("Failed to send community_event.deleted webhook:", err),
+			);
 	}
 
 	async cancelExpiredPending() {

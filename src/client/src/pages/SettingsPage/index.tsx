@@ -30,16 +30,22 @@ export default function SettingsPage() {
 		handleTogglePushNotifications,
 		handleSaveWebhookSettings,
 		handleSendWebhookTest,
-		handleWebhookEnabledChange,
+		handleWebhookInboundEnabledChange,
+		handleWebhookOutboundEnabledChange,
 		isPasswordSectionOpen,
 		mustChangePassword,
 		newPassword,
 		pushNotificationsEnabled,
 		testingWebhook,
-		webhookEnabled,
-		webhookHasSecret,
-		webhookSecret,
-		webhookUrl,
+		webhookInboundEnabled,
+		webhookInboundEndpoint,
+		webhookInboundHasSecret,
+		webhookInboundScopes,
+		webhookInboundSecret,
+		webhookOutboundEnabled,
+		webhookOutboundHasSecret,
+		webhookOutboundSecret,
+		webhookOutboundUrl,
 		loadingVersionInfo,
 		savingAdminEmail,
 		savingCalendarSharing,
@@ -53,8 +59,10 @@ export default function SettingsPage() {
 		setCurrentPassword,
 		setIsPasswordSectionOpen,
 		setNewPassword,
-		setWebhookSecret,
-		setWebhookUrl,
+		setWebhookInboundSecret,
+		setWebhookOutboundSecret,
+		setWebhookOutboundUrl,
+		toggleWebhookInboundScope,
 		versionInfo,
 	} = useSettingsPage({ t, setLanguage });
 
@@ -270,15 +278,23 @@ export default function SettingsPage() {
 
 					<section id="webhook">
 						<WebhookSettingsSection
-							enabled={webhookEnabled}
-							url={webhookUrl}
-							secret={webhookSecret}
-							hasSecret={webhookHasSecret}
+							outboundEnabled={webhookOutboundEnabled}
+							outboundUrl={webhookOutboundUrl}
+							outboundSecret={webhookOutboundSecret}
+							outboundHasSecret={webhookOutboundHasSecret}
+							inboundEnabled={webhookInboundEnabled}
+							inboundEndpoint={webhookInboundEndpoint}
+							inboundSecret={webhookInboundSecret}
+							inboundHasSecret={webhookInboundHasSecret}
+							inboundScopes={webhookInboundScopes}
 							saving={savingWebhook}
 							testing={testingWebhook}
-							onEnabledChange={handleWebhookEnabledChange}
-							onUrlChange={setWebhookUrl}
-							onSecretChange={setWebhookSecret}
+							onOutboundEnabledChange={handleWebhookOutboundEnabledChange}
+							onOutboundUrlChange={setWebhookOutboundUrl}
+							onOutboundSecretChange={setWebhookOutboundSecret}
+							onInboundEnabledChange={handleWebhookInboundEnabledChange}
+							onInboundSecretChange={setWebhookInboundSecret}
+							onInboundScopeToggle={toggleWebhookInboundScope}
 							onSubmit={handleSaveWebhookSettings}
 							onSendTest={handleSendWebhookTest}
 							t={t}

@@ -6,14 +6,17 @@ import type {
 	CreateSlotInput,
 	PublicAvailabilitySlot,
 } from "../types";
+import { WebhookService } from "./WebhookService";
 
 export class SlotService {
 	private slotRepo: SlotRepository;
 	private appointmentRepo: AppointmentRepository;
+	private webhookService: WebhookService;
 
 	constructor() {
 		this.slotRepo = new SlotRepository();
 		this.appointmentRepo = new AppointmentRepository();
+		this.webhookService = new WebhookService();
 	}
 
 	async getAllSlots(): Promise<AvailabilitySlot[]> {
@@ -77,10 +80,18 @@ export class SlotService {
 			throw new Error(t("slot.endAfterStart"));
 		}
 
-		return this.slotRepo.create({
+		const slot = await this.slotRepo.create({
 			...input,
 			name: slotName,
 		});
+
+		this.webhookService
+			.sendEvent("slot.created", { slot })
+			.catch((error) =>
+				console.error("Failed to send slot.created webhook:", error),
+			);
+
+		return slot;
 	}
 
 	async toggleSlotActive(
@@ -89,7 +100,18 @@ export class SlotService {
 	): Promise<AvailabilitySlot | null> {
 		const slot = await this.slotRepo.findById(id);
 		if (!slot) throw new Error(t("slot.notFound"));
-		return this.slotRepo.update(id, { is_active: isActive });
+		const updated = await this.slotRepo.update(id, { is_active: isActive });
+		if (updated) {
+			this.webhookService
+				.sendEvent("slot.updated", {
+					slot: updated,
+					changed_fields: ["is_active"],
+				})
+				.catch((error) =>
+					console.error("Failed to send slot.updated webhook:", error),
+				);
+		}
+		return updated;
 	}
 
 	async renameSlot(id: number, name: string): Promise<AvailabilitySlot | null> {
@@ -101,7 +123,15 @@ export class SlotService {
 			throw new Error(t("slot.nameRequired"));
 		}
 
-		return this.slotRepo.update(id, { name: slotName });
+		const updated = await this.slotRepo.update(id, { name: slotName });
+		if (updated) {
+			this.webhookService
+				.sendEvent("slot.updated", { slot: updated, changed_fields: ["name"] })
+				.catch((error) =>
+					console.error("Failed to send slot.updated webhook:", error),
+				);
+		}
+		return updated;
 	}
 
 	async updateSlot(
@@ -141,7 +171,18 @@ export class SlotService {
 			updatePayload.end_at = endAt;
 		}
 
-		return this.slotRepo.update(id, updatePayload);
+		const updated = await this.slotRepo.update(id, updatePayload);
+		if (updated) {
+			this.webhookService
+				.sendEvent("slot.updated", {
+					slot: updated,
+					changed_fields: Object.keys(updatePayload),
+				})
+				.catch((error) =>
+					console.error("Failed to send slot.updated webhook:", error),
+				);
+		}
+		return updated;
 	}
 
 	async deleteSlot(id: number): Promise<boolean> {
@@ -151,10 +192,28 @@ export class SlotService {
 		const appointmentCount = await this.appointmentRepo.countBySlotId(id);
 		if (appointmentCount > 0) {
 			// If there are appointments, archive the slot instead of deleting it
-			await this.slotRepo.update(id, { is_active: false });
+			const archived = await this.slotRepo.update(id, { is_active: false });
+			if (archived) {
+				this.webhookService
+					.sendEvent("slot.archived", {
+						slot: archived,
+						reason: "has_appointments",
+					})
+					.catch((error) =>
+						console.error("Failed to send slot.archived webhook:", error),
+					);
+			}
 			return true;
 		}
 
-		return this.slotRepo.delete(id);
+		const deleted = await this.slotRepo.delete(id);
+		if (deleted) {
+			this.webhookService
+				.sendEvent("slot.deleted", { slot })
+				.catch((error) =>
+					console.error("Failed to send slot.deleted webhook:", error),
+				);
+		}
+		return deleted;
 	}
 }

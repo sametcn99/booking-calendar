@@ -267,6 +267,9 @@ async function seedSettings() {
 		{ key: "webhook_notifications_enabled", value: "false" },
 		{ key: "webhook_url", value: "" },
 		{ key: "webhook_secret", value: "" },
+		{ key: "webhook_inbound_enabled", value: "false" },
+		{ key: "webhook_inbound_secret", value: "" },
+		{ key: "webhook_inbound_scopes", value: "[]" },
 		{
 			key: "theme_colors",
 			value: JSON.stringify({
