@@ -28,6 +28,7 @@ export function useSlotsPage(t: (key: string) => string) {
 	const [slotName, setSlotName] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [editingSlot, setEditingSlot] = useState<Slot | null>(null);
+	const [initialLoading, setInitialLoading] = useState(true);
 
 	const loadSlots = useCallback(async () => {
 		try {
@@ -35,6 +36,8 @@ export function useSlotsPage(t: (key: string) => string) {
 			setSlots(result.data);
 		} catch (err: unknown) {
 			toaster.negative(getErrorMessage(err, t("common.error")), {});
+		} finally {
+			setInitialLoading(false);
 		}
 	}, [t]);
 
@@ -163,6 +166,7 @@ export function useSlotsPage(t: (key: string) => string) {
 	});
 
 	return {
+		initialLoading,
 		endAt,
 		handleCreate,
 		handleUpdate,

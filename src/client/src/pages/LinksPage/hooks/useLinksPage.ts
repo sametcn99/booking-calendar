@@ -28,6 +28,7 @@ export function useLinksPage(t: (key: string) => string) {
 	const [generatedUrl, setGeneratedUrl] = useState("");
 	const [requiresApproval, setRequiresApproval] = useState(false);
 	const [editingLink, setEditingLink] = useState<BookingLink | null>(null);
+	const [initialLoading, setInitialLoading] = useState(true);
 
 	const loadLinks = useCallback(async () => {
 		try {
@@ -35,6 +36,8 @@ export function useLinksPage(t: (key: string) => string) {
 			setLinks(result.data);
 		} catch (err: unknown) {
 			toaster.negative(getErrorMessage(err, t("common.error")), {});
+		} finally {
+			setInitialLoading(false);
 		}
 	}, [t]);
 
@@ -153,6 +156,7 @@ export function useLinksPage(t: (key: string) => string) {
 	}, []);
 
 	return {
+		initialLoading,
 		copyToClipboard,
 		expiresDays,
 		generatedUrl,

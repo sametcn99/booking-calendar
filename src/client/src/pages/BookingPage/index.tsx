@@ -1,7 +1,7 @@
 import { useStyletron } from "baseui";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import AppToaster from "../../components/AppToaster";
 import { useI18n } from "../../context/I18nContext";
 import BookingFormSection from "./components/BookingFormSection";
 import BookingHeader from "./components/BookingHeader";
@@ -79,12 +79,12 @@ export default function BookingPage() {
 				justifyContent: "center",
 			})}
 		>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
+			<AppToaster />
 
 			<div
 				className={css({
 					width: "100%",
-					maxWidth: "600px",
+					maxWidth: "1120px",
 					paddingTop: "40px",
 				})}
 			>
@@ -93,35 +93,67 @@ export default function BookingPage() {
 					subtitle={t("booking.subtitle")}
 				/>
 
-				<BookingSlotsSection
-					slots={slots}
-					selectedSlot={selectedSlot}
-					selectedSlotBusyIntervals={selectedSlotBusyIntervals}
-					onSelect={selectSlot}
-					formatDate={formatDate}
-					t={t}
-				/>
+				<div
+					className={css({
+						display: "grid",
+						gap: "24px",
+						alignItems: "start",
+						justifyContent: selectedSlot ? "stretch" : "center",
+						"@media screen and (min-width: 960px)": {
+							gridTemplateColumns: selectedSlot
+								? "minmax(320px, 420px) minmax(0, 1fr)"
+								: "minmax(320px, 420px)",
+						},
+					})}
+				>
+					<div
+						className={css({
+							width: "100%",
+							maxWidth: "420px",
+							justifySelf: selectedSlot ? "stretch" : "center",
+						})}
+					>
+						<BookingSlotsSection
+							slots={slots}
+							selectedSlot={selectedSlot}
+							selectedSlotBusyIntervals={selectedSlotBusyIntervals}
+							onSelect={selectSlot}
+							formatDate={formatDate}
+							t={t}
+						/>
+					</div>
 
-				{selectedSlot && (
-					<BookingFormSection
-						email={email}
-						handleSubmit={handleSubmit}
-						loading={loading}
-						meetingPlace={meetingPlace}
-						name={name}
-						note={note}
-						selectedEndAt={selectedEndAt}
-						selectedStartAt={selectedStartAt}
-						setEmail={setEmail}
-						setMeetingPlace={setMeetingPlace}
-						setName={setName}
-						setNote={setNote}
-						setSelectedEndAt={setSelectedEndAt}
-						setSelectedStartAt={setSelectedStartAt}
-						requiresApproval={requiresApproval}
-						t={t}
-					/>
-				)}
+					{selectedSlot && (
+						<div
+							className={css({
+								minWidth: 0,
+								"@media screen and (min-width: 960px)": {
+									position: "sticky",
+									top: "24px",
+								},
+							})}
+						>
+							<BookingFormSection
+								email={email}
+								handleSubmit={handleSubmit}
+								loading={loading}
+								meetingPlace={meetingPlace}
+								name={name}
+								note={note}
+								selectedEndAt={selectedEndAt}
+								selectedStartAt={selectedStartAt}
+								setEmail={setEmail}
+								setMeetingPlace={setMeetingPlace}
+								setName={setName}
+								setNote={setNote}
+								setSelectedEndAt={setSelectedEndAt}
+								setSelectedStartAt={setSelectedStartAt}
+								requiresApproval={requiresApproval}
+								t={t}
+							/>
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);

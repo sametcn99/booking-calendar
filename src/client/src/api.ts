@@ -96,9 +96,18 @@ export interface ApiVersionInfo {
 }
 
 export interface ApiWebhookSettings {
-	enabled: boolean;
-	url: string;
-	has_secret: boolean;
+	outbound: {
+		enabled: boolean;
+		url: string;
+		has_secret: boolean;
+	};
+	inbound: {
+		enabled: boolean;
+		endpoint: string;
+		has_secret: boolean;
+		scopes: string[];
+	};
+	supported_actions: string[];
 }
 
 async function parseApiResponse<T>(response: Response): Promise<T> {
@@ -495,10 +504,22 @@ export const api = {
 			"/admin/settings/webhook",
 		).then((r) => r.data),
 
+	getWebhookSecret: (target: "outbound" | "inbound") =>
+		request<{ success: boolean; data: { secret: string } }>(
+			`/admin/settings/webhook/secret?target=${target}`,
+		).then((r) => r.data.secret),
+
 	setWebhookSettings: (input: {
-		enabled: boolean;
-		url: string;
-		secret?: string;
+		outbound?: {
+			enabled?: boolean;
+			url?: string;
+			secret?: string;
+		};
+		inbound?: {
+			enabled?: boolean;
+			secret?: string;
+			scopes?: string[];
+		};
 	}) =>
 		request<{ success: boolean; data: ApiWebhookSettings }>(
 			"/admin/settings/webhook",

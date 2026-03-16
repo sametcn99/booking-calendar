@@ -963,6 +963,12 @@
 				"webhookDescription": {
 					"type": "string"
 				},
+				"webhookOutboundTitle": {
+					"type": "string"
+				},
+				"webhookOutboundDescription": {
+					"type": "string"
+				},
 				"webhookEnabled": {
 					"type": "string"
 				},
@@ -987,7 +993,16 @@
 				"webhookGenerateSecret": {
 					"type": "string"
 				},
+				"webhookRevealSecret": {
+					"type": "string"
+				},
+				"webhookHideSecret": {
+					"type": "string"
+				},
 				"webhookSecretConfigured": {
+					"type": "string"
+				},
+				"webhookSecretHiddenHint": {
 					"type": "string"
 				},
 				"webhookSave": {
@@ -1000,6 +1015,45 @@
 					"type": "string"
 				},
 				"webhookTestSent": {
+					"type": "string"
+				},
+				"webhookInboundTitle": {
+					"type": "string"
+				},
+				"webhookInboundDescription": {
+					"type": "string"
+				},
+				"webhookInboundEnabled": {
+					"type": "string"
+				},
+				"webhookInboundDisabled": {
+					"type": "string"
+				},
+				"webhookInboundEndpoint": {
+					"type": "string"
+				},
+				"webhookInboundEndpointHint": {
+					"type": "string"
+				},
+				"webhookInboundSecret": {
+					"type": "string"
+				},
+				"webhookInboundSecretHint": {
+					"type": "string"
+				},
+				"webhookInboundSecretPlaceholder": {
+					"type": "string"
+				},
+				"webhookInboundSecretConfigured": {
+					"type": "string"
+				},
+				"webhookInboundSecretHiddenHint": {
+					"type": "string"
+				},
+				"webhookInboundScopes": {
+					"type": "string"
+				},
+				"webhookInboundScopesHint": {
 					"type": "string"
 				},
 				"version": {
@@ -1159,6 +1213,8 @@
 				"emailNotificationsSaved",
 				"webhook",
 				"webhookDescription",
+				"webhookOutboundTitle",
+				"webhookOutboundDescription",
 				"webhookEnabled",
 				"webhookDisabled",
 				"webhookUrl",
@@ -1167,11 +1223,27 @@
 				"webhookSecretHint",
 				"webhookSecretPlaceholder",
 				"webhookGenerateSecret",
+				"webhookRevealSecret",
+				"webhookHideSecret",
 				"webhookSecretConfigured",
+				"webhookSecretHiddenHint",
 				"webhookSave",
 				"webhookSaved",
 				"webhookSendTest",
 				"webhookTestSent",
+				"webhookInboundTitle",
+				"webhookInboundDescription",
+				"webhookInboundEnabled",
+				"webhookInboundDisabled",
+				"webhookInboundEndpoint",
+				"webhookInboundEndpointHint",
+				"webhookInboundSecret",
+				"webhookInboundSecretHint",
+				"webhookInboundSecretPlaceholder",
+				"webhookInboundSecretConfigured",
+				"webhookInboundSecretHiddenHint",
+				"webhookInboundScopes",
+				"webhookInboundScopesHint",
 				"version",
 				"versionDescription",
 				"currentVersion",
@@ -1331,6 +1403,9 @@
 		"common": {
 			"type": "object",
 			"properties": {
+				"loading": {
+					"type": "string"
+				},
 				"error": {
 					"type": "string"
 				},
@@ -1390,6 +1465,7 @@
 				}
 			},
 			"required": [
+				"loading",
 				"error",
 				"confirmationTitle",
 				"confirmDeleteMessage",

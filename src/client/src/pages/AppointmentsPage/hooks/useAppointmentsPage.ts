@@ -48,6 +48,7 @@ export function useAppointmentsPage(t: (key: string) => string) {
 	const [appointments, setAppointments] = useState<Appointment[]>([]);
 	const [statusFilter, setStatusFilter] =
 		useState<AppointmentStatusFilter>("all");
+	const [initialLoading, setInitialLoading] = useState(true);
 
 	const loadAppointments = useCallback(async () => {
 		try {
@@ -55,6 +56,8 @@ export function useAppointmentsPage(t: (key: string) => string) {
 			setAppointments(result.data);
 		} catch (err: unknown) {
 			toaster.negative(getErrorMessage(err, t("common.error")), {});
+		} finally {
+			setInitialLoading(false);
 		}
 	}, [t]);
 
@@ -158,6 +161,7 @@ export function useAppointmentsPage(t: (key: string) => string) {
 	);
 
 	return {
+		initialLoading,
 		filteredAppointments,
 		handleCancel,
 		handleDelete,

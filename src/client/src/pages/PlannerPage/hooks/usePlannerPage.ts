@@ -36,6 +36,7 @@ export function usePlannerPage(t: (key: string) => string) {
 	const [form, setForm] = useState<PlannerFormState>(emptyForm);
 	const [loading, setLoading] = useState(false);
 	const [statusFilter, setStatusFilter] = useState<PlannerStatusFilter>("all");
+	const [initialLoading, setInitialLoading] = useState(true);
 
 	const loadEvents = useCallback(async () => {
 		try {
@@ -43,6 +44,8 @@ export function usePlannerPage(t: (key: string) => string) {
 			setEvents(result.data);
 		} catch (err: unknown) {
 			toaster.negative(getErrorMessage(err, t("common.error")), {});
+		} finally {
+			setInitialLoading(false);
 		}
 	}, [t]);
 
@@ -164,6 +167,7 @@ export function usePlannerPage(t: (key: string) => string) {
 	});
 
 	return {
+		initialLoading,
 		editingEvent,
 		events,
 		filteredEvents,

@@ -1,6 +1,5 @@
 import { useStyletron } from "baseui";
 import { Button } from "baseui/button";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../../context/I18nContext";
@@ -13,8 +12,6 @@ export default function EventsPage() {
 
 	return (
 		<div>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
-
 			<div
 				className={css({
 					display: "flex",

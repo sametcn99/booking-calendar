@@ -1,8 +1,10 @@
 import { t } from "../i18n";
 import { PlannerRepository } from "../repositories/PlannerRepository";
+import { WebhookService } from "./WebhookService";
 
 export class PlannerService {
 	private plannerRepo = new PlannerRepository();
+	private webhookService = new WebhookService();
 
 	async getAllEvents() {
 		return this.plannerRepo.findAll();
@@ -30,13 +32,21 @@ export class PlannerService {
 			throw new Error(t("slot.endAfterStart"));
 		}
 
-		return this.plannerRepo.create({
+		const event = await this.plannerRepo.create({
 			title: input.title,
 			description: input.description,
 			start_at: input.start_at,
 			end_at: input.end_at,
 			color: input.color,
 		});
+
+		this.webhookService
+			.sendEvent("planner_event.created", { event })
+			.catch((error) =>
+				console.error("Failed to send planner_event.created webhook:", error),
+			);
+
+		return event;
 	}
 
 	async updateEvent(
@@ -54,7 +64,18 @@ export class PlannerService {
 			throw new Error(t("planner.notFound"));
 		}
 
-		return this.plannerRepo.update(id, payload);
+		const updated = await this.plannerRepo.update(id, payload);
+		if (updated) {
+			this.webhookService
+				.sendEvent("planner_event.updated", {
+					event: updated,
+					changed_fields: Object.keys(payload),
+				})
+				.catch((error) =>
+					console.error("Failed to send planner_event.updated webhook:", error),
+				);
+		}
+		return updated;
 	}
 
 	async deleteEvent(id: number) {
@@ -64,5 +85,10 @@ export class PlannerService {
 		}
 
 		await this.plannerRepo.delete(id);
+		this.webhookService
+			.sendEvent("planner_event.deleted", { event: existing })
+			.catch((error) =>
+				console.error("Failed to send planner_event.deleted webhook:", error),
+			);
 	}
 }

@@ -59,6 +59,13 @@
 		"invalidWebhookUrl": "Webhook URL'i https olmalı, localhost için http kabul edilir",
 		"webhookSecretTooShort": "Webhook gizli anahtarı en az 16 karakter olmalıdır",
 		"webhookRequiresUrlAndSecret": "Webhook etkinleştirildiğinde URL ve gizli anahtar birlikte zorunludur",
+		"webhookInboundDisabled": "İçe gelen webhook entegrasyonu devre dışı veya eksik yapılandırılmış",
+		"invalidWebhookSignature": "Webhook imzası geçersiz",
+		"webhookTimestampExpired": "Webhook zaman damgası çok eski veya fazla ileri tarihli",
+		"webhookReplayDetected": "Aynı webhook isteği yeniden oynatıldı",
+		"invalidWebhookScope": "Geçersiz webhook yetki alanı seçimi",
+		"webhookInboundRequiresSecretAndScopes": "İçe gelen webhook etkinse bir gizli anahtar ve en az bir izinli yetki alanı zorunludur",
+		"webhookActionNotAllowed": "Webhook aksiyonu mevcut inbound yetki alanlarında izinli değil",
 		"isActiveRequired": "is_active gereklidir",
 		"invalidLanguage": "Geçersiz dil. Desteklenen: en, tr",
 		"invalidRequest": "Geçersiz istek"

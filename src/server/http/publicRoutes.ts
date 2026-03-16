@@ -4,9 +4,11 @@ import { handlePublicBookingRoutes } from "./public/bookingRoutes";
 import { handlePublicCalendarRoutes } from "./public/calendarRoutes";
 import { handlePublicCommunityRoutes } from "./public/communityRoutes";
 import { handlePublicDocsRoutes } from "./public/docsRoutes";
+import { handlePublicWebhookRoutes } from "./public/webhookRoutes";
 import type { PublicRouteHandler, RouteHandlerArgs } from "./types";
 
 const publicHandlers: PublicRouteHandler[] = [
+	handlePublicWebhookRoutes,
 	handlePublicDocsRoutes,
 	handlePublicAuthAndSettingsRoutes,
 	handlePublicBookingRoutes,

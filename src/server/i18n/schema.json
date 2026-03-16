@@ -228,6 +228,27 @@
 				"webhookRequiresUrlAndSecret": {
 					"type": "string"
 				},
+				"webhookInboundDisabled": {
+					"type": "string"
+				},
+				"invalidWebhookSignature": {
+					"type": "string"
+				},
+				"webhookTimestampExpired": {
+					"type": "string"
+				},
+				"webhookReplayDetected": {
+					"type": "string"
+				},
+				"invalidWebhookScope": {
+					"type": "string"
+				},
+				"webhookInboundRequiresSecretAndScopes": {
+					"type": "string"
+				},
+				"webhookActionNotAllowed": {
+					"type": "string"
+				},
 				"isActiveRequired": {
 					"type": "string"
 				},
@@ -250,6 +271,13 @@
 				"invalidWebhookUrl",
 				"webhookSecretTooShort",
 				"webhookRequiresUrlAndSecret",
+				"webhookInboundDisabled",
+				"invalidWebhookSignature",
+				"webhookTimestampExpired",
+				"webhookReplayDetected",
+				"invalidWebhookScope",
+				"webhookInboundRequiresSecretAndScopes",
+				"webhookActionNotAllowed",
 				"isActiveRequired",
 				"invalidLanguage",
 				"invalidRequest"

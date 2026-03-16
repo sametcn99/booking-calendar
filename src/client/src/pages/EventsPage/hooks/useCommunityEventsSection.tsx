@@ -24,6 +24,7 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 	const [confirmDeleteSlugId, setConfirmDeleteSlugId] = useState<string | null>(
 		null,
 	);
+	const [initialLoading, setInitialLoading] = useState(true);
 
 	const getShareLink = useCallback(
 		(slugId: string) => `${window.location.origin}/community/${slugId}`,
@@ -36,6 +37,8 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 			setEvents(result.data);
 		} catch {
 			// Keep silent
+		} finally {
+			setInitialLoading(false);
 		}
 	}, []);
 
@@ -169,6 +172,7 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 	});
 
 	return {
+		initialLoading,
 		color,
 		confirmDeleteSlugId,
 		creating,

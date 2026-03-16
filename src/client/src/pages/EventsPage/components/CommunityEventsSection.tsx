@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import ListFiltersBar from "../../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../../components/ListFilters/ListFiltersFeedback";
+import PageLoadingSpinner from "../../../components/PageLoadingSpinner";
 import { useCommunityEventsSection } from "../hooks/useCommunityEventsSection";
 import CommunityEventCard from "./CommunityEventCard";
 import CommunityEventCreateModal from "./CommunityEventCreateModal";
@@ -21,6 +22,7 @@ export default function CommunityEventsSection({
 }: Props) {
 	const [css] = useStyletron();
 	const {
+		initialLoading,
 		color,
 		confirmDeleteSlugId,
 		creating,
@@ -78,90 +80,94 @@ export default function CommunityEventsSection({
 				title={title}
 			/>
 
-			<div
-				className={css({
-					display: "flex",
-					flexDirection: "column",
-					gap: "16px",
-					marginBottom: "24px",
-				})}
-			>
-				<div
-					className={css({
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "center",
-						flexWrap: "wrap",
-						gap: "12px",
-					})}
-				>
-					<CommunityStatusFilterButtons
-						setStatusFilter={setStatusFilter}
-						statusFilter={statusFilter}
+			{initialLoading ? (
+				<PageLoadingSpinner label={t("common.loading")} />
+			) : (
+				<>
+					<div
+						className={css({
+							display: "flex",
+							flexDirection: "column",
+							gap: "16px",
+							marginBottom: "24px",
+						})}
+					>
+						<div
+							className={css({
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+								flexWrap: "wrap",
+								gap: "12px",
+							})}
+						>
+							<CommunityStatusFilterButtons
+								setStatusFilter={setStatusFilter}
+								statusFilter={statusFilter}
+								t={t}
+							/>
+						</div>
+
+						<ListFiltersBar
+							search={search}
+							onSearchChange={setSearch}
+							sort={sort}
+							onSortChange={setSort}
+							from={from}
+							onFromChange={setFrom}
+							to={to}
+							onToChange={setTo}
+							onClear={clearFilters}
+							isActive={isActive}
+							t={t}
+						/>
+					</div>
+
+					<ListFiltersFeedback
+						count={filteredEvents.length}
+						totalCount={totalCount}
+						isActive={isActive}
+						search={search}
+						from={from}
+						to={to}
 						t={t}
 					/>
-				</div>
 
-				<ListFiltersBar
-					search={search}
-					onSearchChange={setSearch}
-					sort={sort}
-					onSortChange={setSort}
-					from={from}
-					onFromChange={setFrom}
-					to={to}
-					onToChange={setTo}
-					onClear={clearFilters}
-					isActive={isActive}
-					t={t}
-				/>
-			</div>
+					{filteredEvents.length === 0 && (
+						<div
+							className={css({
+								textAlign: "center",
+								padding: "48px",
+								fontSize: "14px",
+								color: "var(--color-text-tertiary)",
+								backgroundColor: "var(--color-bg-secondary)",
+								borderRadius: "12px",
+								border: "1px dashed var(--color-border-primary)",
+							})}
+						>
+							{isActive ? t("appointments.empty") : t("communityEvents.empty")}
+						</div>
+					)}
 
-			<ListFiltersFeedback
-				count={filteredEvents.length}
-				totalCount={totalCount}
-				isActive={isActive}
-				search={search}
-				from={from}
-				to={to}
-				t={t}
-			/>
-
-			{filteredEvents.length === 0 && (
-				<div
-					className={css({
-						textAlign: "center",
-						padding: "48px",
-						fontSize: "14px",
-						color: "var(--color-text-tertiary)",
-						backgroundColor: "var(--color-bg-secondary)",
-						borderRadius: "12px",
-						border: "1px dashed var(--color-border-primary)",
-					})}
-				>
-					{isActive
-						? t("appointments.empty") // Reuse common empty filter msg or add new
-						: t("communityEvents.empty")}
-				</div>
+					<div
+						className={css({
+							display: "grid",
+							gap: "10px",
+						})}
+					>
+						{filteredEvents.map((event) => (
+							<CommunityEventCard
+								key={event.slug_id}
+								event={event}
+								getShareLink={getShareLink}
+								onCopyLink={handleCopyLink}
+								onDelete={(slugId) => setConfirmDeleteSlugId(slugId)}
+								t={t}
+							/>
+						))}
+					</div>
+				</>
 			)}
-
-			<div
-				className={css({
-					display: "grid",
-					gap: "10px",
-				})}
-			>
-				{filteredEvents.map((event) => (
-					<CommunityEventCard
-						key={event.slug_id}
-						event={event}
-						getShareLink={getShareLink}
-						onCopyLink={handleCopyLink}
-						onDelete={(slugId) => setConfirmDeleteSlugId(slugId)}
-						t={t}
-					/>
-				))}
-			</div>
 
 			<ConfirmationDialog
 				isOpen={Boolean(confirmDeleteSlugId)}
