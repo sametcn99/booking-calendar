@@ -166,6 +166,13 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						},
 					},
 				},
+				WebhookSecretData: {
+					type: "object",
+					required: ["secret"],
+					properties: {
+						secret: { type: "string" },
+					},
+				},
 				LoginData: {
 					type: "object",
 					required: ["token", "must_change_password"],
@@ -1082,6 +1089,37 @@ export function createOpenApiDocument(): Record<string, unknown> {
 						},
 					},
 					responses: { "200": { description: "Webhook settings updated" } },
+				},
+			},
+			"/api/admin/settings/webhook/secret": {
+				get: {
+					tags: ["Admin Settings"],
+					summary: "Reveal a stored webhook secret",
+					security: [{ BearerAuth: [] }],
+					parameters: [
+						{
+							name: "target",
+							in: "query",
+							required: true,
+							schema: { type: "string", enum: ["outbound", "inbound"] },
+						},
+					],
+					responses: {
+						"200": {
+							description: "Secret retrieved",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											success: { type: "boolean", enum: [true] },
+											data: { $ref: "#/components/schemas/WebhookSecretData" },
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 			"/api/admin/settings/webhook/test": {

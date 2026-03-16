@@ -504,6 +504,11 @@ export const api = {
 			"/admin/settings/webhook",
 		).then((r) => r.data),
 
+	getWebhookSecret: (target: "outbound" | "inbound") =>
+		request<{ success: boolean; data: { secret: string } }>(
+			`/admin/settings/webhook/secret?target=${target}`,
+		).then((r) => r.data.secret),
+
 	setWebhookSettings: (input: {
 		outbound?: {
 			enabled?: boolean;

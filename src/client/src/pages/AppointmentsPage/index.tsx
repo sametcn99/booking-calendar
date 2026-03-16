@@ -1,5 +1,4 @@
 import { useStyletron } from "baseui";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import ListFiltersBar from "../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../components/ListFilters/ListFiltersFeedback";
 import PageLoadingSpinner from "../../components/PageLoadingSpinner";
@@ -47,8 +46,6 @@ export default function AppointmentsPage() {
 
 	return (
 		<div>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
-
 			<AppointmentsHeader
 				title={t("appointments.title")}
 				description={t("appointments.description")}

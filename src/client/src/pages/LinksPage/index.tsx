@@ -1,4 +1,3 @@
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import PageLoadingSpinner from "../../components/PageLoadingSpinner";
 import { useI18n } from "../../context/I18nContext";
 import CreateLinkModal from "./components/CreateLinkModal";
@@ -42,8 +41,6 @@ export default function LinksPage() {
 
 	return (
 		<div>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
-
 			<LinksHeader
 				onCreateClick={() => {
 					setModalOpen(true);

@@ -1,7 +1,7 @@
 import { Button } from "baseui/button";
 import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
+import AppToaster from "../../components/AppToaster";
 import { useI18n } from "../../context/I18nContext";
 import ErrorBanner from "./components/ErrorBanner";
 import LoginFormCard from "./components/LoginFormCard";
@@ -23,7 +23,7 @@ export default function LoginPage() {
 
 	return (
 		<LoginPageLayout>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
+			<AppToaster />
 			<LoginFormCard onSubmit={handleSubmit}>
 				<LoginHeader title={t("login.title")} />
 

@@ -106,6 +106,8 @@ export interface WebhookPublicSettings {
 	supported_actions: string[];
 }
 
+export type WebhookSecretTarget = "outbound" | "inbound";
+
 interface WebhookEnvelope {
 	event: string;
 	delivery_id: string;
@@ -300,6 +302,15 @@ export class WebhookService {
 		}
 
 		return this.getPublicSettings();
+	}
+
+	async getSecret(target: WebhookSecretTarget): Promise<string> {
+		const settingKey =
+			target === "outbound"
+				? WEBHOOK_SECRET_SETTING_KEY
+				: WEBHOOK_INBOUND_SECRET_SETTING_KEY;
+		const secret = await this.settingsRepo.get(settingKey);
+		return secret?.trim() ?? "";
 	}
 
 	isSecretStrong(secret: string): boolean {

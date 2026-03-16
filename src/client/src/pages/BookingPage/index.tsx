@@ -1,7 +1,7 @@
 import { useStyletron } from "baseui";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import AppToaster from "../../components/AppToaster";
 import { useI18n } from "../../context/I18nContext";
 import BookingFormSection from "./components/BookingFormSection";
 import BookingHeader from "./components/BookingHeader";
@@ -79,7 +79,7 @@ export default function BookingPage() {
 				justifyContent: "center",
 			})}
 		>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
+			<AppToaster />
 
 			<div
 				className={css({

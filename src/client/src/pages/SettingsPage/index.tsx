@@ -1,5 +1,4 @@
 import { useStyletron } from "baseui";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import { useI18n } from "../../context/I18nContext";
 import SettingsPageHeader from "./components/SettingsPageHeader";
 import SettingsPageSections from "./components/SettingsPageSections";
@@ -13,8 +12,6 @@ export default function SettingsPage() {
 
 	return (
 		<div>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
-
 			<SettingsPageHeader
 				title={t("settings.title")}
 				description={t("settings.description")}

@@ -126,14 +126,23 @@ export default function SettingsPageSections({ language, t, settings }: Props) {
 					inboundSecret={settings.webhookInboundSecret}
 					inboundHasSecret={settings.webhookInboundHasSecret}
 					inboundScopes={settings.webhookInboundScopes}
+					isDirty={settings.isWebhookDirty}
+					revealingInboundSecret={settings.revealingInboundSecret}
+					revealingOutboundSecret={settings.revealingOutboundSecret}
 					saving={settings.savingWebhook}
 					testing={settings.testingWebhook}
 					onOutboundEnabledChange={settings.handleWebhookOutboundEnabledChange}
 					onOutboundUrlChange={settings.setWebhookOutboundUrl}
-					onOutboundSecretChange={settings.setWebhookOutboundSecret}
+					onOutboundSecretChange={settings.handleWebhookOutboundSecretChange}
 					onInboundEnabledChange={settings.handleWebhookInboundEnabledChange}
-					onInboundSecretChange={settings.setWebhookInboundSecret}
+					onInboundSecretChange={settings.handleWebhookInboundSecretChange}
 					onInboundScopeToggle={settings.toggleWebhookInboundScope}
+					onRevealOutboundSecret={() =>
+						settings.handleRevealWebhookSecret("outbound")
+					}
+					onRevealInboundSecret={() =>
+						settings.handleRevealWebhookSecret("inbound")
+					}
 					onSubmit={settings.handleSaveWebhookSettings}
 					onSendTest={settings.handleSendWebhookTest}
 					t={t}

@@ -54,6 +54,21 @@ function applyWebhookSettings(
 	setWebhookInboundScopes(settings.inbound.scopes);
 }
 
+interface WebhookFormSnapshot {
+	outboundEnabled: boolean;
+	outboundUrl: string;
+	inboundEnabled: boolean;
+	inboundScopes: string[];
+}
+
+function areStringArraysEqual(left: string[], right: string[]): boolean {
+	if (left.length !== right.length) {
+		return false;
+	}
+
+	return left.every((value, index) => value === right[index]);
+}
+
 export function useSettingsPage({ setLanguage, t }: Params) {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
@@ -86,11 +101,29 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 	const [webhookInboundScopes, setWebhookInboundScopes] = useState<string[]>(
 		[],
 	);
+	const [initialWebhookForm, setInitialWebhookForm] =
+		useState<WebhookFormSnapshot | null>(null);
+	const [webhookOutboundSecretDirty, setWebhookOutboundSecretDirty] =
+		useState(false);
+	const [webhookInboundSecretDirty, setWebhookInboundSecretDirty] =
+		useState(false);
+	const [revealingOutboundSecret, setRevealingOutboundSecret] = useState(false);
+	const [revealingInboundSecret, setRevealingInboundSecret] = useState(false);
 	const [savingWebhook, setSavingWebhook] = useState(false);
 	const [testingWebhook, setTestingWebhook] = useState(false);
 	const [versionInfo, setVersionInfo] = useState<ApiVersionInfo | null>(null);
 	const [loadingVersionInfo, setLoadingVersionInfo] = useState(true);
 	const publicVapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+
+	const captureWebhookSnapshot = useCallback(
+		(settings: ApiWebhookSettings): WebhookFormSnapshot => ({
+			outboundEnabled: settings.outbound.enabled,
+			outboundUrl: settings.outbound.url,
+			inboundEnabled: settings.inbound.enabled,
+			inboundScopes: [...settings.inbound.scopes],
+		}),
+		[],
+	);
 
 	useEffect(() => {
 		if (mustChangePassword) setIsPasswordSectionOpen(true);
@@ -141,9 +174,14 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 					setWebhookInboundHasSecret,
 					setWebhookInboundScopes,
 				);
+				setWebhookOutboundSecret("");
+				setWebhookInboundSecret("");
+				setWebhookOutboundSecretDirty(false);
+				setWebhookInboundSecretDirty(false);
+				setInitialWebhookForm(captureWebhookSnapshot(settings));
 			})
 			.catch(() => {});
-	}, []);
+	}, [captureWebhookSnapshot]);
 
 	useEffect(() => {
 		api
@@ -345,6 +383,9 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 				);
 				setWebhookOutboundSecret("");
 				setWebhookInboundSecret("");
+				setWebhookOutboundSecretDirty(false);
+				setWebhookInboundSecretDirty(false);
+				setInitialWebhookForm(captureWebhookSnapshot(data));
 				toaster.positive(t("settings.webhookSaved"), {});
 			} catch (error: unknown) {
 				toaster.negative(getErrorMessage(error, t("common.error")), {});
@@ -359,78 +400,51 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 			webhookOutboundEnabled,
 			webhookOutboundSecret,
 			webhookOutboundUrl,
+			captureWebhookSnapshot,
 			t,
 		],
 	);
 
-	const handleWebhookOutboundEnabledChange = useCallback(
-		async (enabled: boolean) => {
-			if (enabled) {
-				setWebhookOutboundEnabled(true);
-				return;
-			}
+	const handleWebhookOutboundEnabledChange = useCallback((enabled: boolean) => {
+		setWebhookOutboundEnabled(enabled);
+	}, []);
 
-			setSavingWebhook(true);
+	const handleWebhookInboundEnabledChange = useCallback((enabled: boolean) => {
+		setWebhookInboundEnabled(enabled);
+	}, []);
+
+	const handleWebhookOutboundSecretChange = useCallback((value: string) => {
+		setWebhookOutboundSecret(value);
+		setWebhookOutboundSecretDirty(true);
+	}, []);
+
+	const handleWebhookInboundSecretChange = useCallback((value: string) => {
+		setWebhookInboundSecret(value);
+		setWebhookInboundSecretDirty(true);
+	}, []);
+
+	const handleRevealWebhookSecret = useCallback(
+		async (target: "outbound" | "inbound") => {
+			const setLoading =
+				target === "outbound"
+					? setRevealingOutboundSecret
+					: setRevealingInboundSecret;
+			const setSecret =
+				target === "outbound"
+					? setWebhookOutboundSecret
+					: setWebhookInboundSecret;
+
+			setLoading(true);
 			try {
-				const data = await api.setWebhookSettings({
-					outbound: {
-						enabled: false,
-						url: webhookOutboundUrl,
-					},
-				});
-				applyWebhookSettings(
-					data,
-					setWebhookOutboundEnabled,
-					setWebhookOutboundUrl,
-					setWebhookOutboundHasSecret,
-					setWebhookInboundEnabled,
-					setWebhookInboundEndpoint,
-					setWebhookInboundHasSecret,
-					setWebhookInboundScopes,
-				);
-				toaster.positive(t("settings.webhookSaved"), {});
+				const secret = await api.getWebhookSecret(target);
+				setSecret(secret);
 			} catch (error: unknown) {
 				toaster.negative(getErrorMessage(error, t("common.error")), {});
 			} finally {
-				setSavingWebhook(false);
+				setLoading(false);
 			}
 		},
-		[t, webhookOutboundUrl],
-	);
-
-	const handleWebhookInboundEnabledChange = useCallback(
-		async (enabled: boolean) => {
-			if (enabled) {
-				setWebhookInboundEnabled(true);
-				return;
-			}
-
-			setSavingWebhook(true);
-			try {
-				const data = await api.setWebhookSettings({
-					inbound: {
-						enabled: false,
-						scopes: webhookInboundScopes,
-					},
-				});
-				applyWebhookSettings(
-					data,
-					setWebhookOutboundEnabled,
-					setWebhookOutboundUrl,
-					setWebhookOutboundHasSecret,
-					setWebhookInboundEnabled,
-					setWebhookInboundEndpoint,
-					setWebhookInboundHasSecret,
-					setWebhookInboundScopes,
-				);
-				toaster.positive(t("settings.webhookSaved"), {});
-			} catch (error: unknown) {
-				toaster.negative(getErrorMessage(error, t("common.error")), {});
-			} finally {
-				setSavingWebhook(false);
-			}
-		},
-		[t, webhookInboundScopes],
+		[t],
 	);
 
 	const toggleWebhookInboundScope = useCallback((scope: string) => {
@@ -453,6 +467,19 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		}
 	}, [t]);
 
+	const isWebhookDirty =
+		initialWebhookForm === null
+			? false
+			: initialWebhookForm.outboundEnabled !== webhookOutboundEnabled ||
+				initialWebhookForm.outboundUrl !== webhookOutboundUrl ||
+				initialWebhookForm.inboundEnabled !== webhookInboundEnabled ||
+				!areStringArraysEqual(
+					initialWebhookForm.inboundScopes,
+					webhookInboundScopes,
+				) ||
+				webhookOutboundSecretDirty ||
+				webhookInboundSecretDirty;
+
 	return {
 		adminEmail,
 		savedAdminEmail,
@@ -470,11 +497,17 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		handleSaveWebhookSettings,
 		handleSendWebhookTest,
 		handleWebhookInboundEnabledChange,
+		handleWebhookInboundSecretChange,
 		handleWebhookOutboundEnabledChange,
+		handleWebhookOutboundSecretChange,
+		handleRevealWebhookSecret,
 		isPasswordSectionOpen,
+		isWebhookDirty,
 		mustChangePassword,
 		newPassword,
 		pushNotificationsEnabled,
+		revealingInboundSecret,
+		revealingOutboundSecret,
 		webhookInboundEnabled,
 		webhookInboundEndpoint,
 		webhookInboundHasSecret,
@@ -497,8 +530,6 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		setCurrentPassword,
 		setIsPasswordSectionOpen,
 		setNewPassword,
-		setWebhookInboundSecret,
-		setWebhookOutboundSecret,
 		setWebhookOutboundUrl,
 		toggleWebhookInboundScope,
 		versionInfo,

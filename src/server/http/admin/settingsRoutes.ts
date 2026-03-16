@@ -189,6 +189,20 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 		return jsonResponse(200, { success: true, data }, corsHeaders);
 	}
 
+	if (pathname === "/api/admin/settings/webhook/secret" && method === "GET") {
+		const target = new URL(args.request.url).searchParams.get("target");
+		if (target !== "outbound" && target !== "inbound") {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidRequest") },
+				corsHeaders,
+			);
+		}
+
+		const secret = await webhookService.getSecret(target);
+		return jsonResponse(200, { success: true, data: { secret } }, corsHeaders);
+	}
+
 	if (pathname === "/api/admin/settings/webhook" && method === "PUT") {
 		const body = await parseJsonBody<{
 			outbound?: {

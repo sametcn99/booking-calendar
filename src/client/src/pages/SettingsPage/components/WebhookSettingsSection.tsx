@@ -3,6 +3,7 @@ import { Button, KIND } from "baseui/button";
 import { Checkbox, STYLE_TYPE } from "baseui/checkbox";
 import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
+import { useState } from "react";
 
 interface Props {
 	outboundEnabled: boolean;
@@ -14,6 +15,9 @@ interface Props {
 	inboundSecret: string;
 	inboundHasSecret: boolean;
 	inboundScopes: string[];
+	isDirty: boolean;
+	revealingInboundSecret: boolean;
+	revealingOutboundSecret: boolean;
 	saving: boolean;
 	testing: boolean;
 	onOutboundEnabledChange: (enabled: boolean) => void;
@@ -22,6 +26,8 @@ interface Props {
 	onInboundEnabledChange: (enabled: boolean) => void;
 	onInboundSecretChange: (secret: string) => void;
 	onInboundScopeToggle: (scope: string) => void;
+	onRevealOutboundSecret: () => Promise<void> | void;
+	onRevealInboundSecret: () => Promise<void> | void;
 	onSubmit: (event: React.FormEvent) => void;
 	onSendTest: () => void;
 	t: (key: string) => string;
@@ -38,6 +44,9 @@ export default function WebhookSettingsSection({
 	inboundSecret,
 	inboundHasSecret,
 	inboundScopes,
+	isDirty,
+	revealingInboundSecret,
+	revealingOutboundSecret,
 	saving,
 	testing,
 	onOutboundEnabledChange,
@@ -46,12 +55,16 @@ export default function WebhookSettingsSection({
 	onInboundEnabledChange,
 	onInboundSecretChange,
 	onInboundScopeToggle,
+	onRevealOutboundSecret,
+	onRevealInboundSecret,
 	onSubmit,
 	onSendTest,
 	t,
 	surface = "card",
 }: Props) {
 	const [css] = useStyletron();
+	const [isOutboundSecretVisible, setIsOutboundSecretVisible] = useState(false);
+	const [isInboundSecretVisible, setIsInboundSecretVisible] = useState(false);
 	const isList = surface === "list";
 	const scopeOptions = [
 		"admin.slots",
@@ -78,6 +91,35 @@ export default function WebhookSettingsSection({
 		borderRadius: "10px",
 		border: "1px solid var(--color-bg-quaternary)",
 		backgroundColor: "var(--color-bg-tertiary)",
+	};
+
+	const noticeStyles = css({
+		fontSize: "12px",
+		color: "var(--color-text-subtle)",
+		marginTop: "10px",
+		marginBottom: 0,
+	});
+
+	const handleToggleOutboundSecretVisibility = async () => {
+		if (
+			!isOutboundSecretVisible &&
+			outboundSecret.length === 0 &&
+			outboundHasSecret
+		) {
+			await onRevealOutboundSecret();
+		}
+		setIsOutboundSecretVisible((visible) => !visible);
+	};
+
+	const handleToggleInboundSecretVisibility = async () => {
+		if (
+			!isInboundSecretVisible &&
+			inboundSecret.length === 0 &&
+			inboundHasSecret
+		) {
+			await onRevealInboundSecret();
+		}
+		setIsInboundSecretVisible((visible) => !visible);
 	};
 
 	return (
@@ -148,6 +190,12 @@ export default function WebhookSettingsSection({
 								: t("settings.webhookDisabled")}
 						</Checkbox>
 
+						{outboundHasSecret ? (
+							<p className={noticeStyles}>
+								{t("settings.webhookSecretConfigured")}
+							</p>
+						) : null}
+
 						{outboundEnabled ? (
 							<>
 								<FormControl label={t("settings.webhookUrl")}>
@@ -162,7 +210,11 @@ export default function WebhookSettingsSection({
 
 								<FormControl
 									label={t("settings.webhookSecret")}
-									caption={t("settings.webhookSecretHint")}
+									caption={
+										outboundHasSecret && outboundSecret.length === 0
+											? t("settings.webhookSecretHiddenHint")
+											: t("settings.webhookSecretHint")
+									}
 								>
 									<div
 										className={css({
@@ -170,20 +222,37 @@ export default function WebhookSettingsSection({
 											gridTemplateColumns: "1fr",
 											gap: "8px",
 											"@media screen and (min-width: 700px)": {
-												gridTemplateColumns: "minmax(0, 1fr) auto",
+												gridTemplateColumns: "minmax(0, 1fr) auto auto",
 												alignItems: "center",
 											},
 										})}
 									>
 										<Input
-											type="password"
+											type={isOutboundSecretVisible ? "text" : "password"}
 											value={outboundSecret}
 											onChange={(e) =>
 												onOutboundSecretChange(e.currentTarget.value)
 											}
-											placeholder={t("settings.webhookSecretPlaceholder")}
+											placeholder={
+												outboundHasSecret && outboundSecret.length === 0
+													? t("settings.webhookSecretHiddenHint")
+													: t("settings.webhookSecretPlaceholder")
+											}
 											autoComplete="new-password"
 										/>
+										{outboundHasSecret ? (
+											<Button
+												type="button"
+												kind={KIND.secondary}
+												onClick={handleToggleOutboundSecretVisibility}
+												isLoading={revealingOutboundSecret}
+												disabled={saving}
+											>
+												{isOutboundSecretVisible
+													? t("settings.webhookHideSecret")
+													: t("settings.webhookRevealSecret")}
+											</Button>
+										) : null}
 										<Button
 											type="button"
 											kind={KIND.secondary}
@@ -196,39 +265,6 @@ export default function WebhookSettingsSection({
 										</Button>
 									</div>
 								</FormControl>
-
-								{outboundHasSecret ? (
-									<div
-										className={css({
-											fontSize: "12px",
-											color: "var(--color-text-subtle)",
-											marginBottom: "10px",
-										})}
-									>
-										{t("settings.webhookSecretConfigured")}
-									</div>
-								) : null}
-
-								<div
-									className={css({
-										display: "flex",
-										gap: "10px",
-										flexWrap: "wrap",
-									})}
-								>
-									<Button type="submit" isLoading={saving}>
-										{t("settings.webhookSave")}
-									</Button>
-									<Button
-										type="button"
-										kind={KIND.secondary}
-										onClick={onSendTest}
-										isLoading={testing}
-										disabled={saving}
-									>
-										{t("settings.webhookSendTest")}
-									</Button>
-								</div>
 							</>
 						) : null}
 					</div>
@@ -265,6 +301,12 @@ export default function WebhookSettingsSection({
 								: t("settings.webhookInboundDisabled")}
 						</Checkbox>
 
+						{inboundHasSecret ? (
+							<p className={noticeStyles}>
+								{t("settings.webhookInboundSecretConfigured")}
+							</p>
+						) : null}
+
 						<FormControl
 							label={t("settings.webhookInboundEndpoint")}
 							caption={t("settings.webhookInboundEndpointHint")}
@@ -276,7 +318,11 @@ export default function WebhookSettingsSection({
 							<>
 								<FormControl
 									label={t("settings.webhookInboundSecret")}
-									caption={t("settings.webhookInboundSecretHint")}
+									caption={
+										inboundHasSecret && inboundSecret.length === 0
+											? t("settings.webhookInboundSecretHiddenHint")
+											: t("settings.webhookInboundSecretHint")
+									}
 								>
 									<div
 										className={css({
@@ -284,22 +330,37 @@ export default function WebhookSettingsSection({
 											gridTemplateColumns: "1fr",
 											gap: "8px",
 											"@media screen and (min-width: 700px)": {
-												gridTemplateColumns: "minmax(0, 1fr) auto",
+												gridTemplateColumns: "minmax(0, 1fr) auto auto",
 												alignItems: "center",
 											},
 										})}
 									>
 										<Input
-											type="password"
+											type={isInboundSecretVisible ? "text" : "password"}
 											value={inboundSecret}
 											onChange={(e) =>
 												onInboundSecretChange(e.currentTarget.value)
 											}
-											placeholder={t(
-												"settings.webhookInboundSecretPlaceholder",
-											)}
+											placeholder={
+												inboundHasSecret && inboundSecret.length === 0
+													? t("settings.webhookInboundSecretHiddenHint")
+													: t("settings.webhookInboundSecretPlaceholder")
+											}
 											autoComplete="new-password"
 										/>
+										{inboundHasSecret ? (
+											<Button
+												type="button"
+												kind={KIND.secondary}
+												onClick={handleToggleInboundSecretVisibility}
+												isLoading={revealingInboundSecret}
+												disabled={saving}
+											>
+												{isInboundSecretVisible
+													? t("settings.webhookHideSecret")
+													: t("settings.webhookRevealSecret")}
+											</Button>
+										) : null}
 										<Button
 											type="button"
 											kind={KIND.secondary}
@@ -312,18 +373,6 @@ export default function WebhookSettingsSection({
 										</Button>
 									</div>
 								</FormControl>
-
-								{inboundHasSecret ? (
-									<div
-										className={css({
-											fontSize: "12px",
-											color: "var(--color-text-subtle)",
-											marginBottom: "10px",
-										})}
-									>
-										{t("settings.webhookInboundSecretConfigured")}
-									</div>
-								) : null}
 
 								<FormControl
 									label={t("settings.webhookInboundScopes")}
@@ -350,6 +399,33 @@ export default function WebhookSettingsSection({
 							</>
 						) : null}
 					</div>
+
+					{isDirty || outboundEnabled ? (
+						<div
+							className={css({
+								display: "flex",
+								gap: "10px",
+								flexWrap: "wrap",
+							})}
+						>
+							{isDirty ? (
+								<Button type="submit" isLoading={saving}>
+									{t("settings.webhookSave")}
+								</Button>
+							) : null}
+							{outboundEnabled ? (
+								<Button
+									type="button"
+									kind={KIND.secondary}
+									onClick={onSendTest}
+									isLoading={testing}
+									disabled={saving || isDirty}
+								>
+									{t("settings.webhookSendTest")}
+								</Button>
+							) : null}
+						</div>
+					) : null}
 				</div>
 			</form>
 		</div>

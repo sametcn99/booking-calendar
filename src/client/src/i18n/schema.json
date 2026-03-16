@@ -993,7 +993,16 @@
 				"webhookGenerateSecret": {
 					"type": "string"
 				},
+				"webhookRevealSecret": {
+					"type": "string"
+				},
+				"webhookHideSecret": {
+					"type": "string"
+				},
 				"webhookSecretConfigured": {
+					"type": "string"
+				},
+				"webhookSecretHiddenHint": {
 					"type": "string"
 				},
 				"webhookSave": {
@@ -1036,6 +1045,9 @@
 					"type": "string"
 				},
 				"webhookInboundSecretConfigured": {
+					"type": "string"
+				},
+				"webhookInboundSecretHiddenHint": {
 					"type": "string"
 				},
 				"webhookInboundScopes": {
@@ -1211,7 +1223,10 @@
 				"webhookSecretHint",
 				"webhookSecretPlaceholder",
 				"webhookGenerateSecret",
+				"webhookRevealSecret",
+				"webhookHideSecret",
 				"webhookSecretConfigured",
+				"webhookSecretHiddenHint",
 				"webhookSave",
 				"webhookSaved",
 				"webhookSendTest",
@@ -1226,6 +1241,7 @@
 				"webhookInboundSecretHint",
 				"webhookInboundSecretPlaceholder",
 				"webhookInboundSecretConfigured",
+				"webhookInboundSecretHiddenHint",
 				"webhookInboundScopes",
 				"webhookInboundScopesHint",
 				"version",

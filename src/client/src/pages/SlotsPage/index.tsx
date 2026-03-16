@@ -1,5 +1,4 @@
 import { useStyletron } from "baseui";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import ListFiltersBar from "../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../components/ListFilters/ListFiltersFeedback";
 import PageLoadingSpinner from "../../components/PageLoadingSpinner";
@@ -54,8 +53,6 @@ export default function SlotsPage() {
 
 	return (
 		<div>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
-
 			<SlotsHeader onAddClick={() => setModalOpen(true)} t={t} />
 
 			{initialLoading ? (

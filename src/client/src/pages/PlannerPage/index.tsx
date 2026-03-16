@@ -1,6 +1,5 @@
 import { useStyletron } from "baseui";
 import { Button, KIND, SIZE } from "baseui/button";
-import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import ListFiltersBar from "../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../components/ListFilters/ListFiltersFeedback";
 import PageLoadingSpinner from "../../components/PageLoadingSpinner";
@@ -48,8 +47,6 @@ export default function PlannerPage() {
 
 	return (
 		<div>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
-
 			<div
 				className={css({
 					display: "flex",

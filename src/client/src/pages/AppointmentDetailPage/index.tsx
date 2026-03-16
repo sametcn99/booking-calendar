@@ -1,10 +1,11 @@
 import { useStyletron } from "baseui";
 import { Button, KIND, SIZE } from "baseui/button";
-import { PLACEMENT, ToasterContainer, toaster } from "baseui/toast";
+import { toaster } from "baseui/toast";
 import { Copy } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { type ApiAppointment, api } from "../../api";
+import AppToaster from "../../components/AppToaster";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import { useI18n } from "../../context/I18nContext";
 
@@ -119,7 +120,7 @@ export default function AppointmentDetailPage() {
 				justifyContent: "center",
 			})}
 		>
-			<ToasterContainer placement={PLACEMENT.bottomRight} />
+			<AppToaster />
 
 			<div
 				className={css({
