@@ -504,3 +504,5 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		versionInfo,
 	};
 }
+
+export type SettingsPageState = ReturnType<typeof useSettingsPage>;
