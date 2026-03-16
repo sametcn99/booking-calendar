@@ -1,6 +1,10 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useState } from "react";
-import { type ApiVersionInfo, api } from "../../../api";
+import {
+	type ApiVersionInfo,
+	type ApiWebhookSettings,
+	api,
+} from "../../../api";
 import { useAuth } from "../../../context/AuthContext";
 
 interface Params {
@@ -31,6 +35,25 @@ function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 	) as ArrayBuffer;
 }
 
+function applyWebhookSettings(
+	settings: ApiWebhookSettings,
+	setWebhookOutboundEnabled: (value: boolean) => void,
+	setWebhookOutboundUrl: (value: string) => void,
+	setWebhookOutboundHasSecret: (value: boolean) => void,
+	setWebhookInboundEnabled: (value: boolean) => void,
+	setWebhookInboundEndpoint: (value: string) => void,
+	setWebhookInboundHasSecret: (value: boolean) => void,
+	setWebhookInboundScopes: (value: string[]) => void,
+) {
+	setWebhookOutboundEnabled(settings.outbound.enabled);
+	setWebhookOutboundUrl(settings.outbound.url);
+	setWebhookOutboundHasSecret(settings.outbound.has_secret);
+	setWebhookInboundEnabled(settings.inbound.enabled);
+	setWebhookInboundEndpoint(settings.inbound.endpoint);
+	setWebhookInboundHasSecret(settings.inbound.has_secret);
+	setWebhookInboundScopes(settings.inbound.scopes);
+}
+
 export function useSettingsPage({ setLanguage, t }: Params) {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
@@ -51,10 +74,18 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		useState(false);
 	const [savingEmailNotifications, setSavingEmailNotifications] =
 		useState(false);
-	const [webhookEnabled, setWebhookEnabled] = useState(false);
-	const [webhookUrl, setWebhookUrl] = useState("");
-	const [webhookSecret, setWebhookSecret] = useState("");
-	const [webhookHasSecret, setWebhookHasSecret] = useState(false);
+	const [webhookOutboundEnabled, setWebhookOutboundEnabled] = useState(false);
+	const [webhookOutboundUrl, setWebhookOutboundUrl] = useState("");
+	const [webhookOutboundSecret, setWebhookOutboundSecret] = useState("");
+	const [webhookOutboundHasSecret, setWebhookOutboundHasSecret] =
+		useState(false);
+	const [webhookInboundEnabled, setWebhookInboundEnabled] = useState(false);
+	const [webhookInboundEndpoint, setWebhookInboundEndpoint] = useState("");
+	const [webhookInboundSecret, setWebhookInboundSecret] = useState("");
+	const [webhookInboundHasSecret, setWebhookInboundHasSecret] = useState(false);
+	const [webhookInboundScopes, setWebhookInboundScopes] = useState<string[]>(
+		[],
+	);
 	const [savingWebhook, setSavingWebhook] = useState(false);
 	const [testingWebhook, setTestingWebhook] = useState(false);
 	const [versionInfo, setVersionInfo] = useState<ApiVersionInfo | null>(null);
@@ -100,9 +131,16 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		api
 			.getWebhookSettings()
 			.then((settings) => {
-				setWebhookEnabled(settings.enabled);
-				setWebhookUrl(settings.url);
-				setWebhookHasSecret(settings.has_secret);
+				applyWebhookSettings(
+					settings,
+					setWebhookOutboundEnabled,
+					setWebhookOutboundUrl,
+					setWebhookOutboundHasSecret,
+					setWebhookInboundEnabled,
+					setWebhookInboundEndpoint,
+					setWebhookInboundHasSecret,
+					setWebhookInboundScopes,
+				);
 			})
 			.catch(() => {});
 	}, []);
@@ -278,14 +316,35 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 			setSavingWebhook(true);
 			try {
 				const data = await api.setWebhookSettings({
-					enabled: webhookEnabled,
-					url: webhookUrl,
-					secret: webhookSecret.trim().length > 0 ? webhookSecret : undefined,
+					outbound: {
+						enabled: webhookOutboundEnabled,
+						url: webhookOutboundUrl,
+						secret:
+							webhookOutboundSecret.trim().length > 0
+								? webhookOutboundSecret
+								: undefined,
+					},
+					inbound: {
+						enabled: webhookInboundEnabled,
+						secret:
+							webhookInboundSecret.trim().length > 0
+								? webhookInboundSecret
+								: undefined,
+						scopes: webhookInboundScopes,
+					},
 				});
-				setWebhookEnabled(data.enabled);
-				setWebhookUrl(data.url);
-				setWebhookHasSecret(data.has_secret);
-				setWebhookSecret("");
+				applyWebhookSettings(
+					data,
+					setWebhookOutboundEnabled,
+					setWebhookOutboundUrl,
+					setWebhookOutboundHasSecret,
+					setWebhookInboundEnabled,
+					setWebhookInboundEndpoint,
+					setWebhookInboundHasSecret,
+					setWebhookInboundScopes,
+				);
+				setWebhookOutboundSecret("");
+				setWebhookInboundSecret("");
 				toaster.positive(t("settings.webhookSaved"), {});
 			} catch (error: unknown) {
 				toaster.negative(getErrorMessage(error, t("common.error")), {});
@@ -293,25 +352,42 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 				setSavingWebhook(false);
 			}
 		},
-		[webhookEnabled, webhookSecret, webhookUrl, t],
+		[
+			webhookInboundEnabled,
+			webhookInboundScopes,
+			webhookInboundSecret,
+			webhookOutboundEnabled,
+			webhookOutboundSecret,
+			webhookOutboundUrl,
+			t,
+		],
 	);
 
-	const handleWebhookEnabledChange = useCallback(
+	const handleWebhookOutboundEnabledChange = useCallback(
 		async (enabled: boolean) => {
 			if (enabled) {
-				setWebhookEnabled(true);
+				setWebhookOutboundEnabled(true);
 				return;
 			}
 
 			setSavingWebhook(true);
 			try {
 				const data = await api.setWebhookSettings({
-					enabled: false,
-					url: webhookUrl,
+					outbound: {
+						enabled: false,
+						url: webhookOutboundUrl,
+					},
 				});
-				setWebhookEnabled(data.enabled);
-				setWebhookUrl(data.url);
-				setWebhookHasSecret(data.has_secret);
+				applyWebhookSettings(
+					data,
+					setWebhookOutboundEnabled,
+					setWebhookOutboundUrl,
+					setWebhookOutboundHasSecret,
+					setWebhookInboundEnabled,
+					setWebhookInboundEndpoint,
+					setWebhookInboundHasSecret,
+					setWebhookInboundScopes,
+				);
 				toaster.positive(t("settings.webhookSaved"), {});
 			} catch (error: unknown) {
 				toaster.negative(getErrorMessage(error, t("common.error")), {});
@@ -319,8 +395,51 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 				setSavingWebhook(false);
 			}
 		},
-		[t, webhookUrl],
+		[t, webhookOutboundUrl],
 	);
+
+	const handleWebhookInboundEnabledChange = useCallback(
+		async (enabled: boolean) => {
+			if (enabled) {
+				setWebhookInboundEnabled(true);
+				return;
+			}
+
+			setSavingWebhook(true);
+			try {
+				const data = await api.setWebhookSettings({
+					inbound: {
+						enabled: false,
+						scopes: webhookInboundScopes,
+					},
+				});
+				applyWebhookSettings(
+					data,
+					setWebhookOutboundEnabled,
+					setWebhookOutboundUrl,
+					setWebhookOutboundHasSecret,
+					setWebhookInboundEnabled,
+					setWebhookInboundEndpoint,
+					setWebhookInboundHasSecret,
+					setWebhookInboundScopes,
+				);
+				toaster.positive(t("settings.webhookSaved"), {});
+			} catch (error: unknown) {
+				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} finally {
+				setSavingWebhook(false);
+			}
+		},
+		[t, webhookInboundScopes],
+	);
+
+	const toggleWebhookInboundScope = useCallback((scope: string) => {
+		setWebhookInboundScopes((currentScopes) =>
+			currentScopes.includes(scope)
+				? currentScopes.filter((currentScope) => currentScope !== scope)
+				: [...currentScopes, scope],
+		);
+	}, []);
 
 	const handleSendWebhookTest = useCallback(async () => {
 		setTestingWebhook(true);
@@ -350,15 +469,21 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		handleTogglePushNotifications,
 		handleSaveWebhookSettings,
 		handleSendWebhookTest,
-		handleWebhookEnabledChange,
+		handleWebhookInboundEnabledChange,
+		handleWebhookOutboundEnabledChange,
 		isPasswordSectionOpen,
 		mustChangePassword,
 		newPassword,
 		pushNotificationsEnabled,
-		webhookEnabled,
-		webhookHasSecret,
-		webhookSecret,
-		webhookUrl,
+		webhookInboundEnabled,
+		webhookInboundEndpoint,
+		webhookInboundHasSecret,
+		webhookInboundScopes,
+		webhookInboundSecret,
+		webhookOutboundEnabled,
+		webhookOutboundHasSecret,
+		webhookOutboundSecret,
+		webhookOutboundUrl,
 		savingAdminEmail,
 		savingCalendarSharing,
 		savingEmailNotifications,
@@ -372,9 +497,10 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		setCurrentPassword,
 		setIsPasswordSectionOpen,
 		setNewPassword,
-		setWebhookEnabled,
-		setWebhookSecret,
-		setWebhookUrl,
+		setWebhookInboundSecret,
+		setWebhookOutboundSecret,
+		setWebhookOutboundUrl,
+		toggleWebhookInboundScope,
 		versionInfo,
 	};
 }
