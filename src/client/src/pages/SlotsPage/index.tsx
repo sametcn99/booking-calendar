@@ -2,6 +2,7 @@ import { useStyletron } from "baseui";
 import { PLACEMENT, ToasterContainer } from "baseui/toast";
 import ListFiltersBar from "../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../components/ListFilters/ListFiltersFeedback";
+import PageLoadingSpinner from "../../components/PageLoadingSpinner";
 import { useI18n } from "../../context/I18nContext";
 import CreateSlotModal from "./components/CreateSlotModal";
 import SlotsFilterSection from "./components/SlotsFilterSection";
@@ -13,6 +14,7 @@ export default function SlotsPage() {
 	const [css] = useStyletron();
 	const { t, locale } = useI18n();
 	const {
+		initialLoading,
 		endAt,
 		handleCreate,
 		handleUpdate,
@@ -56,68 +58,74 @@ export default function SlotsPage() {
 
 			<SlotsHeader onAddClick={() => setModalOpen(true)} t={t} />
 
-			<div
-				className={css({
-					display: "flex",
-					flexDirection: "column",
-					gap: "16px",
-					marginBottom: "24px",
-				})}
-			>
-				<SlotsFilterSection
-					statusFilter={statusFilter}
-					onChange={setStatusFilter}
-					t={t}
-				/>
-
-				<ListFiltersBar
-					search={search}
-					onSearchChange={setSearch}
-					sort={sort}
-					onSortChange={setSort}
-					from={from}
-					onFromChange={setFrom}
-					to={to}
-					onToChange={setTo}
-					onClear={clearFilters}
-					isActive={isActive}
-					t={t}
-				/>
-			</div>
-
-			<ListFiltersFeedback
-				count={filteredSlots.length}
-				totalCount={totalCount}
-				isActive={isActive}
-				search={search}
-				from={from}
-				to={to}
-				t={t}
-			/>
-
-			{filteredSlots.length === 0 && isActive ? (
-				<div
-					className={css({
-						textAlign: "center",
-						padding: "48px",
-						fontSize: "14px",
-						color: "var(--color-text-tertiary)",
-						backgroundColor: "var(--color-bg-secondary)",
-						borderRadius: "12px",
-						border: "1px dashed var(--color-border-primary)",
-					})}
-				>
-					{t("common.noResults")}
-				</div>
+			{initialLoading ? (
+				<PageLoadingSpinner label={t("common.loading")} />
 			) : (
-				<SlotsListSection
-					slots={filteredSlots}
-					formatDate={formatDate}
-					onToggle={handleToggle}
-					onDelete={handleDelete}
-					onEdit={openEditModal}
-					t={t}
-				/>
+				<>
+					<div
+						className={css({
+							display: "flex",
+							flexDirection: "column",
+							gap: "16px",
+							marginBottom: "24px",
+						})}
+					>
+						<SlotsFilterSection
+							statusFilter={statusFilter}
+							onChange={setStatusFilter}
+							t={t}
+						/>
+
+						<ListFiltersBar
+							search={search}
+							onSearchChange={setSearch}
+							sort={sort}
+							onSortChange={setSort}
+							from={from}
+							onFromChange={setFrom}
+							to={to}
+							onToChange={setTo}
+							onClear={clearFilters}
+							isActive={isActive}
+							t={t}
+						/>
+					</div>
+
+					<ListFiltersFeedback
+						count={filteredSlots.length}
+						totalCount={totalCount}
+						isActive={isActive}
+						search={search}
+						from={from}
+						to={to}
+						t={t}
+					/>
+
+					{filteredSlots.length === 0 && isActive ? (
+						<div
+							className={css({
+								textAlign: "center",
+								padding: "48px",
+								fontSize: "14px",
+								color: "var(--color-text-tertiary)",
+								backgroundColor: "var(--color-bg-secondary)",
+								borderRadius: "12px",
+								border: "1px dashed var(--color-border-primary)",
+							})}
+						>
+							{t("common.noResults")}
+						</div>
+					) : (
+						<SlotsListSection
+							slots={filteredSlots}
+							formatDate={formatDate}
+							onToggle={handleToggle}
+							onDelete={handleDelete}
+							onEdit={openEditModal}
+							t={t}
+						/>
+					)}
+				</>
 			)}
 
 			<CreateSlotModal

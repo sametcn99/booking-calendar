@@ -346,6 +346,7 @@
 		"plannerLegend": "Planlayıcı Etkinlikleri"
 	},
 	"common": {
+		"loading": "Yükleniyor...",
 		"error": "Bir hata oluştu",
 		"confirmationTitle": "Lütfen onaylayın",
 		"confirmDeleteMessage": "Bu öğeyi silmek istediğinize emin misiniz?",

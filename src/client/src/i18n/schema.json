@@ -1387,6 +1387,9 @@
 		"common": {
 			"type": "object",
 			"properties": {
+				"loading": {
+					"type": "string"
+				},
 				"error": {
 					"type": "string"
 				},
@@ -1446,6 +1449,7 @@
 				}
 			},
 			"required": [
+				"loading",
 				"error",
 				"confirmationTitle",
 				"confirmDeleteMessage",

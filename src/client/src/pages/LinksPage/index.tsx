@@ -1,4 +1,5 @@
 import { PLACEMENT, ToasterContainer } from "baseui/toast";
+import PageLoadingSpinner from "../../components/PageLoadingSpinner";
 import { useI18n } from "../../context/I18nContext";
 import CreateLinkModal from "./components/CreateLinkModal";
 import LinksHeader from "./components/LinksHeader";
@@ -8,6 +9,7 @@ import { useLinksPage } from "./hooks/useLinksPage";
 export default function LinksPage() {
 	const { t, locale } = useI18n();
 	const {
+		initialLoading,
 		copyToClipboard,
 		expiresDays,
 		generatedUrl,
@@ -51,14 +53,18 @@ export default function LinksPage() {
 				t={t}
 			/>
 
-			<LinksListSection
-				links={links}
-				formatDate={formatDate}
-				onCopy={copyToClipboard}
-				onDelete={handleDelete}
-				onEdit={openEditModal}
-				t={t}
-			/>
+			{initialLoading ? (
+				<PageLoadingSpinner label={t("common.loading")} />
+			) : (
+				<LinksListSection
+					links={links}
+					formatDate={formatDate}
+					onCopy={copyToClipboard}
+					onDelete={handleDelete}
+					onEdit={openEditModal}
+					t={t}
+				/>
+			)}
 
 			<CreateLinkModal
 				expiresDays={expiresDays}

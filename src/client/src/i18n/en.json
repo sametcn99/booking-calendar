@@ -346,6 +346,7 @@
 		"plannerLegend": "Planner Events"
 	},
 	"common": {
+		"loading": "Loading...",
 		"error": "An error occurred",
 		"confirmationTitle": "Please confirm",
 		"confirmDeleteMessage": "Are you sure you want to delete this item?",

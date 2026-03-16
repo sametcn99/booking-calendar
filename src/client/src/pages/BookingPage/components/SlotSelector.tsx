@@ -71,7 +71,16 @@ export default function SlotSelector({
 	}
 
 	return (
-		<div className={css({ display: "grid", gap: "8px" })}>
+		<div
+			className={css({
+				display: "grid",
+				gap: "8px",
+				maxHeight: "420px",
+				overflowY: "auto",
+				paddingRight: "6px",
+				scrollbarWidth: "thin",
+			})}
+		>
 			{slots.map((slot) => {
 				const disabled = isFullyOccupied(slot);
 				return (
