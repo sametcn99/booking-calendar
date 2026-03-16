@@ -242,6 +242,16 @@ async function executeAdminWebhookCommand(
 			const result = await args.communityEventController.createEvent(body);
 			return jsonResponse(result.status, result.body, corsHeaders);
 		}
+		case "admin.community-events.approve": {
+			const slugId = getStringParam(command.params, "slugId");
+			if (!slugId) return invalidWebhookCommandResponse(corsHeaders);
+			const body =
+				typeof command.data === "object" && command.data !== null
+					? (command.data as { full_name?: string; email?: string })
+					: {};
+			const result = await args.communityEventController.approve(slugId, body);
+			return jsonResponse(result.status, result.body, corsHeaders);
+		}
 		case "admin.community-events.delete": {
 			const slugId = getStringParam(command.params, "slugId");
 			if (!slugId) return invalidWebhookCommandResponse(corsHeaders);

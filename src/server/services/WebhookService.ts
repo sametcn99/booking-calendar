@@ -65,6 +65,7 @@ const WEBHOOK_SCOPE_ACTIONS: Record<WebhookInboundScope, readonly string[]> = {
 	"admin.community-events": [
 		"admin.community-events.list",
 		"admin.community-events.create",
+		"admin.community-events.approve",
 		"admin.community-events.delete",
 	],
 	"public.booking": [
