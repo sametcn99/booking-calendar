@@ -4,6 +4,7 @@ import { Checkbox, STYLE_TYPE } from "baseui/checkbox";
 import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
 import { Select } from "baseui/select";
+import { useEffect, useState } from "react";
 import type {
 	ApiCalDAVCalendar,
 	ApiCalDAVQueueSnapshot,
@@ -73,6 +74,7 @@ export default function CalDAVSettingsSection({
 	surface = "card",
 }: Props) {
 	const [css] = useStyletron();
+	const [isOpen, setIsOpen] = useState(enabled);
 	const isList = surface === "list";
 	const backgroundSyncMinutes = Math.max(
 		1,
@@ -84,6 +86,12 @@ export default function CalDAVSettingsSection({
 	}));
 	const queueItems = queue.items.slice(0, 8);
 
+	useEffect(() => {
+		if (!enabled) {
+			setIsOpen(false);
+		}
+	}, [enabled]);
+
 	return (
 		<div
 			className={css({
@@ -93,27 +101,75 @@ export default function CalDAVSettingsSection({
 				border: "1px solid var(--color-bg-quaternary)",
 			})}
 		>
-			<h2
+			<button
+				type="button"
+				onClick={() => setIsOpen((prev) => !prev)}
 				className={css({
-					fontSize: "18px",
-					fontWeight: 700,
-					color: "var(--color-text-primary)",
-					marginBottom: "12px",
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+					gap: "12px",
+					width: "100%",
+					background: "transparent",
+					border: "none",
+					padding: 0,
+					cursor: "pointer",
+					marginBottom: isOpen ? "12px" : "0",
+					textAlign: "left",
 				})}
 			>
-				{t("settings.caldav")}
-			</h2>
-			<div
-				className={css({
-					fontSize: "13px",
-					color: "var(--color-text-secondary)",
-					marginBottom: "14px",
-				})}
-			>
-				{t("settings.caldavDescription")}
-			</div>
+				<div
+					className={css({
+						display: "grid",
+						gap: "4px",
+						minWidth: 0,
+					})}
+				>
+					<h2
+						className={css({
+							fontSize: "18px",
+							fontWeight: 700,
+							color: "var(--color-text-primary)",
+							margin: 0,
+						})}
+					>
+						{t("settings.caldav")}
+					</h2>
+					<div
+						className={css({
+							fontSize: "13px",
+							color: "var(--color-text-secondary)",
+						})}
+					>
+						{enabled
+							? t("settings.caldavEnabled")
+							: t("settings.caldavDisabled")}
+					</div>
+				</div>
+				<span
+					className={css({
+						color: "var(--color-text-secondary)",
+						fontSize: "18px",
+						flexShrink: 0,
+					})}
+				>
+					{isOpen ? "-" : "+"}
+				</span>
+			</button>
 
-			<form onSubmit={onSubmit}>
+			{isOpen ? (
+				<>
+					<div
+						className={css({
+							fontSize: "13px",
+							color: "var(--color-text-secondary)",
+							marginBottom: "14px",
+						})}
+					>
+						{t("settings.caldavDescription")}
+					</div>
+
+					<form onSubmit={onSubmit}>
 				<div
 					className={css({
 						display: "grid",
@@ -478,7 +534,9 @@ export default function CalDAVSettingsSection({
 						</div>
 					) : null}
 				</div>
-			</form>
+					</form>
+				</>
+			) : null}
 		</div>
 	);
 }
