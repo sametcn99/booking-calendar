@@ -38,6 +38,23 @@ export interface ApiAppointment {
 	status: "pending" | "approved" | "rejected";
 	canceled_at: string | null;
 	canceled_by: string | null;
+	caldav_last_synced_at: string | null;
+	caldav_sync_error: string | null;
+	caldav_error_category:
+		| "auth"
+		| "network"
+		| "conflict"
+		| "validation"
+		| "calendar"
+		| "unknown"
+		| null;
+	caldav_conflict_count: number;
+	caldav_last_conflict_at: string | null;
+	caldav_conflict_state: "detected" | null;
+	caldav_conflict_detail: string | null;
+	caldav_etag?: string | null;
+	caldav_remote_etag?: string | null;
+	caldav_queue_status?: "idle" | "syncing" | "retryable" | "failed" | null;
 	created_at: string;
 }
 
@@ -108,6 +125,117 @@ export interface ApiWebhookSettings {
 		scopes: string[];
 	};
 	supported_actions: string[];
+}
+
+export interface ApiCalDAVCalendar {
+	url: string;
+	display_name: string;
+	color: string | null;
+	ctag: string | null;
+	supports_events: boolean;
+}
+
+export interface ApiCalDAVSettings {
+	enabled: boolean;
+	base_url: string;
+	username: string;
+	has_password: boolean;
+	writable_calendar_url: string;
+	default_sync_policy?: "one_way_write" | "read_only_busy" | "two_way_guarded";
+	last_sync_at: string | null;
+	last_sync_status: "idle" | "ok" | "error";
+	last_sync_error: string | null;
+	health: ApiCalDAVSyncHealth;
+	calendars: ApiCalDAVCalendar[];
+}
+
+export type ApiCalDAVRepairAction =
+	| "retry"
+	| "refresh_etag"
+	| "force_overwrite";
+
+export interface ApiCalDAVQueueConflict {
+	state: "detected";
+	detail: string | null;
+	local_etag: string | null;
+	remote_etag: string | null;
+	detected_at: string | null;
+	count: number;
+}
+
+export interface ApiCalDAVQueueSummary {
+	idle: number;
+	syncing: number;
+	retryable: number;
+	failed: number;
+	total: number;
+}
+
+export interface ApiCalDAVQueueItem {
+	appointment_id: number;
+	slug_id: string | null;
+	name: string;
+	status: "idle" | "syncing" | "retryable" | "failed";
+	retry_count: number;
+	next_retry_at: string | null;
+	error_category:
+		| "auth"
+		| "network"
+		| "conflict"
+		| "validation"
+		| "calendar"
+		| "unknown"
+		| null;
+	error_message: string | null;
+	queued_at: string | null;
+	last_synced_at: string | null;
+	conflict: ApiCalDAVQueueConflict | null;
+	available_actions: ApiCalDAVRepairAction[];
+}
+
+export interface ApiCalDAVQueueSnapshot {
+	summary: ApiCalDAVQueueSummary;
+	items: ApiCalDAVQueueItem[];
+}
+
+export interface ApiCalDAVSyncHealth {
+	failed_appointments_count: number;
+	retryable_appointments_count: number;
+	unsynced_approved_count: number;
+	error_breakdown: {
+		auth: number;
+		network: number;
+		conflict: number;
+		validation: number;
+		calendar: number;
+		unknown: number;
+	};
+	queue: ApiCalDAVQueueSummary;
+	degraded_mode: {
+		enabled: boolean;
+		reason: string | null;
+		threshold: number;
+		active_failed_count: number;
+	};
+	background_sync_enabled: boolean;
+	background_sync_interval_ms: number;
+	is_sync_running: boolean;
+	last_background_sync_at: string | null;
+	next_background_sync_at: string | null;
+}
+
+export interface ApiCalDAVHealthSnapshot {
+	last_sync_at: string | null;
+	last_sync_status: "idle" | "ok" | "error";
+	last_sync_error: string | null;
+	health: ApiCalDAVSyncHealth;
+}
+
+export interface ApiCalDAVSyncResult {
+	processed_count: number;
+	success_count: number;
+	failed_count: number;
+	busy_refresh_succeeded: boolean;
 }
 
 async function parseApiResponse<T>(response: Response): Promise<T> {
@@ -498,6 +626,73 @@ export const api = {
 				body: JSON.stringify({ enabled }),
 			},
 		),
+
+	getCalDAVSettings: () =>
+		request<{ success: boolean; data: ApiCalDAVSettings }>(
+			"/admin/settings/caldav",
+		).then((r) => r.data),
+
+	getCalDAVHealth: () =>
+		request<{ success: boolean; data: ApiCalDAVHealthSnapshot }>(
+			"/admin/settings/caldav/health",
+		).then((r) => r.data),
+
+	getCalDAVQueue: (limit = 50) =>
+		request<{ success: boolean; data: ApiCalDAVQueueSnapshot }>(
+			`/admin/settings/caldav/queue?limit=${limit}`,
+		).then((r) => r.data),
+
+	testCalDAVConnection: (input: {
+		base_url?: string;
+		username?: string;
+		password?: string;
+	}) =>
+		request<{ success: boolean; data: { calendars: ApiCalDAVCalendar[] } }>(
+			"/admin/settings/caldav/test",
+			{
+				method: "POST",
+				body: JSON.stringify(input),
+			},
+		).then((r) => r.data),
+
+	setCalDAVSettings: (input: {
+		enabled?: boolean;
+		base_url?: string;
+		username?: string;
+		password?: string;
+		writable_calendar_url?: string;
+	}) =>
+		request<{ success: boolean; data: ApiCalDAVSettings }>(
+			"/admin/settings/caldav",
+			{
+				method: "PUT",
+				body: JSON.stringify(input),
+			},
+		).then((r) => r.data),
+
+	triggerCalDAVSync: () =>
+		request<{
+			success: boolean;
+			data: {
+				result: ApiCalDAVSyncResult;
+				snapshot: ApiCalDAVHealthSnapshot;
+			};
+		}>("/admin/settings/caldav/sync", {
+			method: "POST",
+		}).then((r) => r.data),
+
+	repairCalDAVQueueItem: (slug_id: string, action: ApiCalDAVRepairAction) =>
+		request<{
+			success: boolean;
+			data: {
+				appointment: ApiAppointment | null;
+				attempted: boolean;
+				blocked_by_policy: boolean;
+			};
+		}>("/admin/settings/caldav/queue/repair", {
+			method: "POST",
+			body: JSON.stringify({ slug_id, action }),
+		}).then((r) => r.data),
 
 	getWebhookSettings: () =>
 		request<{ success: boolean; data: ApiWebhookSettings }>(

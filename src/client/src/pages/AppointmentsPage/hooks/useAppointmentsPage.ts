@@ -1,23 +1,10 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { ApiAppointment, ApiCalDAVRepairAction } from "../../../api";
 import { api } from "../../../api";
 import { useListFilters } from "../../../hooks/useListFilters";
 
-export interface Appointment {
-	id: number;
-	slot_id: number;
-	name: string;
-	email: string | null;
-	meeting_place: string | null;
-	note: string | null;
-	start_at: string;
-	end_at: string;
-	slug_id: string | null;
-	status: "pending" | "approved" | "rejected";
-	canceled_at: string | null;
-	canceled_by: string | null;
-	created_at: string;
-}
+export type Appointment = ApiAppointment;
 
 export type AppointmentStatusFilter =
 	| "all"
@@ -46,6 +33,9 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 export function useAppointmentsPage(t: (key: string) => string) {
 	const [appointments, setAppointments] = useState<Appointment[]>([]);
+	const [repairingSlugId, setRepairingSlugId] = useState<string | null>(null);
+	const [repairingAction, setRepairingAction] =
+		useState<ApiCalDAVRepairAction | null>(null);
 	const [statusFilter, setStatusFilter] =
 		useState<AppointmentStatusFilter>("all");
 	const [initialLoading, setInitialLoading] = useState(true);
@@ -117,6 +107,29 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		[loadAppointments, t],
 	);
 
+	const handleRepairCalDAV = useCallback(
+		async (slugId: string, action: ApiCalDAVRepairAction) => {
+			setRepairingSlugId(slugId);
+			setRepairingAction(action);
+			try {
+				const result = await api.repairCalDAVQueueItem(slugId, action);
+				if (result.blocked_by_policy) {
+					toaster.negative(t("settings.caldavRepairBlockedByPolicy"), {});
+					return;
+				}
+
+				toaster.positive(t(`settings.caldavRepairAction.${action}`), {});
+				await loadAppointments();
+			} catch (err: unknown) {
+				toaster.negative(getErrorMessage(err, t("common.error")), {});
+			} finally {
+				setRepairingSlugId(null);
+				setRepairingAction(null);
+			}
+		},
+		[loadAppointments, t],
+	);
+
 	const statusFilteredAppointments = useMemo(() => {
 		return appointments.filter((apt) => {
 			const isCanceled = Boolean(apt.canceled_at);
@@ -167,6 +180,9 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		handleDelete,
 		handleApprove,
 		handleReject,
+		handleRepairCalDAV,
+		repairingSlugId,
+		repairingAction,
 		statusFilter,
 		setStatusFilter,
 		search,

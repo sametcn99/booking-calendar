@@ -1,4 +1,3 @@
-import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { config } from "../config";
 import { t } from "../i18n";
 import { SettingsRepository } from "../repositories/SettingsRepository";
@@ -116,6 +115,8 @@ interface WebhookEnvelope {
 	data: unknown;
 }
 
+const textEncoder = new TextEncoder();
+
 function sleep(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -129,12 +130,34 @@ function cleanupReplayCache(now = Date.now()): void {
 }
 
 function compareSignature(expected: string, actual: string): boolean {
-	const expectedBuffer = Buffer.from(expected, "utf8");
-	const actualBuffer = Buffer.from(actual, "utf8");
-	if (expectedBuffer.length !== actualBuffer.length) {
+	const expectedBytes = textEncoder.encode(expected);
+	const actualBytes = textEncoder.encode(actual);
+	if (expectedBytes.length !== actualBytes.length) {
 		return false;
 	}
-	return timingSafeEqual(expectedBuffer, actualBuffer);
+
+	let diff = 0;
+	for (let index = 0; index < expectedBytes.length; index++) {
+		diff |= expectedBytes[index] ^ actualBytes[index];
+	}
+
+	return diff === 0;
+}
+
+async function createHmacHex(secret: string, payload: string): Promise<string> {
+	const key = await crypto.subtle.importKey(
+		"raw",
+		textEncoder.encode(secret),
+		{ name: "HMAC", hash: "SHA-256" },
+		false,
+		["sign"],
+	);
+	const signature = new Uint8Array(
+		await crypto.subtle.sign("HMAC", key, textEncoder.encode(payload)),
+	);
+	return Array.from(signature, (byte) =>
+		byte.toString(16).padStart(2, "0"),
+	).join("");
 }
 
 function normalizeInboundScopes(
@@ -365,9 +388,10 @@ export class WebhookService {
 			throw new Error(t("general.webhookReplayDetected"));
 		}
 
-		const expectedSignature = createHmac("sha256", settings.secret)
-			.update(`${timestamp}.${rawBody}`)
-			.digest("hex");
+		const expectedSignature = await createHmacHex(
+			settings.secret,
+			`${timestamp}.${rawBody}`,
+		);
 		const actualSignature = signatureHeader.startsWith("sha256=")
 			? signatureHeader.slice("sha256=".length)
 			: signatureHeader;
@@ -388,7 +412,7 @@ export class WebhookService {
 
 		const envelope: WebhookEnvelope = {
 			event,
-			delivery_id: randomUUID(),
+			delivery_id: crypto.randomUUID(),
 			occurred_at: new Date().toISOString(),
 			source: "booking-calendar",
 			data,
@@ -396,9 +420,10 @@ export class WebhookService {
 
 		const body = JSON.stringify(envelope);
 		const timestamp = Math.floor(Date.now() / 1000).toString();
-		const signature = createHmac("sha256", settings.secret)
-			.update(`${timestamp}.${body}`)
-			.digest("hex");
+		const signature = await createHmacHex(
+			settings.secret,
+			`${timestamp}.${body}`,
+		);
 
 		for (let attempt = 0; attempt <= MAX_RETRY_COUNT; attempt++) {
 			try {

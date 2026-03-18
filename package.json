@@ -12,6 +12,9 @@
 		"db:init": "bun run src/server/db/init.ts",
 		"db:seed": "bun run src/server/db/seed.ts",
 		"generate-vapid-keys": "bun run src/server/generate-vapid-keys.ts",
+		"test": "bun test src/tests",
+		"test:watch": "bun test --watch src/tests",
+		"test:server": "bun test src/tests/server",
 		"check:i18n": "bun run scripts/check-i18n.ts",
 		"format:md": "prettier --write \"**/*.md\"",
 		"check": "bunx biome check --write --unsafe && bunx tsc --noEmit && bun run check:i18n && bun run format:md",
@@ -26,6 +29,7 @@
 		"nodemailer": "^8.0.1",
 		"reflect-metadata": "^0.2.2",
 		"sql.js": "^1.14.0",
+		"ts-caldav": "^0.3.0",
 		"typeorm": "^0.3.28",
 		"web-push": "^3.6.7"
 	},

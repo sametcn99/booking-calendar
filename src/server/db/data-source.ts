@@ -1,6 +1,4 @@
 import "reflect-metadata";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
 import { DataSource } from "typeorm";
 import { config } from "../config";
 import { AdminCredentialEntity } from "../entities/AdminCredentialEntity";
@@ -12,14 +10,48 @@ import { PlannerEventEntity } from "../entities/PlannerEventEntity";
 import { PushSubscriptionEntity } from "../entities/PushSubscriptionEntity";
 import { SettingsEntity } from "../entities/SettingsEntity";
 
-const dbDir = dirname(config.db.path);
-if (!existsSync(dbDir)) {
-	mkdirSync(dbDir, { recursive: true });
+function getDatabasePath(): string {
+	return config.db.path;
+}
+
+function getDirectoryPath(filePath: string): string {
+	const normalized = filePath.replace(/\\/g, "/");
+	const lastSeparatorIndex = normalized.lastIndexOf("/");
+	if (lastSeparatorIndex <= 0) {
+		return ".";
+	}
+
+	return normalized.slice(0, lastSeparatorIndex);
+}
+
+async function ensureDatabaseDirectory(dbPath: string): Promise<void> {
+	const dbDir = getDirectoryPath(dbPath);
+	if (!dbDir || dbDir === ".") {
+		return;
+	}
+
+	const command =
+		process.platform === "win32"
+			? [
+					"powershell",
+					"-NoProfile",
+					"-Command",
+					`New-Item -ItemType Directory -Force -Path '${dbDir.replace(/'/g, "''")}' | Out-Null`,
+				]
+			: ["mkdir", "-p", dbDir];
+	const processHandle = Bun.spawn(command, {
+		stdout: "ignore",
+		stderr: "ignore",
+	});
+	const exitCode = await processHandle.exited;
+	if (exitCode !== 0) {
+		throw new Error(`Failed to create database directory: ${dbDir}`);
+	}
 }
 
 export const AppDataSource = new DataSource({
 	type: "sqljs",
-	location: config.db.path,
+	location: getDatabasePath(),
 	autoSave: true,
 	synchronize: true,
 	entities: [
@@ -38,11 +70,24 @@ export const AppDataSource = new DataSource({
 	},
 });
 
+async function configureDataSourceForCurrentPath(): Promise<string> {
+	const dbPath = getDatabasePath();
+	await ensureDatabaseDirectory(dbPath);
+	AppDataSource.setOptions({
+		location: dbPath,
+		database: undefined,
+	});
+	return dbPath;
+}
+
 export async function initializeDataSource(): Promise<void> {
 	if (AppDataSource.isInitialized) return;
 
-	if (existsSync(config.db.path)) {
-		const fileBuffer = readFileSync(config.db.path);
+	const dbPath = await configureDataSourceForCurrentPath();
+	const databaseFile = Bun.file(dbPath);
+
+	if ((await databaseFile.exists()) && databaseFile.size > 0) {
+		const fileBuffer = await databaseFile.arrayBuffer();
 		AppDataSource.setOptions({
 			database: new Uint8Array(fileBuffer),
 		});
@@ -54,10 +99,29 @@ export async function initializeDataSource(): Promise<void> {
 export async function closeDataSource(): Promise<void> {
 	if (!AppDataSource.isInitialized) return;
 
+	const dbPath = getDatabasePath();
+	await ensureDatabaseDirectory(dbPath);
 	const sqljsDriver = AppDataSource.driver as unknown as {
 		export: () => Uint8Array;
 	};
 	const exported = sqljsDriver.export();
-	writeFileSync(config.db.path, Buffer.from(exported));
+	await Bun.write(dbPath, exported);
 	await AppDataSource.destroy();
+}
+
+export async function resetDataSource(options?: {
+	removeDatabaseFile?: boolean;
+}): Promise<void> {
+	if (AppDataSource.isInitialized) {
+		await AppDataSource.destroy();
+	}
+
+	const dbPath = await configureDataSourceForCurrentPath();
+	if (options?.removeDatabaseFile) {
+		await Bun.write(dbPath, new Uint8Array());
+	}
+	AppDataSource.setOptions({
+		location: dbPath,
+		database: undefined,
+	});
 }

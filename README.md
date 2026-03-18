@@ -25,6 +25,7 @@ For detailed guides, API references, and deployment instructions, please visit o
 - **Community Events**: Support for community-driven events with public approval workflows.
 - **Integrations**:
   - **Webhooks**: HMAC-signed notifications for Discord, Slack, or custom automations.
+  - **CalDAV**: Import remote busy times anonymously and write approved bookings back to your own calendar.
   - **iCal Export**: Export your entire schedule or specific ranges to external calendars.
 - **Performance & Security**:
   - **Native PWA**: Installable on both mobile and desktop.

@@ -1,15 +1,16 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { t } from "../../i18n";
 import type { StaticRouteHandler } from "../types";
 import { jsonResponse } from "../utils";
 
-export const handleStaticSpaFallbackRoute: StaticRouteHandler = (args) => {
+export const handleStaticSpaFallbackRoute: StaticRouteHandler = async (
+	args,
+) => {
 	const { corsHeaders } = args;
-	const clientDist = join(import.meta.dir, "..", "..", "..", "client", "dist");
-	const indexPath = join(clientDist, "index.html");
+	const indexFile = Bun.file(
+		new URL("../../../client/dist/index.html", import.meta.url),
+	);
 
-	if (!existsSync(indexPath)) {
+	if (!(await indexFile.exists())) {
 		return jsonResponse(
 			404,
 			{ success: false, error: t("general.notFound") },
@@ -17,8 +18,7 @@ export const handleStaticSpaFallbackRoute: StaticRouteHandler = (args) => {
 		);
 	}
 
-	const file = Bun.file(indexPath);
-	return new Response(file, {
+	return new Response(indexFile, {
 		headers: {
 			"Content-Type": "text/html",
 			...corsHeaders,

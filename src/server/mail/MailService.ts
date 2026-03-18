@@ -1,4 +1,3 @@
-import { join } from "node:path";
 import Handlebars from "handlebars";
 import type { Transporter } from "nodemailer";
 import nodemailer from "nodemailer";
@@ -45,10 +44,9 @@ export class MailService {
 		let template = this.templateCache.get(templateName);
 
 		if (!template) {
-			const templatePath = join(
-				import.meta.dir,
-				"templates",
-				`${templateName}.hbs`,
+			const templatePath = new URL(
+				`./templates/${templateName}.hbs`,
+				import.meta.url,
 			);
 			const source = await Bun.file(templatePath).text();
 			template = Handlebars.compile(source);

@@ -1,47 +1,41 @@
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-
-function readAppVersionFromPackageJson(): string {
-	const packageJsonPath = join(import.meta.dir, "..", "..", "package.json");
-	if (!existsSync(packageJsonPath)) {
-		console.warn("package.json not found, app version is undefined");
-		return "undefined";
-	}
-
+async function readAppVersionFromPackageJson(): Promise<string> {
 	try {
-		const content = readFileSync(packageJsonPath, "utf-8");
-		const parsed = JSON.parse(content) as { version?: unknown };
+		const parsed = (await Bun.file(
+			new URL("../../package.json", import.meta.url),
+		).json()) as { version?: unknown };
 		return typeof parsed.version === "string" &&
 			parsed.version.trim().length > 0
 			? parsed.version.trim()
 			: "undefined";
 	} catch {
-		console.warn("package.json could not be parsed, app version is undefined");
+		console.warn("package.json could not be read, app version is undefined");
 		return "undefined";
 	}
 }
 
-function loadEnv(): void {
-	const envPath = join(import.meta.dir, "..", "..", ".env");
-	if (!existsSync(envPath)) {
-		console.warn(".env file not found, using defaults/environment variables");
-		return;
-	}
-	const content = readFileSync(envPath, "utf-8");
-	for (const line of content.split("\n")) {
-		const trimmed = line.trim();
-		if (!trimmed || trimmed.startsWith("#")) continue;
-		const eqIndex = trimmed.indexOf("=");
-		if (eqIndex === -1) continue;
-		const key = trimmed.slice(0, eqIndex).trim();
-		const value = trimmed.slice(eqIndex + 1).trim();
-		if (!process.env[key]) {
-			process.env[key] = value;
+async function loadEnv(): Promise<void> {
+	try {
+		const content = await Bun.file(
+			new URL("../../.env", import.meta.url),
+		).text();
+		for (const line of content.split("\n")) {
+			const trimmed = line.trim();
+			if (!trimmed || trimmed.startsWith("#")) continue;
+			const eqIndex = trimmed.indexOf("=");
+			if (eqIndex === -1) continue;
+			const key = trimmed.slice(0, eqIndex).trim();
+			const value = trimmed.slice(eqIndex + 1).trim();
+			if (!process.env[key]) {
+				process.env[key] = value;
+			}
 		}
+	} catch {
+		console.warn(".env file not found, using defaults/environment variables");
 	}
 }
 
-loadEnv();
+await loadEnv();
+const appVersion = await readAppVersionFromPackageJson();
 
 const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 const isProduction =
@@ -54,7 +48,7 @@ export const config = {
 	baseUrl,
 
 	app: {
-		version: readAppVersionFromPackageJson(),
+		version: appVersion,
 	},
 
 	github: {
@@ -93,7 +87,9 @@ export const config = {
 	},
 
 	db: {
-		path: process.env.DB_PATH || "./data/booking.db",
+		get path() {
+			return process.env.DB_PATH || "./data/booking.db";
+		},
 	},
 
 	rateLimit: {
@@ -105,6 +101,49 @@ export const config = {
 		publicKey: process.env.VITE_VAPID_PUBLIC_KEY || "",
 		privateKey: process.env.VAPID_PRIVATE_KEY || "",
 		email: process.env.ADMIN_EMAIL || "admin@example.com",
+	},
+
+	caldav: {
+		encryptionSecret:
+			process.env.CALDAV_ENCRYPTION_SECRET ||
+			process.env.JWT_SECRET ||
+			"default-secret-change-me",
+		requestTimeoutMs: parseInt(
+			process.env.CALDAV_REQUEST_TIMEOUT_MS || "10000",
+			10,
+		),
+		busyCacheTtlMs: parseInt(
+			process.env.CALDAV_BUSY_CACHE_TTL_MS || "60000",
+			10,
+		),
+		backgroundSyncIntervalMs: parseInt(
+			process.env.CALDAV_BACKGROUND_SYNC_INTERVAL_MS || "300000",
+			10,
+		),
+		backgroundSyncLookaheadDays: parseInt(
+			process.env.CALDAV_BACKGROUND_SYNC_LOOKAHEAD_DAYS || "30",
+			10,
+		),
+		backgroundSyncBatchSize: parseInt(
+			process.env.CALDAV_BACKGROUND_SYNC_BATCH_SIZE || "50",
+			10,
+		),
+		retryMaxAttempts: parseInt(
+			process.env.CALDAV_RETRY_MAX_ATTEMPTS || "3",
+			10,
+		),
+		retryBackoffBaseMs: parseInt(
+			process.env.CALDAV_RETRY_BACKOFF_BASE_MS || "30000",
+			10,
+		),
+		retryBackoffMaxMs: parseInt(
+			process.env.CALDAV_RETRY_BACKOFF_MAX_MS || "3600000",
+			10,
+		),
+		degradedFailureThreshold: parseInt(
+			process.env.CALDAV_DEGRADED_FAILURE_THRESHOLD || "3",
+			10,
+		),
 	},
 
 	authCookies: {

@@ -45,5 +45,6 @@ Install Booking Calendar on your devices for a native-like experience.
 
 ## 📊 Integrations
 
+- **CalDAV Sync:** Read busy periods from your CalDAV calendars without exposing event details and write approved bookings back to a selected calendar.
 - **ICS Export:** Export your calendar for integration with Google Calendar, Apple Calendar, or Outlook.
 - **Webhook Events:** Trigger external workflows on specific booking events.
