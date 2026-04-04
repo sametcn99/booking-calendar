@@ -25,19 +25,19 @@
 	"dependencies": {
 		"@types/web-push": "^3.6.4",
 		"concurrently": "^9.2.1",
-		"handlebars": "^4.7.8",
-		"nodemailer": "^8.0.1",
+		"handlebars": "^4.7.9",
+		"nodemailer": "^8.0.4",
 		"reflect-metadata": "^0.2.2",
-		"sql.js": "^1.14.0",
-		"ts-caldav": "^0.3.0",
+		"sql.js": "^1.14.1",
+		"ts-caldav": "^0.3.3",
 		"typeorm": "^0.3.28",
 		"web-push": "^3.6.7"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.3",
-		"@types/nodemailer": "^7.0.11",
-		"bun-types": "^1.3.9",
+		"@biomejs/biome": "2.4.10",
+		"@types/nodemailer": "^8.0.0",
+		"bun-types": "^1.3.11",
 		"prettier": "^3.8.1",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.2"
 	}
 }
