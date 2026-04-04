@@ -509,6 +509,24 @@
 				"pendingApproval": {
 					"type": "string"
 				},
+				"caldavLastSyncedAt": {
+					"type": "string"
+				},
+				"caldavSyncError": {
+					"type": "string"
+				},
+				"caldavConflictTitle": {
+					"type": "string"
+				},
+				"caldavConflictDetected": {
+					"type": "string"
+				},
+				"caldavConflictEtags": {
+					"type": "string"
+				},
+				"caldavConflictCount": {
+					"type": "string"
+				},
 				"appointmentApproved": {
 					"type": "string"
 				},
@@ -541,6 +559,12 @@
 				"approveBtn",
 				"rejectBtn",
 				"pendingApproval",
+				"caldavLastSyncedAt",
+				"caldavSyncError",
+				"caldavConflictTitle",
+				"caldavConflictDetected",
+				"caldavConflictEtags",
+				"caldavConflictCount",
 				"appointmentCanceled",
 				"appointmentDeleted",
 				"appointmentApproved",
@@ -957,6 +981,192 @@
 				"emailNotificationsSaved": {
 					"type": "string"
 				},
+				"caldav": {
+					"type": "string"
+				},
+				"caldavDescription": {
+					"type": "string"
+				},
+				"caldavEnabled": {
+					"type": "string"
+				},
+				"caldavDisabled": {
+					"type": "string"
+				},
+				"caldavBaseUrl": {
+					"type": "string"
+				},
+				"caldavBaseUrlPlaceholder": {
+					"type": "string"
+				},
+				"caldavUsername": {
+					"type": "string"
+				},
+				"caldavPassword": {
+					"type": "string"
+				},
+				"caldavPasswordHint": {
+					"type": "string"
+				},
+				"caldavPasswordStoredHint": {
+					"type": "string"
+				},
+				"caldavPasswordPlaceholder": {
+					"type": "string"
+				},
+				"caldavPasswordPlaceholderStored": {
+					"type": "string"
+				},
+				"caldavWritableCalendar": {
+					"type": "string"
+				},
+				"caldavWritableCalendarDescription": {
+					"type": "string"
+				},
+				"caldavWritableCalendarPlaceholder": {
+					"type": "string"
+				},
+				"caldavSave": {
+					"type": "string"
+				},
+				"caldavSaved": {
+					"type": "string"
+				},
+				"caldavTestConnection": {
+					"type": "string"
+				},
+				"caldavConnectionSuccess": {
+					"type": "string"
+				},
+				"caldavHealthTitle": {
+					"type": "string"
+				},
+				"caldavLastSyncStatus": {
+					"type": "string"
+				},
+				"caldavLastSyncAt": {
+					"type": "string"
+				},
+				"caldavFailedAppointments": {
+					"type": "string"
+				},
+				"caldavRetryableAppointments": {
+					"type": "string"
+				},
+				"caldavQueueTotal": {
+					"type": "string"
+				},
+				"caldavConflictCount": {
+					"type": "string"
+				},
+				"caldavUnsyncedApproved": {
+					"type": "string"
+				},
+				"caldavBackgroundSync": {
+					"type": "string"
+				},
+				"caldavBackgroundSyncEnabled": {
+					"type": "string"
+				},
+				"caldavBackgroundSyncDisabled": {
+					"type": "string"
+				},
+				"caldavBackgroundSyncInterval": {
+					"type": "string"
+				},
+				"caldavLastBackgroundSync": {
+					"type": "string"
+				},
+				"caldavNextBackgroundSync": {
+					"type": "string"
+				},
+				"caldavRetrySync": {
+					"type": "string"
+				},
+				"caldavSyncRunning": {
+					"type": "string"
+				},
+				"caldavRetryCompleted": {
+					"type": "string"
+				},
+				"caldavRetryNoop": {
+					"type": "string"
+				},
+				"caldavDegradedModeEnabled": {
+					"type": "string"
+				},
+				"caldavQueueTitle": {
+					"type": "string"
+				},
+				"caldavQueueEmpty": {
+					"type": "string"
+				},
+				"caldavQueueStatus": {
+					"type": "string"
+				},
+				"caldavConflictDetail": {
+					"type": "string"
+				},
+				"caldavConflictDetected": {
+					"type": "string"
+				},
+				"caldavConflictEtags": {
+					"type": "string"
+				},
+				"caldavRepairBlockedByPolicy": {
+					"type": "string"
+				},
+				"caldavRepairAction": {
+					"type": "object",
+					"properties": {
+						"retry": {
+							"type": "string"
+						},
+						"refresh_etag": {
+							"type": "string"
+						},
+						"force_overwrite": {
+							"type": "string"
+						}
+					},
+					"required": ["retry", "refresh_etag", "force_overwrite"],
+					"additionalProperties": false
+				},
+				"caldavRepairActionLabel": {
+					"type": "object",
+					"properties": {
+						"retry": {
+							"type": "string"
+						},
+						"refresh_etag": {
+							"type": "string"
+						},
+						"force_overwrite": {
+							"type": "string"
+						}
+					},
+					"required": ["retry", "refresh_etag", "force_overwrite"],
+					"additionalProperties": false
+				},
+				"caldavCalendarsLoaded": {
+					"type": "string"
+				},
+				"caldavStatus": {
+					"type": "object",
+					"properties": {
+						"idle": {
+							"type": "string"
+						},
+						"ok": {
+							"type": "string"
+						},
+						"error": {
+							"type": "string"
+						}
+					},
+					"required": ["idle", "ok", "error"],
+					"additionalProperties": false
+				},
 				"webhook": {
 					"type": "string"
 				},
@@ -1211,6 +1421,55 @@
 				"emailNotificationsDisabled",
 				"emailNotificationsRequiresAdminEmail",
 				"emailNotificationsSaved",
+				"caldav",
+				"caldavDescription",
+				"caldavEnabled",
+				"caldavDisabled",
+				"caldavBaseUrl",
+				"caldavBaseUrlPlaceholder",
+				"caldavUsername",
+				"caldavPassword",
+				"caldavPasswordHint",
+				"caldavPasswordStoredHint",
+				"caldavPasswordPlaceholder",
+				"caldavPasswordPlaceholderStored",
+				"caldavWritableCalendar",
+				"caldavWritableCalendarDescription",
+				"caldavWritableCalendarPlaceholder",
+				"caldavSave",
+				"caldavSaved",
+				"caldavTestConnection",
+				"caldavConnectionSuccess",
+				"caldavHealthTitle",
+				"caldavLastSyncStatus",
+				"caldavLastSyncAt",
+				"caldavFailedAppointments",
+				"caldavRetryableAppointments",
+				"caldavQueueTotal",
+				"caldavConflictCount",
+				"caldavUnsyncedApproved",
+				"caldavBackgroundSync",
+				"caldavBackgroundSyncEnabled",
+				"caldavBackgroundSyncDisabled",
+				"caldavBackgroundSyncInterval",
+				"caldavLastBackgroundSync",
+				"caldavNextBackgroundSync",
+				"caldavRetrySync",
+				"caldavSyncRunning",
+				"caldavRetryCompleted",
+				"caldavRetryNoop",
+				"caldavDegradedModeEnabled",
+				"caldavQueueTitle",
+				"caldavQueueEmpty",
+				"caldavQueueStatus",
+				"caldavConflictDetail",
+				"caldavConflictDetected",
+				"caldavConflictEtags",
+				"caldavRepairBlockedByPolicy",
+				"caldavRepairAction",
+				"caldavRepairActionLabel",
+				"caldavCalendarsLoaded",
+				"caldavStatus",
 				"webhook",
 				"webhookDescription",
 				"webhookOutboundTitle",

@@ -39,7 +39,9 @@ export interface StaticRouteArgs {
 	corsHeaders: Record<string, string>;
 }
 
-export type StaticRouteHandler = (args: StaticRouteArgs) => Response | null;
+export type StaticRouteHandler = (
+	args: StaticRouteArgs,
+) => Promise<Response | null>;
 
 export interface AuthenticatedAdminUser {
 	username: string;

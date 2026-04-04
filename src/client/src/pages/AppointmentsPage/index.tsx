@@ -22,6 +22,9 @@ export default function AppointmentsPage() {
 		handleDelete,
 		handleApprove,
 		handleReject,
+		handleRepairCalDAV,
+		repairingSlugId,
+		repairingAction,
 		setStatusFilter,
 		statusFilter,
 		search,
@@ -117,6 +120,9 @@ export default function AppointmentsPage() {
 							onDelete={handleDelete}
 							onApprove={handleApprove}
 							onReject={handleReject}
+							onRepairCalDAV={handleRepairCalDAV}
+							repairingSlugId={repairingSlugId}
+							repairingAction={repairingAction}
 							isPastAppointment={isPastAppointment}
 							canDeleteAppointment={canDeleteAppointment}
 							t={t}

@@ -1,5 +1,7 @@
 import { setLanguage, t } from "../../i18n";
 import { SettingsRepository } from "../../repositories/SettingsRepository";
+import { CalDAVService } from "../../services/CalDAVService";
+import { CalDAVSyncService } from "../../services/CalDAVSyncService";
 import {
 	isValidWebhookUrl,
 	isWebhookInboundScope,
@@ -16,6 +18,8 @@ import {
 export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 	const { pathname, method, corsHeaders } = args;
 	const webhookService = new WebhookService();
+	const caldavService = new CalDAVService();
+	const caldavSyncService = new CalDAVSyncService();
 
 	if (pathname === "/api/admin/settings/language" && method === "PUT") {
 		const body = await parseJsonBody<{ language?: string }>(args.request);
@@ -180,6 +184,168 @@ export const handleAdminSettingsRoutes: AdminRouteHandler = async (args) => {
 		return jsonResponse(
 			200,
 			{ success: true, data: { enabled: !!body.enabled } },
+			corsHeaders,
+		);
+	}
+
+	if (pathname === "/api/admin/settings/caldav" && method === "GET") {
+		const data = await caldavSyncService.getAdminSettings();
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/caldav/health" && method === "GET") {
+		const data = await caldavSyncService.getHealthSnapshot();
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/caldav/queue" && method === "GET") {
+		const limitParam = new URL(args.request.url).searchParams.get("limit");
+		const limit = Number.parseInt(limitParam || "50", 10);
+		const data = await caldavSyncService.getQueueSnapshot(
+			Number.isFinite(limit) && limit > 0 ? limit : 50,
+		);
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/caldav/policy" && method === "GET") {
+		const data = {
+			default_sync_policy: await caldavService.getDefaultSyncPolicy(),
+		};
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/caldav/policy" && method === "PUT") {
+		const body = await parseJsonBody<{
+			default_sync_policy?: string;
+		}>(args.request);
+
+		if (
+			body.default_sync_policy !== "one_way_write" &&
+			body.default_sync_policy !== "read_only_busy" &&
+			body.default_sync_policy !== "two_way_guarded"
+		) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidRequest") },
+				corsHeaders,
+			);
+		}
+
+		const data = await caldavService.updateDefaultSyncPolicy(
+			body.default_sync_policy,
+		);
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (
+		pathname === "/api/admin/settings/caldav/queue/retry" &&
+		method === "POST"
+	) {
+		const body = await parseJsonBody<{ slug_id?: string }>(args.request);
+		const slugId = body.slug_id?.trim();
+		if (!slugId) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidRequest") },
+				corsHeaders,
+			);
+		}
+
+		const data = await caldavSyncService.retryAppointmentBySlugId(slugId);
+		if (!data.appointment) {
+			return jsonResponse(
+				404,
+				{ success: false, error: t("appointment.notFound") },
+				corsHeaders,
+			);
+		}
+
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (
+		pathname === "/api/admin/settings/caldav/queue/repair" &&
+		method === "POST"
+	) {
+		const body = await parseJsonBody<{
+			slug_id?: string;
+			action?: string;
+		}>(args.request);
+		const slugId = body.slug_id?.trim();
+		if (!slugId) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidRequest") },
+				corsHeaders,
+			);
+		}
+
+		if (
+			body.action !== "retry" &&
+			body.action !== "refresh_etag" &&
+			body.action !== "force_overwrite"
+		) {
+			return jsonResponse(
+				400,
+				{ success: false, error: t("general.invalidRequest") },
+				corsHeaders,
+			);
+		}
+
+		const data = await caldavSyncService.repairAppointmentBySlugId(
+			slugId,
+			body.action,
+		);
+		if (!data.appointment) {
+			return jsonResponse(
+				404,
+				{ success: false, error: t("appointment.notFound") },
+				corsHeaders,
+			);
+		}
+
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/caldav/test" && method === "POST") {
+		const body = await parseJsonBody<{
+			base_url?: string;
+			username?: string;
+			password?: string;
+		}>(args.request);
+
+		const calendars = await caldavService.discoverCalendars(body);
+		return jsonResponse(
+			200,
+			{ success: true, data: { calendars } },
+			corsHeaders,
+		);
+	}
+
+	if (pathname === "/api/admin/settings/caldav" && method === "PUT") {
+		const body = await parseJsonBody<{
+			enabled?: boolean;
+			base_url?: string;
+			username?: string;
+			password?: string;
+			writable_calendar_url?: string;
+			default_sync_policy?:
+				| "one_way_write"
+				| "read_only_busy"
+				| "two_way_guarded";
+		}>(args.request);
+
+		await caldavService.updateSettings(body);
+		const data = await caldavSyncService.getAdminSettings();
+		return jsonResponse(200, { success: true, data }, corsHeaders);
+	}
+
+	if (pathname === "/api/admin/settings/caldav/sync" && method === "POST") {
+		const result = await caldavSyncService.runSync();
+		const snapshot = await caldavSyncService.getHealthSnapshot();
+		return jsonResponse(
+			200,
+			{ success: true, data: { result, snapshot } },
 			corsHeaders,
 		);
 	}

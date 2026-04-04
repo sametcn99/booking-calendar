@@ -1,4 +1,3 @@
-import { timingSafeEqual } from "node:crypto";
 import { config } from "../config";
 import { t } from "../i18n";
 import { AdminCredentialRepository } from "../repositories/AdminCredentialRepository";
@@ -13,6 +12,22 @@ type AuthTokenPayload = {
 	iss: string;
 	aud: string;
 };
+
+function constantTimeEqual(
+	expected: Uint8Array,
+	provided: Uint8Array,
+): boolean {
+	if (expected.length !== provided.length) {
+		return false;
+	}
+
+	let diff = 0;
+	for (let index = 0; index < expected.length; index++) {
+		diff |= expected[index] ^ provided[index];
+	}
+
+	return diff === 0;
+}
 
 export class AuthService {
 	private credentialRepo: AdminCredentialRepository;
@@ -250,12 +265,7 @@ export class AuthService {
 	): Promise<boolean> {
 		const expected = new Uint8Array(await this.signRaw(data, secret));
 		const provided = this.base64urlDecodeToBytes(signature);
-
-		if (expected.length !== provided.length) {
-			return false;
-		}
-
-		return timingSafeEqual(Buffer.from(expected), Buffer.from(provided));
+		return constantTimeEqual(expected, provided);
 	}
 
 	private base64urlEncodeString(str: string): string {

@@ -62,7 +62,7 @@ export function createServer(dependencies: ServerDependencies) {
 				return adminResponse;
 			}
 
-			return handleStaticRoutes(pathname, corsHeaders);
+			return await handleStaticRoutes(pathname, corsHeaders);
 		},
 	});
 }

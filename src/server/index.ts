@@ -12,6 +12,7 @@ import { createOpenApiDocument } from "./docs/openapi";
 import { createServer } from "./http/createServer";
 import { loadLanguageFromDB } from "./i18n";
 import { MailService } from "./mail/MailService";
+import { CalDAVSyncService } from "./services/CalDAVSyncService";
 
 await initializeDatabase();
 await loadLanguageFromDB();
@@ -30,6 +31,9 @@ const dependencies = {
 };
 
 createServer(dependencies);
+
+const caldavSyncService = new CalDAVSyncService();
+caldavSyncService.startBackgroundSync();
 
 console.log(`Server running at http://${config.host}:${config.port}`);
 

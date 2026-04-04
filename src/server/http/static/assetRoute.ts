@@ -1,29 +1,28 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { t } from "../../i18n";
 import type { StaticRouteHandler } from "../types";
 import { getMimeType, jsonResponse } from "../utils";
 
-export const handleStaticAssetRoute: StaticRouteHandler = (args) => {
+export const handleStaticAssetRoute: StaticRouteHandler = async (args) => {
 	const { pathname, corsHeaders } = args;
 
 	if (pathname === "/" || pathname.startsWith("/api")) {
 		return null;
 	}
 
-	const clientDist = join(import.meta.dir, "..", "..", "..", "client", "dist");
-	const filePath = join(clientDist, pathname);
-	if (!filePath.startsWith(clientDist)) {
+	const clientDistUrl = new URL("../../../client/dist/", import.meta.url);
+	const fileUrl = new URL(`.${pathname}`, clientDistUrl);
+	if (!fileUrl.href.startsWith(clientDistUrl.href)) {
 		return jsonResponse(403, {
 			success: false,
 			error: t("general.forbidden"),
 		});
 	}
-	if (!existsSync(filePath)) {
+
+	const file = Bun.file(fileUrl);
+	if (!(await file.exists())) {
 		return null;
 	}
 
-	const file = Bun.file(filePath);
 	return new Response(file, {
 		headers: {
 			"Content-Type": getMimeType(pathname),

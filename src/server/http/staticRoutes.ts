@@ -10,14 +10,19 @@ const staticHandlers: StaticRouteHandler[] = [
 export function handleStaticRoutes(
 	pathname: string,
 	corsHeaders: Record<string, string>,
-): Response {
-	for (const handler of staticHandlers) {
-		const response = handler({ pathname, corsHeaders });
-		if (response) {
-			return response;
+): Promise<Response> {
+	return (async () => {
+		for (const handler of staticHandlers) {
+			const response = await handler({ pathname, corsHeaders });
+			if (response) {
+				return response;
+			}
 		}
-	}
 
-	// The fallback handler currently guarantees a response.
-	return handleStaticSpaFallbackRoute({ pathname, corsHeaders }) as Response;
+		// The fallback handler currently guarantees a response.
+		return (await handleStaticSpaFallbackRoute({
+			pathname,
+			corsHeaders,
+		})) as Response;
+	})();
 }

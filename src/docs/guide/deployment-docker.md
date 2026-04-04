@@ -101,6 +101,8 @@ These can be updated by simply restarting the container.
 
 - **`ADMIN_PASSWORD`**: Required to access the management dashboard.
 - **`JWT_SECRET`**: Used for session security. Should be a long random string.
+- **`CALDAV_ENCRYPTION_SECRET`**: Optional dedicated secret for encrypting stored CalDAV credentials.
+- **`CALDAV_BACKGROUND_SYNC_INTERVAL_MS`**: Controls background retry/warmup cadence for CalDAV sync.
 - **`SMTP_*`**: Parameters for your email provider (host, port, user, pass).
 - **`DB_PATH`**: Internal path to the database (default: `/app/data/booking.db`).
 
@@ -139,6 +141,14 @@ services:
       # --- WEB PUSH (Optional) ---
       - VITE_VAPID_PUBLIC_KEY=your_public_vapid_key
       - VAPID_PRIVATE_KEY=your_private_vapid_key
+
+      # --- CALDAV (Optional) ---
+      - CALDAV_ENCRYPTION_SECRET=another_long_random_secret
+      - CALDAV_REQUEST_TIMEOUT_MS=10000
+      - CALDAV_BUSY_CACHE_TTL_MS=60000
+      - CALDAV_BACKGROUND_SYNC_INTERVAL_MS=300000
+      - CALDAV_BACKGROUND_SYNC_LOOKAHEAD_DAYS=30
+      - CALDAV_BACKGROUND_SYNC_BATCH_SIZE=50
 
       # --- SEO (Build-time) ---
       - VITE_SEO_TITLE="Premium Booking Service"

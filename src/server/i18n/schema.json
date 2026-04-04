@@ -219,6 +219,36 @@
 				"smtpConnectionFailed": {
 					"type": "string"
 				},
+				"invalidCaldavUrl": {
+					"type": "string"
+				},
+				"caldavCredentialsRequired": {
+					"type": "string"
+				},
+				"caldavConnectionFailed": {
+					"type": "string"
+				},
+				"caldavDisabled": {
+					"type": "string"
+				},
+				"caldavWritableCalendarRequired": {
+					"type": "string"
+				},
+				"caldavWritableCalendarInvalid": {
+					"type": "string"
+				},
+				"caldavSecretInvalid": {
+					"type": "string"
+				},
+				"caldavSyncFailed": {
+					"type": "string"
+				},
+				"caldavEtagConflict": {
+					"type": "string"
+				},
+				"caldavRemoteEventNotFound": {
+					"type": "string"
+				},
 				"invalidWebhookUrl": {
 					"type": "string"
 				},
@@ -268,6 +298,16 @@
 				"invalidEmail",
 				"adminEmailRequiredForEmailNotifications",
 				"smtpConnectionFailed",
+				"invalidCaldavUrl",
+				"caldavCredentialsRequired",
+				"caldavConnectionFailed",
+				"caldavDisabled",
+				"caldavWritableCalendarRequired",
+				"caldavWritableCalendarInvalid",
+				"caldavSecretInvalid",
+				"caldavSyncFailed",
+				"caldavEtagConflict",
+				"caldavRemoteEventNotFound",
 				"invalidWebhookUrl",
 				"webhookSecretTooShort",
 				"webhookRequiresUrlAndSecret",

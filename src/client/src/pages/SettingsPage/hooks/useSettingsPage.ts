@@ -1,6 +1,10 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useState } from "react";
 import {
+	type ApiCalDAVHealthSnapshot,
+	type ApiCalDAVQueueSnapshot,
+	type ApiCalDAVRepairAction,
+	type ApiCalDAVSettings,
 	type ApiVersionInfo,
 	type ApiWebhookSettings,
 	api,
@@ -54,6 +58,93 @@ function applyWebhookSettings(
 	setWebhookInboundScopes(settings.inbound.scopes);
 }
 
+function applyCalDAVSettings(
+	settings: ApiCalDAVSettings,
+	setCalDAVEnabled: (value: boolean) => void,
+	setCalDAVBaseUrl: (value: string) => void,
+	setCalDAVUsername: (value: string) => void,
+	setCalDAVHasPassword: (value: boolean) => void,
+	setCalDAVPassword: (value: string) => void,
+	setCalDAVWritableCalendarUrl: (value: string) => void,
+	setCalDAVCalendars: (value: ApiCalDAVSettings["calendars"]) => void,
+	setCalDAVLastSyncAt: (value: string | null) => void,
+	setCalDAVLastSyncStatus: (
+		value: ApiCalDAVSettings["last_sync_status"],
+	) => void,
+	setCalDAVLastSyncError: (value: string | null) => void,
+	setCalDAVHealth: (value: ApiCalDAVSettings["health"]) => void,
+) {
+	setCalDAVEnabled(settings.enabled);
+	setCalDAVBaseUrl(settings.base_url);
+	setCalDAVUsername(settings.username);
+	setCalDAVHasPassword(settings.has_password);
+	setCalDAVPassword("");
+	setCalDAVWritableCalendarUrl(settings.writable_calendar_url);
+	setCalDAVCalendars(settings.calendars);
+	setCalDAVLastSyncAt(settings.last_sync_at);
+	setCalDAVLastSyncStatus(settings.last_sync_status);
+	setCalDAVLastSyncError(settings.last_sync_error);
+	setCalDAVHealth(settings.health);
+}
+
+function applyCalDAVHealthSnapshot(
+	snapshot: ApiCalDAVHealthSnapshot,
+	setCalDAVLastSyncAt: (value: string | null) => void,
+	setCalDAVLastSyncStatus: (
+		value: ApiCalDAVSettings["last_sync_status"],
+	) => void,
+	setCalDAVLastSyncError: (value: string | null) => void,
+	setCalDAVHealth: (value: ApiCalDAVSettings["health"]) => void,
+) {
+	setCalDAVLastSyncAt(snapshot.last_sync_at);
+	setCalDAVLastSyncStatus(snapshot.last_sync_status);
+	setCalDAVLastSyncError(snapshot.last_sync_error);
+	setCalDAVHealth(snapshot.health);
+}
+
+const EMPTY_CALDAV_HEALTH: ApiCalDAVSettings["health"] = {
+	failed_appointments_count: 0,
+	retryable_appointments_count: 0,
+	unsynced_approved_count: 0,
+	error_breakdown: {
+		auth: 0,
+		network: 0,
+		conflict: 0,
+		validation: 0,
+		calendar: 0,
+		unknown: 0,
+	},
+	queue: {
+		idle: 0,
+		syncing: 0,
+		retryable: 0,
+		failed: 0,
+		total: 0,
+	},
+	degraded_mode: {
+		enabled: false,
+		reason: null,
+		threshold: 0,
+		active_failed_count: 0,
+	},
+	background_sync_enabled: false,
+	background_sync_interval_ms: 0,
+	is_sync_running: false,
+	last_background_sync_at: null,
+	next_background_sync_at: null,
+};
+
+const EMPTY_CALDAV_QUEUE: ApiCalDAVQueueSnapshot = {
+	summary: {
+		idle: 0,
+		syncing: 0,
+		retryable: 0,
+		failed: 0,
+		total: 0,
+	},
+	items: [],
+};
+
 interface WebhookFormSnapshot {
 	outboundEnabled: boolean;
 	outboundUrl: string;
@@ -89,6 +180,34 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		useState(false);
 	const [savingEmailNotifications, setSavingEmailNotifications] =
 		useState(false);
+	const [caldavEnabled, setCalDAVEnabled] = useState(false);
+	const [caldavBaseUrl, setCalDAVBaseUrl] = useState("");
+	const [caldavUsername, setCalDAVUsername] = useState("");
+	const [caldavPassword, setCalDAVPassword] = useState("");
+	const [caldavHasPassword, setCalDAVHasPassword] = useState(false);
+	const [caldavWritableCalendarUrl, setCalDAVWritableCalendarUrl] =
+		useState("");
+	const [caldavCalendars, setCalDAVCalendars] = useState<
+		ApiCalDAVSettings["calendars"]
+	>([]);
+	const [caldavLastSyncAt, setCalDAVLastSyncAt] = useState<string | null>(null);
+	const [caldavLastSyncStatus, setCalDAVLastSyncStatus] =
+		useState<ApiCalDAVSettings["last_sync_status"]>("idle");
+	const [caldavLastSyncError, setCalDAVLastSyncError] = useState<string | null>(
+		null,
+	);
+	const [caldavHealth, setCalDAVHealth] =
+		useState<ApiCalDAVSettings["health"]>(EMPTY_CALDAV_HEALTH);
+	const [caldavQueue, setCalDAVQueue] =
+		useState<ApiCalDAVQueueSnapshot>(EMPTY_CALDAV_QUEUE);
+	const [savingCalDAV, setSavingCalDAV] = useState(false);
+	const [testingCalDAV, setTestingCalDAV] = useState(false);
+	const [syncingCalDAV, setSyncingCalDAV] = useState(false);
+	const [repairingCalDAVSlugId, setRepairingCalDAVSlugId] = useState<
+		string | null
+	>(null);
+	const [repairingCalDAVAction, setRepairingCalDAVAction] =
+		useState<ApiCalDAVRepairAction | null>(null);
 	const [webhookOutboundEnabled, setWebhookOutboundEnabled] = useState(false);
 	const [webhookOutboundUrl, setWebhookOutboundUrl] = useState("");
 	const [webhookOutboundSecret, setWebhookOutboundSecret] = useState("");
@@ -159,6 +278,58 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 			.then((enabled) => setEmailNotificationsEnabled(enabled))
 			.catch(() => {});
 	}, []);
+
+	useEffect(() => {
+		Promise.all([api.getCalDAVSettings(), api.getCalDAVQueue()])
+			.then(([settings, queue]) => {
+				applyCalDAVSettings(
+					settings,
+					setCalDAVEnabled,
+					setCalDAVBaseUrl,
+					setCalDAVUsername,
+					setCalDAVHasPassword,
+					setCalDAVPassword,
+					setCalDAVWritableCalendarUrl,
+					setCalDAVCalendars,
+					setCalDAVLastSyncAt,
+					setCalDAVLastSyncStatus,
+					setCalDAVLastSyncError,
+					setCalDAVHealth,
+				);
+				setCalDAVQueue(queue);
+			})
+			.catch(() => {});
+	}, []);
+
+	const refreshCalDAVHealth = useCallback(async () => {
+		const snapshot = await api.getCalDAVHealth();
+		applyCalDAVHealthSnapshot(
+			snapshot,
+			setCalDAVLastSyncAt,
+			setCalDAVLastSyncStatus,
+			setCalDAVLastSyncError,
+			setCalDAVHealth,
+		);
+	}, []);
+
+	const refreshCalDAVQueue = useCallback(async () => {
+		const queue = await api.getCalDAVQueue();
+		setCalDAVQueue(queue);
+	}, []);
+
+	const refreshCalDAVMonitoring = useCallback(async () => {
+		await Promise.all([refreshCalDAVHealth(), refreshCalDAVQueue()]);
+	}, [refreshCalDAVHealth, refreshCalDAVQueue]);
+
+	useEffect(() => {
+		const intervalId = window.setInterval(() => {
+			refreshCalDAVMonitoring().catch(() => {});
+		}, 30000);
+
+		return () => {
+			window.clearInterval(intervalId);
+		};
+	}, [refreshCalDAVMonitoring]);
 
 	useEffect(() => {
 		api
@@ -348,6 +519,117 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		[adminEmail, t],
 	);
 
+	const handleTestCalDAVConnection = useCallback(async () => {
+		setTestingCalDAV(true);
+		try {
+			const data = await api.testCalDAVConnection({
+				base_url: caldavBaseUrl,
+				username: caldavUsername,
+				password: caldavPassword.trim().length > 0 ? caldavPassword : undefined,
+			});
+			setCalDAVCalendars(data.calendars);
+			toaster.positive(t("settings.caldavConnectionSuccess"), {});
+		} catch (error: unknown) {
+			toaster.negative(getErrorMessage(error, t("common.error")), {});
+		} finally {
+			setTestingCalDAV(false);
+		}
+	}, [caldavBaseUrl, caldavPassword, caldavUsername, t]);
+
+	const handleSaveCalDAVSettings = useCallback(
+		async (event: React.FormEvent) => {
+			event.preventDefault();
+			setSavingCalDAV(true);
+			try {
+				const settings = await api.setCalDAVSettings({
+					enabled: caldavEnabled,
+					base_url: caldavBaseUrl,
+					username: caldavUsername,
+					password:
+						caldavPassword.trim().length > 0 ? caldavPassword : undefined,
+					writable_calendar_url: caldavWritableCalendarUrl,
+				});
+				applyCalDAVSettings(
+					settings,
+					setCalDAVEnabled,
+					setCalDAVBaseUrl,
+					setCalDAVUsername,
+					setCalDAVHasPassword,
+					setCalDAVPassword,
+					setCalDAVWritableCalendarUrl,
+					setCalDAVCalendars,
+					setCalDAVLastSyncAt,
+					setCalDAVLastSyncStatus,
+					setCalDAVLastSyncError,
+					setCalDAVHealth,
+				);
+				toaster.positive(t("settings.caldavSaved"), {});
+			} catch (error: unknown) {
+				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} finally {
+				setSavingCalDAV(false);
+			}
+		},
+		[
+			caldavBaseUrl,
+			caldavEnabled,
+			caldavPassword,
+			caldavUsername,
+			caldavWritableCalendarUrl,
+			t,
+		],
+	);
+
+	const handleRetryCalDAVSync = useCallback(async () => {
+		setSyncingCalDAV(true);
+		try {
+			const data = await api.triggerCalDAVSync();
+			applyCalDAVHealthSnapshot(
+				data.snapshot,
+				setCalDAVLastSyncAt,
+				setCalDAVLastSyncStatus,
+				setCalDAVLastSyncError,
+				setCalDAVHealth,
+			);
+			await refreshCalDAVQueue();
+			if (data.result.processed_count === 0) {
+				toaster.positive(t("settings.caldavRetryNoop"), {});
+			} else {
+				toaster.positive(
+					`${t("settings.caldavRetryCompleted")} ${data.result.success_count}/${data.result.processed_count}`,
+					{},
+				);
+			}
+		} catch (error: unknown) {
+			toaster.negative(getErrorMessage(error, t("common.error")), {});
+		} finally {
+			setSyncingCalDAV(false);
+		}
+	}, [refreshCalDAVQueue, t]);
+
+	const handleRepairCalDAVQueueItem = useCallback(
+		async (slugId: string, action: ApiCalDAVRepairAction) => {
+			setRepairingCalDAVSlugId(slugId);
+			setRepairingCalDAVAction(action);
+			try {
+				const data = await api.repairCalDAVQueueItem(slugId, action);
+				await refreshCalDAVMonitoring();
+				if (data.blocked_by_policy) {
+					toaster.negative(t("settings.caldavRepairBlockedByPolicy"), {});
+					return;
+				}
+
+				toaster.positive(t(`settings.caldavRepairAction.${action}`), {});
+			} catch (error: unknown) {
+				toaster.negative(getErrorMessage(error, t("common.error")), {});
+			} finally {
+				setRepairingCalDAVSlugId(null);
+				setRepairingCalDAVAction(null);
+			}
+		},
+		[refreshCalDAVMonitoring, t],
+	);
+
 	const handleSaveWebhookSettings = useCallback(
 		async (event: React.FormEvent) => {
 			event.preventDefault();
@@ -484,16 +766,32 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		adminEmail,
 		savedAdminEmail,
 		calendarSharingEnabled,
+		caldavBaseUrl,
+		caldavCalendars,
+		caldavEnabled,
+		caldavHasPassword,
+		caldavLastSyncAt,
+		caldavHealth,
+		caldavQueue,
+		caldavLastSyncError,
+		caldavLastSyncStatus,
+		caldavPassword,
+		caldavUsername,
+		caldavWritableCalendarUrl,
 		changingPassword,
 		confirmPassword,
 		currentPassword,
 		emailNotificationsEnabled,
 		handleChangePassword,
 		handleLanguageChange,
+		handleSaveCalDAVSettings,
+		handleRepairCalDAVQueueItem,
+		handleRetryCalDAVSync,
 		handleSaveAdminEmail,
 		handleToggleCalendarSharing,
 		handleToggleEmailNotifications,
 		handleTogglePushNotifications,
+		handleTestCalDAVConnection,
 		handleSaveWebhookSettings,
 		handleSendWebhookTest,
 		handleWebhookInboundEnabledChange,
@@ -506,6 +804,8 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		mustChangePassword,
 		newPassword,
 		pushNotificationsEnabled,
+		repairingCalDAVAction,
+		repairingCalDAVSlugId,
 		revealingInboundSecret,
 		revealingOutboundSecret,
 		webhookInboundEnabled,
@@ -518,12 +818,20 @@ export function useSettingsPage({ setLanguage, t }: Params) {
 		webhookOutboundSecret,
 		webhookOutboundUrl,
 		savingAdminEmail,
+		savingCalDAV,
 		savingCalendarSharing,
 		savingEmailNotifications,
 		savingLanguage,
 		savingPushNotifications,
 		savingWebhook,
+		setCalDAVBaseUrl,
+		setCalDAVEnabled,
+		setCalDAVPassword,
+		setCalDAVUsername,
+		setCalDAVWritableCalendarUrl,
+		syncingCalDAV,
 		testingWebhook,
+		testingCalDAV,
 		loadingVersionInfo,
 		setAdminEmail,
 		setConfirmPassword,

@@ -3,20 +3,69 @@ import { AppointmentRepository } from "../repositories/AppointmentRepository";
 import { SlotRepository } from "../repositories/SlotRepository";
 import type {
 	AvailabilitySlot,
+	BusyInterval,
 	CreateSlotInput,
 	PublicAvailabilitySlot,
 } from "../types";
+import { CalDAVService } from "./CalDAVService";
 import { WebhookService } from "./WebhookService";
 
 export class SlotService {
 	private slotRepo: SlotRepository;
 	private appointmentRepo: AppointmentRepository;
+	private caldavService: CalDAVService;
 	private webhookService: WebhookService;
 
 	constructor() {
 		this.slotRepo = new SlotRepository();
 		this.appointmentRepo = new AppointmentRepository();
+		this.caldavService = new CalDAVService();
 		this.webhookService = new WebhookService();
+	}
+
+	private clipBusyIntervalToSlot(
+		interval: BusyInterval,
+		slot: AvailabilitySlot,
+	): BusyInterval | null {
+		const start_at =
+			interval.start_at > slot.start_at ? interval.start_at : slot.start_at;
+		const end_at =
+			interval.end_at < slot.end_at ? interval.end_at : slot.end_at;
+
+		if (end_at <= start_at) {
+			return null;
+		}
+
+		return { start_at, end_at };
+	}
+
+	private mergeBusyIntervals(intervals: BusyInterval[]): BusyInterval[] {
+		if (intervals.length <= 1) {
+			return intervals;
+		}
+
+		const sorted = [...intervals].sort((left, right) =>
+			left.start_at.localeCompare(right.start_at),
+		);
+		const merged: BusyInterval[] = [];
+
+		for (const interval of sorted) {
+			const previous = merged.at(-1);
+			if (!previous) {
+				merged.push(interval);
+				continue;
+			}
+
+			if (interval.start_at <= previous.end_at) {
+				previous.end_at =
+					interval.end_at > previous.end_at ? interval.end_at : previous.end_at;
+				continue;
+			}
+
+			merged.push(interval);
+		}
+
+		return merged;
 	}
 
 	async getAllSlots(): Promise<AvailabilitySlot[]> {
@@ -40,13 +89,15 @@ export class SlotService {
 		}
 
 		const slotIdList = slots.map((slot) => slot.id);
-		const intervals =
-			await this.appointmentRepo.findActiveIntervalsBySlotIds(slotIdList);
+		const [intervals, caldavIntervals] = await Promise.all([
+			this.appointmentRepo.findActiveIntervalsBySlotIds(slotIdList),
+			this.caldavService.getBusyIntervals(
+				slots[0].start_at,
+				slots[slots.length - 1].end_at,
+			),
+		]);
 
-		const busyBySlotId = new Map<
-			number,
-			Array<{ start_at: string; end_at: string }>
-		>();
+		const busyBySlotId = new Map<number, BusyInterval[]>();
 
 		for (const interval of intervals) {
 			const existing = busyBySlotId.get(interval.slot_id) || [];
@@ -57,9 +108,22 @@ export class SlotService {
 			busyBySlotId.set(interval.slot_id, existing);
 		}
 
+		for (const slot of slots) {
+			for (const caldavInterval of caldavIntervals) {
+				const clipped = this.clipBusyIntervalToSlot(caldavInterval, slot);
+				if (!clipped) {
+					continue;
+				}
+
+				const existing = busyBySlotId.get(slot.id) || [];
+				existing.push(clipped);
+				busyBySlotId.set(slot.id, existing);
+			}
+		}
+
 		return slots.map((slot) => ({
 			...slot,
-			busy_intervals: busyBySlotId.get(slot.id) || [],
+			busy_intervals: this.mergeBusyIntervals(busyBySlotId.get(slot.id) || []),
 		}));
 	}
 

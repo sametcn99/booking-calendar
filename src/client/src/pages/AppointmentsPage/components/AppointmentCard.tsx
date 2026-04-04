@@ -3,6 +3,7 @@ import { Button, KIND, SIZE } from "baseui/button";
 import { toaster } from "baseui/toast";
 import { Copy, ExternalLink } from "lucide-react";
 import { useState } from "react";
+import type { ApiCalDAVRepairAction } from "../../../api";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import type { Appointment } from "../hooks/useAppointmentsPage";
 
@@ -13,6 +14,9 @@ interface Props {
 	onDelete: (slugId: string) => void;
 	onApprove: (slugId: string) => void;
 	onReject: (slugId: string) => void;
+	onRepairCalDAV: (slugId: string, action: ApiCalDAVRepairAction) => void;
+	repairingSlugId: string | null;
+	repairingAction: ApiCalDAVRepairAction | null;
 	isPast: boolean;
 	canDelete: boolean;
 	t: (key: string) => string;
@@ -25,6 +29,9 @@ export default function AppointmentCard({
 	onDelete,
 	onApprove,
 	onReject,
+	onRepairCalDAV,
+	repairingSlugId,
+	repairingAction,
 	isPast,
 	canDelete,
 	t,
@@ -66,6 +73,11 @@ export default function AppointmentCard({
 	};
 
 	const isPending = appointment.status === "pending";
+	const hasCalDAVSyncError = appointment.caldav_sync_error !== null;
+	const hasCalDAVConflict = appointment.caldav_conflict_state === "detected";
+	const repairActions: ApiCalDAVRepairAction[] = hasCalDAVConflict
+		? ["retry", "refresh_etag", "force_overwrite"]
+		: [];
 
 	return (
 		<>
@@ -76,7 +88,9 @@ export default function AppointmentCard({
 					padding: "20px",
 					border: isPending
 						? "1px solid var(--color-warning-light)"
-						: "1px solid var(--color-bg-quaternary)",
+						: hasCalDAVConflict || hasCalDAVSyncError
+							? "1px solid var(--color-error-text)"
+							: "1px solid var(--color-bg-quaternary)",
 				})}
 			>
 				<div
@@ -204,6 +218,89 @@ export default function AppointmentCard({
 								{t("appointments.meetingPlace")}: {appointment.meeting_place}
 							</div>
 						)}
+						{appointment.caldav_last_synced_at ? (
+							<div
+								className={css({
+									fontSize: "12px",
+									color: "var(--color-text-tertiary)",
+									marginTop: "6px",
+								})}
+							>
+								{t("appointments.caldavLastSyncedAt")}:{" "}
+								{formatDate(appointment.caldav_last_synced_at)}
+							</div>
+						) : null}
+						{hasCalDAVSyncError ? (
+							<div
+								className={css({
+									fontSize: "12px",
+									color: "var(--color-error-text)",
+									marginTop: "8px",
+									padding: "8px 10px",
+									borderRadius: "8px",
+									backgroundColor: "var(--color-error-bg)",
+								})}
+							>
+								<strong>{t("appointments.caldavSyncError")}:</strong>{" "}
+								{appointment.caldav_sync_error}
+							</div>
+						) : null}
+						{hasCalDAVConflict ? (
+							<div
+								className={css({
+									display: "grid",
+									gap: "8px",
+									fontSize: "12px",
+									color: "var(--color-error-text)",
+									marginTop: "8px",
+									padding: "10px",
+									borderRadius: "8px",
+									backgroundColor: "var(--color-error-bg)",
+								})}
+							>
+								<div>
+									<strong>{t("appointments.caldavConflictTitle")}:</strong>{" "}
+									{appointment.caldav_conflict_detail ||
+										t("appointments.caldavConflictDetected")}
+								</div>
+								<div>
+									{t("appointments.caldavConflictEtags")}:{" "}
+									{appointment.caldav_etag || "-"} /{" "}
+									{appointment.caldav_remote_etag || "-"}
+								</div>
+								<div>
+									{t("appointments.caldavConflictCount")}:{" "}
+									{appointment.caldav_conflict_count}
+								</div>
+								{appointment.slug_id ? (
+									<div
+										className={css({
+											display: "flex",
+											flexWrap: "wrap",
+											gap: "8px",
+										})}
+									>
+										{repairActions.map((action) => (
+											<Button
+												key={action}
+												type="button"
+												kind={KIND.secondary}
+												size={SIZE.compact}
+												onClick={() =>
+													onRepairCalDAV(appointment.slug_id as string, action)
+												}
+												isLoading={
+													repairingSlugId === appointment.slug_id &&
+													repairingAction === action
+												}
+											>
+												{t(`settings.caldavRepairActionLabel.${action}`)}
+											</Button>
+										))}
+									</div>
+								) : null}
+							</div>
+						) : null}
 					</div>
 					<div
 						className={css({

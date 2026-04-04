@@ -6,6 +6,13 @@ import { BookingLinkRepository } from "../repositories/BookingLinkRepository";
 import { SettingsRepository } from "../repositories/SettingsRepository";
 import { SlotRepository } from "../repositories/SlotRepository";
 import type { AppointmentWithSlot, CreateAppointmentInput } from "../types";
+import {
+	calculateCalDAVNextRetryAt,
+	classifyCalDAVError,
+	normalizeCalDAVSyncPolicy,
+	policyUsesCalDAVWriteback,
+} from "../utils/caldavSync";
+import { CalDAVConflictError, CalDAVService } from "./CalDAVService";
 import { PushService } from "./PushService";
 import { WebhookService } from "./WebhookService";
 
@@ -15,6 +22,7 @@ export class AppointmentService {
 	private linkRepo: BookingLinkRepository;
 	private mailService: MailService;
 	private pushService: PushService;
+	private caldavService: CalDAVService;
 	private settingsRepo: SettingsRepository;
 	private webhookService: WebhookService;
 
@@ -24,6 +32,7 @@ export class AppointmentService {
 		this.linkRepo = new BookingLinkRepository();
 		this.mailService = new MailService();
 		this.pushService = new PushService();
+		this.caldavService = new CalDAVService();
 		this.settingsRepo = new SettingsRepository();
 		this.webhookService = new WebhookService();
 	}
@@ -36,6 +45,86 @@ export class AppointmentService {
 	private async isEmailEnabled(): Promise<boolean> {
 		const value = await this.settingsRepo.get("email_notifications_enabled");
 		return value === "true";
+	}
+
+	private async persistCalDAVSuccess(
+		appointmentId: number,
+		payload: Awaited<ReturnType<CalDAVService["syncApprovedAppointment"]>>,
+		policy: AppointmentWithSlot["caldav_sync_policy"],
+	): Promise<void> {
+		await this.appointmentRepo.updateCalDAVMetadata(appointmentId, {
+			...payload,
+			caldav_error_category: null,
+			caldav_error_retryable: null,
+			caldav_retry_count: 0,
+			caldav_next_retry_at: null,
+			caldav_queue_status: "idle",
+			caldav_queued_at: null,
+			caldav_sync_policy: policy,
+			caldav_conflict_state: null,
+			caldav_conflict_detail: null,
+			caldav_remote_etag: payload?.caldav_etag ?? null,
+		});
+	}
+
+	private async persistCalDAVError(
+		appointmentId: number,
+		error: unknown,
+		policy: AppointmentWithSlot["caldav_sync_policy"],
+	): Promise<void> {
+		const classified = classifyCalDAVError(
+			error,
+			t("general.caldavConnectionFailed"),
+		);
+		await this.appointmentRepo.updateCalDAVMetadata(appointmentId, {
+			caldav_sync_error: classified.message,
+			caldav_error_category: classified.category,
+			caldav_error_retryable: classified.retryable,
+			caldav_retry_count: 1,
+			caldav_next_retry_at: classified.retryable
+				? calculateCalDAVNextRetryAt(1)
+				: null,
+			caldav_queue_status: classified.retryable ? "retryable" : "failed",
+			caldav_queued_at: new Date().toISOString(),
+			caldav_sync_policy: policy,
+			caldav_last_conflict_at:
+				classified.category === "conflict" ? new Date().toISOString() : null,
+			caldav_conflict_count: classified.category === "conflict" ? 1 : 0,
+			caldav_conflict_state:
+				classified.category === "conflict" ? "detected" : null,
+			caldav_conflict_detail:
+				error instanceof CalDAVConflictError ? error.message : null,
+			caldav_remote_etag:
+				error instanceof CalDAVConflictError ? error.remoteEtag : null,
+		});
+	}
+
+	private async getEffectiveCalDAVSyncPolicy(
+		appointment?: AppointmentWithSlot,
+	): Promise<Exclude<AppointmentWithSlot["caldav_sync_policy"], null>> {
+		if (appointment?.caldav_sync_policy) {
+			return normalizeCalDAVSyncPolicy(appointment.caldav_sync_policy);
+		}
+
+		return this.caldavService.getDefaultSyncPolicy();
+	}
+
+	private async markCalDAVWriteSkipped(
+		appointmentId: number,
+		policy: AppointmentWithSlot["caldav_sync_policy"],
+	): Promise<void> {
+		await this.appointmentRepo.updateCalDAVMetadata(appointmentId, {
+			caldav_sync_error: null,
+			caldav_error_category: null,
+			caldav_error_retryable: null,
+			caldav_retry_count: null,
+			caldav_next_retry_at: null,
+			caldav_queue_status: "idle",
+			caldav_queued_at: null,
+			caldav_sync_policy: policy,
+			caldav_conflict_state: null,
+			caldav_conflict_detail: null,
+		});
 	}
 
 	async getAllAppointments(options?: {
@@ -98,6 +187,14 @@ export class AppointmentService {
 			throw new Error(t("appointment.outsideSlot"));
 		}
 
+		const hasCalDAVConflict = await this.caldavService.hasBusyConflict(
+			input.start_at,
+			input.end_at,
+		);
+		if (hasCalDAVConflict) {
+			throw new Error(t("appointment.overlap"));
+		}
+
 		// Use a transaction to prevent overlapping bookings in the same slot
 		const appointment = await AppDataSource.transaction(async (manager) => {
 			const hasOverlap = await this.appointmentRepo.hasOverlapInSlot(
@@ -125,6 +222,26 @@ export class AppointmentService {
 		const fullAppointment = await this.appointmentRepo.findById(appointment.id);
 		if (!fullAppointment) {
 			throw new Error(t("appointment.loadError"));
+		}
+
+		if (fullAppointment.status === "approved") {
+			const syncPolicy =
+				await this.getEffectiveCalDAVSyncPolicy(fullAppointment);
+			if (!policyUsesCalDAVWriteback(syncPolicy)) {
+				await this.markCalDAVWriteSkipped(fullAppointment.id, syncPolicy);
+			} else {
+				try {
+					const metadata =
+						await this.caldavService.syncApprovedAppointment(fullAppointment);
+					await this.persistCalDAVSuccess(
+						fullAppointment.id,
+						metadata,
+						syncPolicy,
+					);
+				} catch (error) {
+					await this.persistCalDAVError(fullAppointment.id, error, syncPolicy);
+				}
+			}
 		}
 
 		// Send emails asynchronously - do not block the response
@@ -193,11 +310,32 @@ export class AppointmentService {
 			throw new Error(t("appointment.notPending"));
 		}
 
+		const hasCalDAVConflict = await this.caldavService.hasBusyConflict(
+			appointment.start_at,
+			appointment.end_at,
+		);
+		if (hasCalDAVConflict) {
+			throw new Error(t("appointment.overlap"));
+		}
+
 		const approved = await this.appointmentRepo.updateStatus(
 			appointment.id,
 			"approved",
 		);
 		if (!approved) throw new Error(t("appointment.loadError"));
+
+		const syncPolicy = await this.getEffectiveCalDAVSyncPolicy(approved);
+		if (!policyUsesCalDAVWriteback(syncPolicy)) {
+			await this.markCalDAVWriteSkipped(approved.id, syncPolicy);
+		} else {
+			try {
+				const metadata =
+					await this.caldavService.syncApprovedAppointment(approved);
+				await this.persistCalDAVSuccess(approved.id, metadata, syncPolicy);
+			} catch (error) {
+				await this.persistCalDAVError(approved.id, error, syncPolicy);
+			}
+		}
 
 		// Send notification
 		const emailEnabled = await this.isEmailEnabled();
@@ -233,6 +371,19 @@ export class AppointmentService {
 		);
 		if (!rejected) throw new Error(t("appointment.loadError"));
 
+		if (appointment.caldav_uid) {
+			const syncPolicy = await this.getEffectiveCalDAVSyncPolicy(rejected);
+			if (!policyUsesCalDAVWriteback(syncPolicy)) {
+				await this.markCalDAVWriteSkipped(rejected.id, syncPolicy);
+			} else {
+				try {
+					await this.caldavService.deleteAppointmentFromCalendar(appointment);
+				} catch (error) {
+					await this.persistCalDAVError(rejected.id, error, syncPolicy);
+				}
+			}
+		}
+
 		// Send notification
 		const emailEnabled = await this.isEmailEnabled();
 		if (emailEnabled && rejected.email) {
@@ -260,6 +411,14 @@ export class AppointmentService {
 			throw new Error(t("appointment.deleteOnlyPastOrCanceled"));
 		}
 
+		if (appointment.caldav_uid) {
+			try {
+				await this.caldavService.deleteAppointmentFromCalendar(appointment);
+			} catch (error) {
+				console.error("Failed to delete appointment from CalDAV:", error);
+			}
+		}
+
 		const deleted = await this.appointmentRepo.deleteBySlugId(slugId);
 		if (deleted) {
 			this.webhookService
@@ -285,6 +444,23 @@ export class AppointmentService {
 			"admin",
 		);
 		if (!canceled) throw new Error(t("appointment.notFound"));
+
+		if (appointment.caldav_uid) {
+			const syncPolicy = await this.getEffectiveCalDAVSyncPolicy(canceled);
+			if (!policyUsesCalDAVWriteback(syncPolicy)) {
+				await this.markCalDAVWriteSkipped(canceled.id, syncPolicy);
+			} else {
+				try {
+					const metadata =
+						await this.caldavService.syncCanceledAppointment(canceled);
+					if (metadata) {
+						await this.persistCalDAVSuccess(canceled.id, metadata, syncPolicy);
+					}
+				} catch (error) {
+					await this.persistCalDAVError(canceled.id, error, syncPolicy);
+				}
+			}
+		}
 
 		const emailEnabled = await this.isEmailEnabled();
 		if (emailEnabled) {
@@ -334,6 +510,23 @@ export class AppointmentService {
 			"guest",
 		);
 		if (!canceled) throw new Error(t("appointment.notFound"));
+
+		if (appointment.caldav_uid) {
+			const syncPolicy = await this.getEffectiveCalDAVSyncPolicy(canceled);
+			if (!policyUsesCalDAVWriteback(syncPolicy)) {
+				await this.markCalDAVWriteSkipped(canceled.id, syncPolicy);
+			} else {
+				try {
+					const metadata =
+						await this.caldavService.syncCanceledAppointment(canceled);
+					if (metadata) {
+						await this.persistCalDAVSuccess(canceled.id, metadata, syncPolicy);
+					}
+				} catch (error) {
+					await this.persistCalDAVError(canceled.id, error, syncPolicy);
+				}
+			}
+		}
 
 		const emailEnabled = await this.isEmailEnabled();
 		if (emailEnabled) {

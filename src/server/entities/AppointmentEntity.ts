@@ -46,6 +46,60 @@ export class AppointmentEntity {
 	@Column({ type: "text", nullable: true })
 	canceled_by!: string | null;
 
+	@Column({ type: "text", nullable: true })
+	caldav_uid!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_calendar_url!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_href!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_etag!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_last_synced_at!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_sync_error!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_error_category!: string | null;
+
+	@Column({ type: "boolean", nullable: true })
+	caldav_error_retryable!: boolean | null;
+
+	@Column({ type: "integer", nullable: true })
+	caldav_retry_count!: number | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_next_retry_at!: string | null;
+
+	@Column({ type: "integer", default: 0 })
+	caldav_conflict_count!: number;
+
+	@Column({ type: "text", nullable: true })
+	caldav_last_conflict_at!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_conflict_state!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_conflict_detail!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_remote_etag!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_queue_status!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_queued_at!: string | null;
+
+	@Column({ type: "text", nullable: true })
+	caldav_sync_policy!: string | null;
+
 	@CreateDateColumn({ type: "datetime" })
 	created_at!: string;
 

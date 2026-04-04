@@ -1,4 +1,5 @@
 import { useStyletron } from "baseui";
+import type { ApiCalDAVRepairAction } from "../../../api";
 import type { Appointment } from "../hooks/useAppointmentsPage";
 import AppointmentCard from "./AppointmentCard";
 
@@ -9,6 +10,9 @@ interface Props {
 	onDelete: (slugId: string) => void;
 	onApprove: (slugId: string) => void;
 	onReject: (slugId: string) => void;
+	onRepairCalDAV: (slugId: string, action: ApiCalDAVRepairAction) => void;
+	repairingSlugId: string | null;
+	repairingAction: ApiCalDAVRepairAction | null;
 	isPastAppointment: (appointment: Appointment) => boolean;
 	canDeleteAppointment: (appointment: Appointment) => boolean;
 	t: (key: string) => string;
@@ -21,6 +25,9 @@ export default function AppointmentsListSection({
 	onDelete,
 	onApprove,
 	onReject,
+	onRepairCalDAV,
+	repairingSlugId,
+	repairingAction,
 	isPastAppointment,
 	canDeleteAppointment,
 	t,
@@ -50,6 +57,9 @@ export default function AppointmentsListSection({
 					onDelete={onDelete}
 					onApprove={onApprove}
 					onReject={onReject}
+					onRepairCalDAV={onRepairCalDAV}
+					repairingSlugId={repairingSlugId}
+					repairingAction={repairingAction}
 					isPast={isPastAppointment(apt)}
 					canDelete={canDeleteAppointment(apt)}
 					t={t}

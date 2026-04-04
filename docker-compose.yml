@@ -57,6 +57,13 @@ services:
 
       # ── Web Push (VAPID) ────────────────────────────────────────────────
       VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+
+      # ── CalDAV ───────────────────────────────────────────────────────────
+      CALDAV_REQUEST_TIMEOUT_MS: ${CALDAV_REQUEST_TIMEOUT_MS:-10000}
+      CALDAV_BUSY_CACHE_TTL_MS: ${CALDAV_BUSY_CACHE_TTL_MS:-60000}
+      CALDAV_BACKGROUND_SYNC_INTERVAL_MS: ${CALDAV_BACKGROUND_SYNC_INTERVAL_MS:-300000}
+      CALDAV_BACKGROUND_SYNC_LOOKAHEAD_DAYS: ${CALDAV_BACKGROUND_SYNC_LOOKAHEAD_DAYS:-30}
+      CALDAV_BACKGROUND_SYNC_BATCH_SIZE: ${CALDAV_BACKGROUND_SYNC_BATCH_SIZE:-50}
     volumes:
       - booking_data:/app/data
 

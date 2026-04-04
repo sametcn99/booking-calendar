@@ -3,6 +3,7 @@ import AdminEmailSection from "../../DashboardPage/components/AdminEmailSection"
 import LanguageSettingsSection from "../../DashboardPage/components/LanguageSettingsSection";
 import PasswordSection from "../../DashboardPage/components/PasswordSection";
 import type { SettingsPageState } from "../hooks/useSettingsPage";
+import CalDAVSettingsSection from "./CalDAVSettingsSection";
 import CalendarSharingSection from "./CalendarSharingSection";
 import ICSExportSection from "./ICSExportSection";
 import NotificationSettingSection from "./NotificationSettingSection";
@@ -111,6 +112,39 @@ export default function SettingsPageSections({ language, t, settings }: Props) {
 					enabledKey="settings.emailNotificationsEnabled"
 					disabledKey="settings.emailNotificationsDisabled"
 					disabledDescriptionKey="settings.emailNotificationsRequiresAdminEmail"
+					surface="list"
+				/>
+			</section>
+
+			<section id="caldav">
+				<CalDAVSettingsSection
+					enabled={settings.caldavEnabled}
+					baseUrl={settings.caldavBaseUrl}
+					username={settings.caldavUsername}
+					password={settings.caldavPassword}
+					hasPassword={settings.caldavHasPassword}
+					writableCalendarUrl={settings.caldavWritableCalendarUrl}
+					calendars={settings.caldavCalendars}
+					lastSyncAt={settings.caldavLastSyncAt}
+					lastSyncStatus={settings.caldavLastSyncStatus}
+					lastSyncError={settings.caldavLastSyncError}
+					health={settings.caldavHealth}
+					queue={settings.caldavQueue}
+					saving={settings.savingCalDAV}
+					testing={settings.testingCalDAV}
+					syncing={settings.syncingCalDAV}
+					repairingSlugId={settings.repairingCalDAVSlugId}
+					repairingAction={settings.repairingCalDAVAction}
+					onEnabledChange={settings.setCalDAVEnabled}
+					onBaseUrlChange={settings.setCalDAVBaseUrl}
+					onUsernameChange={settings.setCalDAVUsername}
+					onPasswordChange={settings.setCalDAVPassword}
+					onWritableCalendarUrlChange={settings.setCalDAVWritableCalendarUrl}
+					onSubmit={settings.handleSaveCalDAVSettings}
+					onTest={settings.handleTestCalDAVConnection}
+					onRetrySync={settings.handleRetryCalDAVSync}
+					onRepairQueueItem={settings.handleRepairCalDAVQueueItem}
+					t={t}
 					surface="list"
 				/>
 			</section>

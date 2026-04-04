@@ -11,6 +11,7 @@ const navigationItems = [
 	{ id: "calendar-sharing", labelKey: "settings.calendarSharing" },
 	{ id: "push", labelKey: "settings.pushNotifications" },
 	{ id: "email", labelKey: "settings.emailNotifications" },
+	{ id: "caldav", labelKey: "settings.caldav" },
 	{ id: "webhook", labelKey: "settings.webhook" },
 	{ id: "version", labelKey: "settings.version" },
 	{ id: "theme-colors", labelKey: "settings.themeColors" },
