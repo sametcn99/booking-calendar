@@ -71,8 +71,19 @@ function CalendarEventWrapper({
 	)
 		return children;
 
+	const minutes = (event.end.getTime() - event.start.getTime()) / 60_000;
+	const classes = [
+		children.props.className,
+		"calendar-event-with-tags",
+		minutes < 60 && "calendar-short-event",
+		minutes < 90 && "calendar-short-touch-event",
+	]
+		.filter(Boolean)
+		.join(" ");
+
 	// The calendar's wrapper is interactive by default. The title and tag controls need separate buttons.
 	return cloneElement(children, {
+		className: classes,
 		role: undefined,
 		tabIndex: undefined,
 		onClick: undefined,
@@ -103,7 +114,6 @@ function DashboardEvent({
 		>
 			<button
 				type="button"
-				title={event.title}
 				onClick={onDetails}
 				className={css({
 					minWidth: 0,
@@ -698,6 +708,25 @@ export default function DashboardCalendar({
         }
         .rbc-event {
           box-shadow: ${theme.lighting.shadow400};
+        }
+        .rbc-day-slot .calendar-event-with-tags {
+          flex-flow: column nowrap;
+          min-height: 30px;
+        }
+        .rbc-day-slot .calendar-event-with-tags .rbc-event-content {
+          flex: none;
+          height: auto;
+        }
+        .rbc-day-slot .calendar-short-event .rbc-event-label {
+          display: none;
+        }
+        @media (pointer: coarse) {
+          .rbc-day-slot .calendar-event-with-tags {
+            min-height: 50px;
+          }
+          .rbc-day-slot .calendar-short-touch-event .rbc-event-label {
+            display: none;
+          }
         }
         .rbc-off-range-bg {
           background-color: var(--color-bg-off-range);
