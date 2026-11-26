@@ -18,20 +18,28 @@ jobs:
           bun-version: latest
 
       - name: Install root dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
-      - name: Check root (lint, type, test)
+      - name: Check server types and translations
         run: |
-          bun run lint || true
-          bun run check || true
-          bun test || true
+          bunx tsc --noEmit
+          bun run check:i18n
+
+      - name: Run server tests
+        run: bun run test:server
 
       - name: Install client dependencies
         run: |
           cd src/client
-          bun install
+          bun install --frozen-lockfile
 
       - name: Build client
         run: |
           cd src/client
           bun run build
+
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium --only-shell
+
+      - name: Run browser tests
+        run: bun run test:browser

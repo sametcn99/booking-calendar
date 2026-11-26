@@ -1,3 +1,4 @@
+import type { TagColor, TagItem, TagSnapshot } from "../../shared/personalTags";
 import type { AppColors } from "./theme";
 
 const API_BASE = "/api";
@@ -238,6 +239,8 @@ export interface ApiCalDAVSyncResult {
 	busy_refresh_succeeded: boolean;
 }
 
+export class ApiError extends Error {}
+
 async function parseApiResponse<T>(response: Response): Promise<T> {
 	const text = await response.text();
 	const parsed = text ? (JSON.parse(text) as Record<string, unknown>) : {};
@@ -247,7 +250,7 @@ async function parseApiResponse<T>(response: Response): Promise<T> {
 			typeof parsed.error === "string" && parsed.error.length > 0
 				? parsed.error
 				: "An error occurred";
-		throw new Error(errorMessage);
+		throw new ApiError(errorMessage);
 	}
 
 	return parsed as T;
@@ -323,6 +326,43 @@ export const api = {
 				body: JSON.stringify({ current_password, new_password }),
 			},
 		),
+
+	// Admin - Personal tags
+	getPersonalTags: () =>
+		request<ApiResponse<TagSnapshot>>("/admin/tags", {
+			cache: "no-store",
+		}).then((response) => response.data),
+
+	createPersonalTag: (input: {
+		name: string;
+		color?: TagColor;
+		items?: TagItem[];
+	}) =>
+		request<ApiResponse<TagSnapshot>>("/admin/tags", {
+			method: "POST",
+			body: JSON.stringify(input),
+		}).then((response) => response.data),
+
+	updatePersonalTag: (id: number, input: { name: string; color: TagColor }) =>
+		request<ApiResponse<TagSnapshot>>(`/admin/tags/${id}`, {
+			method: "PATCH",
+			body: JSON.stringify(input),
+		}).then((response) => response.data),
+
+	deletePersonalTag: (id: number) =>
+		request<ApiResponse<TagSnapshot>>(`/admin/tags/${id}`, {
+			method: "DELETE",
+		}).then((response) => response.data),
+
+	changePersonalTagAssignments: (
+		id: number,
+		action: "apply" | "remove",
+		items: TagItem[],
+	) =>
+		request<ApiResponse<TagSnapshot>>(`/admin/tags/${id}/assignments`, {
+			method: "PATCH",
+			body: JSON.stringify({ action, items }),
+		}).then((response) => response.data),
 
 	// Admin - Slots
 	getSlots: () => request<ApiResponse<ApiSlot[]>>("/admin/slots"),

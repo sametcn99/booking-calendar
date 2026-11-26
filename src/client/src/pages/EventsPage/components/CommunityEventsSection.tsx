@@ -4,6 +4,13 @@ import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import ListFiltersBar from "../../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../../components/ListFilters/ListFiltersFeedback";
 import PageLoadingSpinner from "../../../components/PageLoadingSpinner";
+import TagFilters, {
+	useTagFilters,
+} from "../../../components/PersonalTags/TagFilters";
+import {
+	TagBulkActions,
+	useTagSelection,
+} from "../../../components/PersonalTags/TagSelection";
 import { useCommunityEventsSection } from "../hooks/useCommunityEventsSection";
 import CommunityEventCard from "./CommunityEventCard";
 import CommunityEventCreateModal from "./CommunityEventCreateModal";
@@ -28,7 +35,7 @@ export default function CommunityEventsSection({
 		creating,
 		description,
 		endAt,
-		filteredEvents,
+		filteredEvents: baseEvents,
 		getShareLink,
 		handleConfirmDelete,
 		handleCopyLink,
@@ -54,9 +61,15 @@ export default function CommunityEventsSection({
 		to,
 		setTo,
 		clearFilters,
-		isActive,
+		isActive: isListFilterActive,
 		totalCount,
 	} = useCommunityEventsSection(t);
+	const tagFilters = useTagFilters();
+	const filteredEvents = baseEvents.filter((item) =>
+		tagFilters.matches({ kind: "community", itemId: item.id }),
+	);
+	const selection = useTagSelection("community", filteredEvents);
+	const isActive = isListFilterActive || tagFilters.active;
 
 	return (
 		<>
@@ -118,11 +131,13 @@ export default function CommunityEventsSection({
 							to={to}
 							onToChange={setTo}
 							onClear={clearFilters}
-							isActive={isActive}
+							isActive={isListFilterActive}
 							t={t}
 						/>
 					</div>
 
+					<TagFilters filters={tagFilters} />
+					<TagBulkActions selection={selection} />
 					<ListFiltersFeedback
 						count={filteredEvents.length}
 						totalCount={totalCount}
@@ -157,6 +172,7 @@ export default function CommunityEventsSection({
 					>
 						{filteredEvents.map((event) => (
 							<CommunityEventCard
+								selection={selection}
 								key={event.slug_id}
 								event={event}
 								getShareLink={getShareLink}

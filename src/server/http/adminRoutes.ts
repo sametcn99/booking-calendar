@@ -1,10 +1,11 @@
 import { t } from "../i18n";
-import { getAuthenticatedUser, isAuthenticated } from "../middleware/auth";
+import { getAuthenticatedUser } from "../middleware/auth";
 import { handleAdminAppointmentRoutes } from "./admin/appointmentsRoutes";
 import { handleAdminAuthRoutes } from "./admin/authRoutes";
 import { handleAdminCommunityEventRoutes } from "./admin/communityRoutes";
 import { handleAdminExportRoutes } from "./admin/exportRoutes";
 import { handleAdminLinkRoutes } from "./admin/linksRoutes";
+import { handleAdminPersonalTagRoutes } from "./admin/personalTagsRoutes";
 import { handleAdminPlannerRoutes } from "./admin/plannerRoutes";
 import { handleAdminPushRoutes } from "./admin/pushRoutes";
 import { handleAdminSettingsRoutes } from "./admin/settingsRoutes";
@@ -19,6 +20,7 @@ const adminHandlers: AdminRouteHandler[] = [
 	handleAdminLinkRoutes,
 	handleAdminSettingsRoutes,
 	handleAdminPlannerRoutes,
+	handleAdminPersonalTagRoutes,
 	handleAdminPushRoutes,
 	handleAdminExportRoutes,
 	handleAdminCommunityEventRoutes,
@@ -31,15 +33,6 @@ export async function handleAdminRoutes(
 
 	if (!pathname.startsWith("/api/admin")) {
 		return null;
-	}
-
-	const authenticated = await isAuthenticated(args.request);
-	if (!authenticated) {
-		return jsonResponse(
-			401,
-			{ success: false, error: t("general.unauthorized") },
-			corsHeaders,
-		);
 	}
 
 	const rawUser = await getAuthenticatedUser(args.request);

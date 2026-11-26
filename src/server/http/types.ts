@@ -2,6 +2,7 @@ import type { AppointmentController } from "../controllers/AppointmentController
 import type { AuthController } from "../controllers/AuthController";
 import type { BookingLinkController } from "../controllers/BookingLinkController";
 import type { CommunityEventController } from "../controllers/CommunityEventController";
+import type { PersonalTagController } from "../controllers/PersonalTagController";
 import type { PlannerController } from "../controllers/PlannerController";
 import type { PushController } from "../controllers/PushController";
 import type { SlotController } from "../controllers/SlotController";
@@ -15,6 +16,7 @@ export interface ServerDependencies {
 	bookingLinkController: BookingLinkController;
 	pushController: PushController;
 	plannerController: PlannerController;
+	personalTagController: PersonalTagController;
 	communityEventController: CommunityEventController;
 	versionController: VersionController;
 	mailService: MailService;

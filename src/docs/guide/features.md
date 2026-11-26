@@ -11,6 +11,12 @@ A powerful dashboard to manage your availability and bookings.
 - **Admin Approval:** Optional moderation layer for guest-created bookings.
 - **Shareable Links:** Generate persistent links for your booking page.
 
+### Personal tags
+
+Add personal tags to appointments, events, and planner entries from a list row, item details, or the dashboard calendar. Select one or more tags to match items carrying any selected tag, or use **Show only tagged**. Select several rows to apply or remove a tag in one operation.
+
+In **Manage tags**, rename tags, choose a color, check usage counts, and delete tags. Deleting a tag removes it from every assigned item. Tags are scoped to the signed-in administrator and excluded from public links, shared calendars, and calendar exports.
+
 ## 📅 Public Booking Page
 
 A clean, mobile-optimized page for your guests to book appointments.

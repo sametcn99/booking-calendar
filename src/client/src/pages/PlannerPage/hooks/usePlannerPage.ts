@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { type ApiPlannerEvent, api } from "../../../api";
+import { usePersonalTags } from "../../../context/PersonalTagsContext";
 import { useListFilters } from "../../../hooks/useListFilters";
 import { APP_COLORS } from "../../../theme";
 
@@ -28,6 +29,7 @@ const emptyForm: PlannerFormState = {
 };
 
 export function usePlannerPage(t: (key: string) => string) {
+	const { refresh: refreshTags } = usePersonalTags();
 	const [events, setEvents] = useState<ApiPlannerEvent[]>([]);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [editingEvent, setEditingEvent] = useState<ApiPlannerEvent | null>(
@@ -109,13 +111,14 @@ export function usePlannerPage(t: (key: string) => string) {
 		async (id: number) => {
 			try {
 				await api.deletePlannerEvent(id);
+				void refreshTags();
 				toaster.positive(t("planner.deleted"), {});
 				await loadEvents();
 			} catch (err: unknown) {
 				toaster.negative(getErrorMessage(err, t("common.error")), {});
 			}
 		},
-		[loadEvents, t],
+		[refreshTags, loadEvents, t],
 	);
 
 	const updateForm = useCallback(

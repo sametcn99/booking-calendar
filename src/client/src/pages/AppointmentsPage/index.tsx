@@ -2,6 +2,13 @@ import { useStyletron } from "baseui";
 import ListFiltersBar from "../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../components/ListFilters/ListFiltersFeedback";
 import PageLoadingSpinner from "../../components/PageLoadingSpinner";
+import TagFilters, {
+	useTagFilters,
+} from "../../components/PersonalTags/TagFilters";
+import {
+	TagBulkActions,
+	useTagSelection,
+} from "../../components/PersonalTags/TagSelection";
 import { useI18n } from "../../context/I18nContext";
 import AppointmentsFilterSection from "./components/AppointmentsFilterSection";
 import AppointmentsHeader from "./components/AppointmentsHeader";
@@ -17,7 +24,7 @@ export default function AppointmentsPage() {
 	const { t, locale } = useI18n();
 	const {
 		initialLoading,
-		filteredAppointments,
+		filteredAppointments: baseAppointments,
 		handleCancel,
 		handleDelete,
 		handleApprove,
@@ -36,10 +43,16 @@ export default function AppointmentsPage() {
 		to,
 		setTo,
 		clearFilters,
-		isActive,
+		isActive: isListFilterActive,
 		totalCount,
 		pendingCount,
 	} = useAppointmentsPage(t);
+	const tagFilters = useTagFilters();
+	const filteredAppointments = baseAppointments.filter((item) =>
+		tagFilters.matches({ kind: "appointment", itemId: item.id }),
+	);
+	const selection = useTagSelection("appointment", filteredAppointments);
+	const isActive = isListFilterActive || tagFilters.active;
 
 	const formatDate = (d: string) =>
 		new Date(d).toLocaleString(locale, {
@@ -83,11 +96,13 @@ export default function AppointmentsPage() {
 							to={to}
 							onToChange={setTo}
 							onClear={clearFilters}
-							isActive={isActive}
+							isActive={isListFilterActive}
 							t={t}
 						/>
 					</div>
 
+					<TagFilters filters={tagFilters} />
+					<TagBulkActions selection={selection} />
 					<ListFiltersFeedback
 						count={filteredAppointments.length}
 						totalCount={totalCount}
@@ -114,6 +129,7 @@ export default function AppointmentsPage() {
 						</div>
 					) : (
 						<AppointmentsListSection
+							selection={selection}
 							appointments={filteredAppointments}
 							formatDate={formatDate}
 							onCancel={handleCancel}

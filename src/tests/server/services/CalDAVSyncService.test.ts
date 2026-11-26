@@ -18,13 +18,9 @@ import {
 	seedSlot,
 	type TestDatabaseContext,
 } from "../../helpers/databaseTestHarness";
+import { futureIso } from "../../helpers/dates";
 
 const appointmentRepository = new AppointmentRepository();
-
-function futureIso(daysAhead: number, hour: number, minute = 0): string {
-	const date = new Date(Date.UTC(2026, 3, 1 + daysAhead, hour, minute, 0, 0));
-	return date.toISOString();
-}
 
 async function seedAppointment(input: Partial<AppointmentEntity>) {
 	const repository = AppDataSource.getRepository(AppointmentEntity);

@@ -1,24 +1,38 @@
 import { format, getDay, parse, startOfWeek } from "date-fns";
 import { enUS, tr } from "date-fns/locale";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import {
+	Calendar,
+	dateFnsLocalizer,
+	type EventProps,
+	type EventWrapperProps,
+} from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useStyletron } from "baseui";
-import {
-	Modal,
-	ModalBody,
-	ModalButton,
-	ModalFooter,
-	ModalHeader,
-} from "baseui/modal";
 import { LabelMedium } from "baseui/typography";
-import { useMemo, useState } from "react";
+import {
+	cloneElement,
+	type HTMLAttributes,
+	isValidElement,
+	type ReactNode,
+	useMemo,
+	useState,
+} from "react";
 import type {
 	ApiAppointment,
 	ApiCommunityEvent,
 	ApiPlannerEvent,
 	ApiSlot,
 } from "../../../api";
+import AdminItemDetails, {
+	type AdminItem,
+} from "../../../components/PersonalTags/AdminItemDetails";
+import TagFilters, {
+	useTagFilters,
+} from "../../../components/PersonalTags/TagFilters";
+import { TagPicker } from "../../../components/PersonalTags/TagPicker";
+import { tagPalette } from "../../../components/PersonalTags/TagPill";
 import { useI18n } from "../../../context/I18nContext";
+import { usePersonalTags } from "../../../context/PersonalTagsContext";
 
 const locales = {
 	"en-US": enUS,
@@ -40,13 +54,94 @@ interface DashboardCalendarProps {
 	communityEvents: ApiCommunityEvent[];
 }
 
-interface CalendarEvent {
-	id: number | string;
+type CalendarEvent = AdminItem & {
+	id: string;
 	title: string;
 	start: Date;
 	end: Date;
-	type: "slot" | "appointment" | "planner" | "community";
-	data?: ApiSlot | ApiAppointment | ApiPlannerEvent | ApiCommunityEvent;
+};
+
+function CalendarEventWrapper({
+	event,
+	children,
+}: EventWrapperProps<CalendarEvent> & { children?: ReactNode }) {
+	if (
+		event.type === "slot" ||
+		!isValidElement<HTMLAttributes<HTMLElement>>(children)
+	)
+		return children;
+
+	// The calendar's wrapper is interactive by default. The title and tag controls need separate buttons.
+	return cloneElement(children, {
+		role: undefined,
+		tabIndex: undefined,
+		onClick: undefined,
+		onKeyDown: undefined,
+	});
+}
+
+function DashboardEvent({
+	event,
+	onDetails,
+}: {
+	event: CalendarEvent;
+	onDetails: () => void;
+}) {
+	const [css] = useStyletron();
+	const store = usePersonalTags();
+	if (event.type === "slot") return <>{event.title}</>;
+	const item = { kind: event.type, itemId: event.data.id };
+	const tags = store.tagsFor(item);
+
+	return (
+		<div
+			className={css({
+				display: "flex",
+				alignItems: "center",
+				gap: "4px",
+			})}
+		>
+			<button
+				type="button"
+				title={event.title}
+				onClick={onDetails}
+				className={css({
+					minWidth: 0,
+					overflow: "hidden",
+					textOverflow: "ellipsis",
+					marginRight: "auto",
+					whiteSpace: "nowrap",
+					border: "none",
+					padding: "2px",
+					backgroundColor: "transparent",
+					color: "inherit",
+					font: "inherit",
+					cursor: "pointer",
+					":focus-visible": {
+						outline: "2px solid currentColor",
+						outlineOffset: "-2px",
+					},
+				})}
+			>
+				{event.title}
+			</button>
+			{tags[0] && (
+				<span
+					aria-hidden="true"
+					title={tags.map((tag) => tag.name).join(", ")}
+					className={css({
+						flexShrink: 0,
+						width: "7px",
+						height: "7px",
+						borderRadius: "50%",
+						backgroundColor: tagPalette[tags[0].color].background,
+						border: `1px solid ${tagPalette[tags[0].color].text}`,
+					})}
+				/>
+			)}
+			<TagPicker items={[item]} label={event.title} iconOnly showApplied />
+		</div>
+	);
 }
 
 export default function DashboardCalendar({
@@ -57,12 +152,26 @@ export default function DashboardCalendar({
 }: DashboardCalendarProps) {
 	const [css, theme] = useStyletron();
 	const { language, t } = useI18n();
-	const [view, setView] = useState<"month" | "week" | "day">("week");
+	const [view, setView] = useState<"month" | "week" | "day">(() =>
+		window.matchMedia("(max-width: 600px)").matches ? "day" : "week",
+	);
 	const [date, setDate] = useState(new Date());
 	const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
 		null,
 	);
-	const [isOpen, setIsOpen] = useState(false);
+	const tagFilters = useTagFilters();
+	const components = useMemo(
+		() => ({
+			event: ({ event }: EventProps<CalendarEvent>) => (
+				<DashboardEvent
+					event={event}
+					onDetails={() => setSelectedEvent(event)}
+				/>
+			),
+			eventWrapper: CalendarEventWrapper,
+		}),
+		[],
+	);
 
 	const activeAppointments = useMemo(() => {
 		const now = Date.now();
@@ -86,7 +195,7 @@ export default function DashboardCalendar({
 		setVisibleTypes(next);
 	};
 
-	const events = useMemo(() => {
+	const allEvents = useMemo(() => {
 		const allEvents: CalendarEvent[] = [];
 
 		if (visibleTypes.has("slot")) {
@@ -151,6 +260,11 @@ export default function DashboardCalendar({
 		t,
 	]);
 
+	const events = allEvents.filter((event) => {
+		if (event.type === "slot") return !tagFilters.active;
+		return tagFilters.matches({ kind: event.type, itemId: event.data.id });
+	});
+
 	const eventStyleGetter = (event: CalendarEvent) => {
 		if (event.type === "slot") {
 			return {
@@ -166,8 +280,7 @@ export default function DashboardCalendar({
 		}
 
 		if (event.type === "planner") {
-			const color =
-				(event.data as ApiPlannerEvent)?.color || "var(--color-warning)";
+			const color = event.data.color || "var(--color-warning)";
 			return {
 				style: {
 					background: `linear-gradient(135deg, ${color}33, ${color}66)`,
@@ -181,7 +294,7 @@ export default function DashboardCalendar({
 		}
 
 		if (event.type === "community") {
-			const data = event.data as ApiCommunityEvent;
+			const data = event.data;
 			const statusColorMap: Record<string, string> = {
 				pending: "var(--color-warning)",
 				active: "var(--color-success)",
@@ -233,6 +346,7 @@ export default function DashboardCalendar({
 			className={css({
 				backgroundColor: "var(--color-bg-secondary)",
 				padding: "24px",
+				"@media (max-width: 600px)": { padding: "10px" },
 				borderRadius: "12px",
 				boxShadow: theme.lighting.shadow500,
 				marginTop: "24px",
@@ -483,6 +597,8 @@ export default function DashboardCalendar({
 				</div>
 			</div>
 
+			<TagFilters filters={tagFilters} />
+
 			<style>{`
         .rbc-calendar {
           font-family: ${theme.typography.font400.fontFamily};
@@ -615,6 +731,8 @@ export default function DashboardCalendar({
 					endAccessor="end"
 					style={{ height: "100%" }}
 					eventPropGetter={eventStyleGetter}
+					components={components}
+					popup
 					views={["month", "week", "day"]}
 					view={view}
 					onView={(nextView) => setView(nextView as "month" | "week" | "day")}
@@ -622,110 +740,26 @@ export default function DashboardCalendar({
 					onNavigate={(newDate) => setDate(newDate)}
 					culture={language === "tr" ? "tr-TR" : "en-US"}
 					messages={messages}
-					onSelectEvent={(event) => {
-						setSelectedEvent(event as CalendarEvent);
-						setIsOpen(true);
+					onSelectEvent={setSelectedEvent}
+					onKeyPressEvent={(event, keyEvent) => {
+						if (
+							"key" in keyEvent &&
+							(keyEvent.key === "Enter" || keyEvent.key === " ")
+						) {
+							keyEvent.preventDefault();
+							setSelectedEvent(event);
+						}
 					}}
 				/>
 			</div>
 
-			<Modal
-				onClose={() => setIsOpen(false)}
-				isOpen={isOpen}
-				overrides={{
-					Root: {
-						style: {
-							zIndex: 2000,
-						},
-					},
-				}}
-			>
-				<ModalHeader>{selectedEvent?.title}</ModalHeader>
-				<ModalBody>
-					{selectedEvent?.type === "appointment" && (
-						<div>
-							<p>
-								<strong>{t("dashboard.calendar.name")}:</strong>{" "}
-								{(selectedEvent.data as ApiAppointment).name}
-							</p>
-							<p>
-								<strong>{t("dashboard.calendar.email")}:</strong>{" "}
-								{(selectedEvent.data as ApiAppointment).email || "-"}
-							</p>
-							<p>
-								<strong>{t("dashboard.calendar.note")}:</strong>{" "}
-								{(selectedEvent.data as ApiAppointment).note || "-"}
-							</p>
-							<p>
-								<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
-								{selectedEvent.start.toLocaleString()} -{" "}
-								{selectedEvent.end.toLocaleString()}
-							</p>
-						</div>
-					)}
-					{selectedEvent?.type === "slot" && (
-						<div>
-							<p>
-								<strong>{t("dashboard.calendar.status")}:</strong>{" "}
-								{t("dashboard.calendar.availableSlot")}
-							</p>
-							<p>
-								<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
-								{selectedEvent.start.toLocaleString()} -{" "}
-								{selectedEvent.end.toLocaleString()}
-							</p>
-						</div>
-					)}
-					{selectedEvent?.type === "planner" && (
-						<div>
-							<p>
-								<strong>{t("planner.eventTitle")}:</strong>{" "}
-								{(selectedEvent.data as ApiPlannerEvent).title}
-							</p>
-							{(selectedEvent.data as ApiPlannerEvent).description && (
-								<p>
-									<strong>{t("planner.description")}:</strong>{" "}
-									{(selectedEvent.data as ApiPlannerEvent).description}
-								</p>
-							)}
-							<p>
-								<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
-								{selectedEvent.start.toLocaleString()} -{" "}
-								{selectedEvent.end.toLocaleString()}
-							</p>
-						</div>
-					)}
-					{selectedEvent?.type === "community" && (
-						<div>
-							<p>
-								<strong>{t("communityEvents.eventTitle")}:</strong>{" "}
-								{(selectedEvent.data as ApiCommunityEvent).title}
-							</p>
-							{(selectedEvent.data as ApiCommunityEvent).description && (
-								<p>
-									<strong>{t("communityEvents.description")}:</strong>{" "}
-									{(selectedEvent.data as ApiCommunityEvent).description}
-								</p>
-							)}
-							<p>
-								<strong>{t("communityEvents.approvals")}:</strong>{" "}
-								{(selectedEvent.data as ApiCommunityEvent).current_approvals} /{" "}
-								{(selectedEvent.data as ApiCommunityEvent).required_approvals}
-							</p>
-							<p>
-								<strong>{t("dashboard.calendar.timeLabel")}:</strong>{" "}
-								{selectedEvent.start.toLocaleString()} -{" "}
-								{selectedEvent.end.toLocaleString()}
-							</p>
-						</div>
-					)}
-				</ModalBody>
-				<ModalFooter>
-					<ModalButton onClick={() => setIsOpen(false)}>
-						{t("dashboard.calendar.close")}
-					</ModalButton>
-				</ModalFooter>
-			</Modal>
+			{selectedEvent && (
+				<AdminItemDetails
+					item={selectedEvent}
+					title={selectedEvent.title}
+					onClose={() => setSelectedEvent(null)}
+				/>
+			)}
 		</div>
 	);
 }

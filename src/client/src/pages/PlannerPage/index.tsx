@@ -3,6 +3,13 @@ import { Button, KIND, SIZE } from "baseui/button";
 import ListFiltersBar from "../../components/ListFilters/ListFiltersBar";
 import ListFiltersFeedback from "../../components/ListFilters/ListFiltersFeedback";
 import PageLoadingSpinner from "../../components/PageLoadingSpinner";
+import TagFilters, {
+	useTagFilters,
+} from "../../components/PersonalTags/TagFilters";
+import {
+	TagBulkActions,
+	useTagSelection,
+} from "../../components/PersonalTags/TagSelection";
 import { useI18n } from "../../context/I18nContext";
 import PlannerEventCard from "./components/PlannerEventCard";
 import PlannerEventModal from "./components/PlannerEventModal";
@@ -14,7 +21,7 @@ export default function PlannerPage() {
 	const {
 		initialLoading,
 		editingEvent,
-		filteredEvents,
+		filteredEvents: baseEvents,
 		form,
 		handleDelete,
 		handleSave,
@@ -35,9 +42,15 @@ export default function PlannerPage() {
 		to,
 		setTo,
 		clearFilters,
-		isActive,
+		isActive: isListFilterActive,
 		totalCount,
 	} = usePlannerPage(t);
+	const tagFilters = useTagFilters();
+	const filteredEvents = baseEvents.filter((item) =>
+		tagFilters.matches({ kind: "planner", itemId: item.id }),
+	);
+	const selection = useTagSelection("planner", filteredEvents);
+	const isActive = isListFilterActive || tagFilters.active;
 
 	const formatDate = (d: string) =>
 		new Date(d).toLocaleString(locale, {
@@ -146,11 +159,13 @@ export default function PlannerPage() {
 							to={to}
 							onToChange={setTo}
 							onClear={clearFilters}
-							isActive={isActive}
+							isActive={isListFilterActive}
 							t={t}
 						/>
 					</div>
 
+					<TagFilters filters={tagFilters} />
+					<TagBulkActions selection={selection} />
 					<ListFiltersFeedback
 						count={filteredEvents.length}
 						totalCount={totalCount}
@@ -185,6 +200,7 @@ export default function PlannerPage() {
 						>
 							{filteredEvents.map((event) => (
 								<PlannerEventCard
+									selection={selection}
 									key={event.id}
 									event={event}
 									formatDate={formatDate}
@@ -201,6 +217,7 @@ export default function PlannerPage() {
 			<PlannerEventModal
 				isOpen={modalOpen}
 				isEdit={!!editingEvent}
+				eventId={editingEvent?.id}
 				form={form}
 				loading={loading}
 				onClose={() => setModalOpen(false)}

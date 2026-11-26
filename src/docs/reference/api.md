@@ -29,6 +29,20 @@ These endpoints can be accessed without authentication (though they are still pr
 - `POST /api/public/appointments`: Create a new appointment request.
 - `GET /api/public/appointments/:id`: Get details of a public appointment.
 
+## Personal tags
+
+These endpoints require an administrator session and return the current administrator's tag snapshot under `data`. Each tag includes its `id`, `name`, `color`, and usage `count`. Each assignment includes `tagId`, `kind`, and `itemId`.
+
+| Method and path                          | Request                                                                          |
+| ---------------------------------------- | -------------------------------------------------------------------------------- |
+| `GET /api/admin/tags`                    | List tags and assignments.                                                       |
+| `POST /api/admin/tags`                   | Create with `name`, optional `color`, and optional `items` to assign atomically. |
+| `PATCH /api/admin/tags/{id}`             | Set `name`, `color`, or both.                                                    |
+| `DELETE /api/admin/tags/{id}`            | Delete the tag and its assignments.                                              |
+| `PATCH /api/admin/tags/{id}/assignments` | Send `action` (`apply` or `remove`) and `items`.                                 |
+
+An item has a numeric `itemId` and a `kind` of `appointment`, `community`, or `planner`. Each batch supports up to 100 items. Tag names are trimmed and unique for the signed-in administrator, regardless of case.
+
 ## Base URL
 
 All API requests should be prefixed with `/api/`.

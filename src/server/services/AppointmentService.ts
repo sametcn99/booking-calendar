@@ -1,4 +1,4 @@
-import { AppDataSource } from "../db/data-source";
+import { databaseTransaction } from "../db/data-source";
 import { t } from "../i18n";
 import { MailService } from "../mail/MailService";
 import { AppointmentRepository } from "../repositories/AppointmentRepository";
@@ -196,7 +196,7 @@ export class AppointmentService {
 		}
 
 		// Use a transaction to prevent overlapping bookings in the same slot
-		const appointment = await AppDataSource.transaction(async (manager) => {
+		const appointment = await databaseTransaction(async (manager) => {
 			const hasOverlap = await this.appointmentRepo.hasOverlapInSlot(
 				input.slot_id,
 				input.start_at,

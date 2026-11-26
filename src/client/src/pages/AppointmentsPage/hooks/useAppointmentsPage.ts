@@ -2,6 +2,7 @@ import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ApiAppointment, ApiCalDAVRepairAction } from "../../../api";
 import { api } from "../../../api";
+import { usePersonalTags } from "../../../context/PersonalTagsContext";
 import { useListFilters } from "../../../hooks/useListFilters";
 
 export type Appointment = ApiAppointment;
@@ -32,6 +33,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function useAppointmentsPage(t: (key: string) => string) {
+	const { refresh: refreshTags } = usePersonalTags();
 	const [appointments, setAppointments] = useState<Appointment[]>([]);
 	const [repairingSlugId, setRepairingSlugId] = useState<string | null>(null);
 	const [repairingAction, setRepairingAction] =
@@ -72,13 +74,14 @@ export function useAppointmentsPage(t: (key: string) => string) {
 		async (slugId: string) => {
 			try {
 				await api.deleteAppointment(slugId);
+				void refreshTags();
 				toaster.positive(t("appointments.appointmentDeleted"), {});
 				await loadAppointments();
 			} catch (err: unknown) {
 				toaster.negative(getErrorMessage(err, t("common.error")), {});
 			}
 		},
-		[loadAppointments, t],
+		[refreshTags, loadAppointments, t],
 	);
 
 	const handleApprove = useCallback(

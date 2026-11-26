@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "../../../api";
+import { usePersonalTags } from "../../../context/PersonalTagsContext";
 import { useListFilters } from "../../../hooks/useListFilters";
 
 export interface Slot {
@@ -20,6 +21,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function useSlotsPage(t: (key: string) => string) {
+	const { refresh: refreshTags } = usePersonalTags();
 	const [slots, setSlots] = useState<Slot[]>([]);
 	const [statusFilter, setStatusFilter] = useState<SlotStatusFilter>("all");
 	const [modalOpen, setModalOpen] = useState(false);
@@ -116,13 +118,14 @@ export function useSlotsPage(t: (key: string) => string) {
 		async (id: number) => {
 			try {
 				await api.deleteSlot(id);
+				void refreshTags();
 				toaster.positive(t("slots.deleted"), {});
 				await loadSlots();
 			} catch (err: unknown) {
 				toaster.negative(getErrorMessage(err, t("common.error")), {});
 			}
 		},
-		[loadSlots, t],
+		[refreshTags, loadSlots, t],
 	);
 
 	const openEditModal = useCallback((slot: Slot) => {
