@@ -1,6 +1,7 @@
 import { toaster } from "baseui/toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { type ApiCommunityEvent, api } from "../../../api";
+import { usePersonalTags } from "../../../context/PersonalTagsContext";
 import { useListFilters } from "../../../hooks/useListFilters";
 import { APP_COLORS } from "../../../theme";
 import type { CommunityStatusFilter } from "../components/types";
@@ -11,6 +12,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function useCommunityEventsSection(t: (key: string) => string) {
+	const { refresh: refreshTags } = usePersonalTags();
 	const [events, setEvents] = useState<ApiCommunityEvent[]>([]);
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
@@ -124,13 +126,14 @@ export function useCommunityEventsSection(t: (key: string) => string) {
 		async (slugId: string) => {
 			try {
 				await api.deleteCommunityEvent(slugId);
+				void refreshTags();
 				toaster.positive(t("communityEvents.deleted"), {});
 				await fetchEvents();
 			} catch (err: unknown) {
 				toaster.negative(getErrorMessage(err, t("common.error")), {});
 			}
 		},
-		[fetchEvents, t],
+		[refreshTags, fetchEvents, t],
 	);
 
 	const handleConfirmDelete = useCallback(async () => {

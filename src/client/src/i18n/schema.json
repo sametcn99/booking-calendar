@@ -1716,6 +1716,12 @@
 				"dateRange": {
 					"type": "string"
 				},
+				"dateFrom": {
+					"type": "string"
+				},
+				"dateTo": {
+					"type": "string"
+				},
 				"invalidDateRange": {
 					"type": "string"
 				},
@@ -1742,6 +1748,8 @@
 				"activeFilters",
 				"search",
 				"dateRange",
+				"dateFrom",
+				"dateTo",
 				"invalidDateRange",
 				"noResults"
 			],
@@ -1918,6 +1926,191 @@
 				"noApproversYet"
 			],
 			"additionalProperties": false
+		},
+		"personalTags": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"private": {
+					"type": "string"
+				},
+				"onboarding": {
+					"type": "string"
+				},
+				"first": {
+					"type": "string"
+				},
+				"manage": {
+					"type": "string"
+				},
+				"add": {
+					"type": "string"
+				},
+				"remove": {
+					"type": "string"
+				},
+				"searchOrCreate": {
+					"type": "string"
+				},
+				"search": {
+					"type": "string"
+				},
+				"create": {
+					"type": "string"
+				},
+				"edit": {
+					"type": "string"
+				},
+				"save": {
+					"type": "string"
+				},
+				"delete": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"color": {
+					"type": "string"
+				},
+				"colors": {
+					"type": "object",
+					"properties": {
+						"slate": {
+							"type": "string"
+						},
+						"blue": {
+							"type": "string"
+						},
+						"teal": {
+							"type": "string"
+						},
+						"green": {
+							"type": "string"
+						},
+						"amber": {
+							"type": "string"
+						},
+						"rose": {
+							"type": "string"
+						},
+						"violet": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"slate",
+						"blue",
+						"teal",
+						"green",
+						"amber",
+						"rose",
+						"violet"
+					],
+					"additionalProperties": false
+				},
+				"usage": {
+					"type": "string"
+				},
+				"deletePrompt": {
+					"type": "string"
+				},
+				"onlyTagged": {
+					"type": "string"
+				},
+				"filter": {
+					"type": "string"
+				},
+				"selectItem": {
+					"type": "string"
+				},
+				"selected": {
+					"type": "string"
+				},
+				"bulk": {
+					"type": "string"
+				},
+				"clearSelection": {
+					"type": "string"
+				},
+				"saving": {
+					"type": "string"
+				},
+				"duplicate": {
+					"type": "string"
+				},
+				"noMatches": {
+					"type": "string"
+				},
+				"loadFailed": {
+					"type": "string"
+				},
+				"retry": {
+					"type": "string"
+				},
+				"saveFailed": {
+					"type": "string"
+				},
+				"created": {
+					"type": "string"
+				},
+				"updated": {
+					"type": "string"
+				},
+				"deleted": {
+					"type": "string"
+				},
+				"applied": {
+					"type": "string"
+				},
+				"removed": {
+					"type": "string"
+				},
+				"details": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"title",
+				"private",
+				"onboarding",
+				"first",
+				"manage",
+				"add",
+				"remove",
+				"searchOrCreate",
+				"search",
+				"create",
+				"edit",
+				"save",
+				"delete",
+				"name",
+				"color",
+				"colors",
+				"usage",
+				"deletePrompt",
+				"onlyTagged",
+				"filter",
+				"selectItem",
+				"selected",
+				"bulk",
+				"clearSelection",
+				"saving",
+				"duplicate",
+				"noMatches",
+				"loadFailed",
+				"retry",
+				"saveFailed",
+				"created",
+				"updated",
+				"deleted",
+				"applied",
+				"removed",
+				"details"
+			],
+			"additionalProperties": false
 		}
 	},
 	"required": [
@@ -1932,7 +2125,8 @@
 		"settings",
 		"planner",
 		"common",
-		"communityEvents"
+		"communityEvents",
+		"personalTags"
 	],
 	"additionalProperties": false
 }

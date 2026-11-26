@@ -6,7 +6,7 @@ import {
 	precacheAndRoute,
 } from "workbox-precaching";
 import { NavigationRoute, registerRoute } from "workbox-routing";
-import { NetworkFirst } from "workbox-strategies";
+import { NetworkFirst, NetworkOnly } from "workbox-strategies";
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -20,6 +20,13 @@ precacheAndRoute(self.__WB_MANIFEST);
 if (getCacheKeyForURL("/index.html")) {
 	registerRoute(new NavigationRoute(createHandlerBoundToURL("/index.html")));
 }
+
+// Personal data must always use the current authenticated session.
+registerRoute(
+	({ sameOrigin, url }) =>
+		sameOrigin && /^\/api\/admin\/tags(?:\/|$)/.test(url.pathname),
+	new NetworkOnly(),
+);
 
 // API Caching Strategy (moved from vite.config.ts)
 registerRoute(

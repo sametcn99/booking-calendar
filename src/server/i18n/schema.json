@@ -728,6 +728,38 @@
 				"emailAlreadyApproved"
 			],
 			"additionalProperties": false
+		},
+		"personalTags": {
+			"type": "object",
+			"properties": {
+				"invalidName": {
+					"type": "string"
+				},
+				"invalidColor": {
+					"type": "string"
+				},
+				"invalidItems": {
+					"type": "string"
+				},
+				"duplicate": {
+					"type": "string"
+				},
+				"notFound": {
+					"type": "string"
+				},
+				"itemNotFound": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"invalidName",
+				"invalidColor",
+				"invalidItems",
+				"duplicate",
+				"notFound",
+				"itemNotFound"
+			],
+			"additionalProperties": false
 		}
 	},
 	"required": [
@@ -741,7 +773,8 @@
 		"mail",
 		"planner",
 		"push",
-		"communityEvent"
+		"communityEvent",
+		"personalTags"
 	],
 	"additionalProperties": false
 }

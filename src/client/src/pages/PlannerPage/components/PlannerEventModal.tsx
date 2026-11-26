@@ -9,11 +9,13 @@ import {
 	ModalHeader,
 } from "baseui/modal";
 import { Textarea } from "baseui/textarea";
+import { ItemTags } from "../../../components/PersonalTags/TagPicker";
 import type { PlannerFormState } from "../hooks/usePlannerPage";
 
 interface Props {
 	isOpen: boolean;
 	isEdit: boolean;
+	eventId?: number;
 	form: PlannerFormState;
 	loading: boolean;
 	onClose: () => void;
@@ -25,6 +27,7 @@ interface Props {
 export default function PlannerEventModal({
 	isOpen,
 	isEdit,
+	eventId,
 	form,
 	loading,
 	onClose,
@@ -118,6 +121,14 @@ export default function PlannerEventModal({
 						}}
 					/>
 				</FormControl>
+				{eventId !== undefined && (
+					<ItemTags
+						key={eventId}
+						item={{ kind: "planner", itemId: eventId }}
+						label={form.title}
+						inline
+					/>
+				)}
 			</ModalBody>
 			<ModalFooter>
 				<ModalButton kind={KIND.tertiary} onClick={onClose}>

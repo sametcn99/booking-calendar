@@ -1,10 +1,12 @@
 import { useStyletron } from "baseui";
 import type { ApiCalDAVRepairAction } from "../../../api";
+import type { TagSelection } from "../../../components/PersonalTags/TagListRow";
 import type { Appointment } from "../hooks/useAppointmentsPage";
 import AppointmentCard from "./AppointmentCard";
 
 interface Props {
 	appointments: Appointment[];
+	selection: TagSelection;
 	formatDate: (d: string) => string;
 	onCancel: (slugId: string) => void;
 	onDelete: (slugId: string) => void;
@@ -20,6 +22,7 @@ interface Props {
 
 export default function AppointmentsListSection({
 	appointments,
+	selection,
 	formatDate,
 	onCancel,
 	onDelete,
@@ -52,6 +55,7 @@ export default function AppointmentsListSection({
 				<AppointmentCard
 					key={apt.id}
 					appointment={apt}
+					selection={selection}
 					formatDate={formatDate}
 					onCancel={onCancel}
 					onDelete={onDelete}

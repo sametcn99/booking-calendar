@@ -155,6 +155,7 @@ export default function ListFiltersBar({
 						flexDirection: "column",
 						gap: "4px",
 						flex: "1 1 320px",
+						minWidth: 0,
 					})}
 				>
 					<div
@@ -168,6 +169,12 @@ export default function ListFiltersBar({
 							border: "1px solid var(--color-border-primary)",
 							height: "36px",
 							transition: "border-color 0.2s",
+							"@media (max-width: 480px)": {
+								display: "grid",
+								gridTemplateColumns: "16px minmax(0, 1fr)",
+								height: "auto",
+								padding: "6px 12px",
+							},
 							":focus-within": {
 								borderColor: "var(--color-accent-600)",
 							},
@@ -176,6 +183,7 @@ export default function ListFiltersBar({
 						<Calendar size={16} color="var(--color-accent-600)" />
 						<input
 							type="date"
+							aria-label={t("common.dateFrom")}
 							value={from}
 							onChange={(e) => onFromChange(e.target.value)}
 							className={css({
@@ -187,6 +195,12 @@ export default function ListFiltersBar({
 								outline: "none",
 								width: "125px",
 								cursor: "pointer",
+								"@media (max-width: 480px)": {
+									gridColumn: 2,
+									width: "100%",
+									minWidth: 0,
+									minHeight: "36px",
+								},
 								"::-webkit-calendar-picker-indicator": {
 									filter: "invert(0.5)",
 									cursor: "pointer",
@@ -198,12 +212,14 @@ export default function ListFiltersBar({
 								color: "var(--color-text-muted)",
 								fontSize: "14px",
 								margin: "0 4px",
+								"@media (max-width: 480px)": { display: "none" },
 							})}
 						>
 							—
 						</span>
 						<input
 							type="date"
+							aria-label={t("common.dateTo")}
 							value={to}
 							onChange={(e) => onToChange(e.target.value)}
 							className={css({
@@ -215,6 +231,12 @@ export default function ListFiltersBar({
 								outline: "none",
 								width: "125px",
 								cursor: "pointer",
+								"@media (max-width: 480px)": {
+									gridColumn: 2,
+									width: "100%",
+									minWidth: 0,
+									minHeight: "36px",
+								},
 								"::-webkit-calendar-picker-indicator": {
 									filter: "invert(0.5)",
 									cursor: "pointer",

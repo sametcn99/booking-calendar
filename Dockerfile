@@ -53,6 +53,7 @@ RUN bun install --production --frozen-lockfile
 # Copy server source
 COPY tsconfig.json ./
 COPY src/server ./src/server
+COPY src/shared ./src/shared
 
 # Copy compiled client assets from the builder stage
 COPY --from=client-builder /app/src/client/dist ./src/client/dist

@@ -2,10 +2,14 @@ import { useStyletron } from "baseui";
 import { Button, KIND, SIZE } from "baseui/button";
 import { Copy, ExternalLink, Trash2 } from "lucide-react";
 import type { ApiCommunityEvent } from "../../../api";
+import TagListRow, {
+	type TagSelection,
+} from "../../../components/PersonalTags/TagListRow";
 import { getApprovalRecords, STATUS_COLORS, statusLabel } from "./types";
 
 interface Props {
 	event: ApiCommunityEvent;
+	selection: TagSelection;
 	getShareLink: (slugId: string) => string;
 	onCopyLink: (slugId: string) => void;
 	onDelete: (slugId: string) => void;
@@ -13,6 +17,7 @@ interface Props {
 }
 
 export default function CommunityEventCard({
+	selection,
 	event,
 	getShareLink,
 	onCopyLink,
@@ -227,9 +232,9 @@ export default function CommunityEventCard({
 							gap: "6px",
 						})}
 					>
-						{approvalRecords.map((record, index) => (
+						{approvalRecords.map((record) => (
 							<div
-								key={`${event.slug_id}-${record.full_name}-${record.approved_at}-${index}`}
+								key={`${event.slug_id}-${record.full_name}-${record.approved_at}`}
 								className={css({
 									display: "flex",
 									justifyContent: "space-between",
@@ -252,6 +257,11 @@ export default function CommunityEventCard({
 					</div>
 				)}
 			</div>
+			<TagListRow
+				item={{ type: "community", data: event }}
+				label={event.title}
+				selection={selection}
+			/>
 		</div>
 	);
 }

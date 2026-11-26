@@ -179,5 +179,13 @@
 		"fullNameInvalid": "Please enter your first and last name",
 		"fullNameAlreadyApproved": "This full name has already approved this event",
 		"emailAlreadyApproved": "This email has already approved this event"
+	},
+	"personalTags": {
+		"invalidName": "Enter a tag name between 1 and 60 characters.",
+		"invalidColor": "Choose a valid tag color.",
+		"invalidItems": "Select between 1 and 100 valid items.",
+		"duplicate": "You already have this tag.",
+		"notFound": "Personal tag not found.",
+		"itemNotFound": "One or more selected items no longer exist."
 	}
 }

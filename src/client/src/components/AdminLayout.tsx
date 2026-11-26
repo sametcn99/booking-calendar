@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useI18n } from "../context/I18nContext";
+import { PersonalTagsProvider } from "../context/PersonalTagsContext";
 import AppToaster from "./AppToaster";
 
 export default function AdminLayout() {
@@ -54,7 +55,7 @@ export default function AdminLayout() {
 				backgroundColor: "var(--color-bg-primary)",
 			})}
 		>
-			<AppToaster />
+			<AppToaster topOnMobile />
 
 			{/* Sidebar */}
 			<nav
@@ -280,7 +281,9 @@ export default function AdminLayout() {
 					},
 				})}
 			>
-				<Outlet />
+				<PersonalTagsProvider>
+					<Outlet />
+				</PersonalTagsProvider>
 			</main>
 		</div>
 	);

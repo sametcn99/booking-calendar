@@ -5,8 +5,13 @@ import { useState } from "react";
 import type { ApiPlannerEvent } from "../../../api";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 
+import TagListRow, {
+	type TagSelection,
+} from "../../../components/PersonalTags/TagListRow";
+
 interface Props {
 	event: ApiPlannerEvent;
+	selection: TagSelection;
 	formatDate: (d: string) => string;
 	onEdit: (event: ApiPlannerEvent) => void;
 	onDelete: (id: number) => void;
@@ -14,6 +19,7 @@ interface Props {
 }
 
 export default function PlannerEventCard({
+	selection,
 	event,
 	formatDate,
 	onEdit,
@@ -37,14 +43,14 @@ export default function PlannerEventCard({
 					padding: "16px 20px",
 					border: "1px solid var(--color-bg-quaternary)",
 					borderLeft: `4px solid ${event.color || "var(--color-warning)"}`,
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "flex-start",
-					gap: "16px",
+					display: "grid",
+					gridTemplateColumns: "minmax(0, 1fr) auto",
+					alignItems: "start",
+					columnGap: "16px",
 					boxShadow: theme.lighting.shadow400,
 				})}
 			>
-				<div className={css({ flex: 1, minWidth: 0 })}>
+				<div className={css({ minWidth: 0 })}>
 					<h3
 						className={css({
 							...theme.typography.LabelLarge,
@@ -83,6 +89,7 @@ export default function PlannerEventCard({
 						kind={KIND.tertiary}
 						size={SIZE.compact}
 						onClick={() => onEdit(event)}
+						aria-label={`${t("planner.editTitle")}: ${event.title}`}
 						overrides={{
 							BaseButton: {
 								style: { color: theme.colors.contentSecondary },
@@ -103,6 +110,13 @@ export default function PlannerEventCard({
 					>
 						<Trash2 size={16} />
 					</Button>
+				</div>
+				<div className={css({ gridColumn: "1 / -1", minWidth: 0 })}>
+					<TagListRow
+						item={{ type: "planner", data: event }}
+						label={event.title}
+						selection={selection}
+					/>
 				</div>
 			</div>
 

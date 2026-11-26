@@ -3,6 +3,7 @@ import { AppointmentController } from "./controllers/AppointmentController";
 import { AuthController } from "./controllers/AuthController";
 import { BookingLinkController } from "./controllers/BookingLinkController";
 import { CommunityEventController } from "./controllers/CommunityEventController";
+import { PersonalTagController } from "./controllers/PersonalTagController";
 import { PlannerController } from "./controllers/PlannerController";
 import { PushController } from "./controllers/PushController";
 import { SlotController } from "./controllers/SlotController";
@@ -24,6 +25,7 @@ const dependencies = {
 	bookingLinkController: new BookingLinkController(),
 	pushController: new PushController(),
 	plannerController: new PlannerController(),
+	personalTagController: new PersonalTagController(),
 	communityEventController: new CommunityEventController(),
 	versionController: new VersionController(),
 	mailService: new MailService(),

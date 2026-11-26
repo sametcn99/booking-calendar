@@ -1,11 +1,15 @@
 import "reflect-metadata";
-import { DataSource } from "typeorm";
+import { rename, rm } from "node:fs/promises";
+import { DataSource, type EntityManager } from "typeorm";
+import type { SqljsDriver } from "typeorm/driver/sqljs/SqljsDriver.js";
 import { config } from "../config";
 import { AdminCredentialEntity } from "../entities/AdminCredentialEntity";
 import { AppointmentEntity } from "../entities/AppointmentEntity";
 import { AvailabilitySlotEntity } from "../entities/AvailabilitySlotEntity";
 import { BookingLinkEntity } from "../entities/BookingLinkEntity";
 import { CommunityEventEntity } from "../entities/CommunityEventEntity";
+import { PersonalTagAssignmentEntity } from "../entities/PersonalTagAssignmentEntity";
+import { PersonalTagEntity } from "../entities/PersonalTagEntity";
 import { PlannerEventEntity } from "../entities/PlannerEventEntity";
 import { PushSubscriptionEntity } from "../entities/PushSubscriptionEntity";
 import { SettingsEntity } from "../entities/SettingsEntity";
@@ -49,10 +53,37 @@ async function ensureDatabaseDirectory(dbPath: string): Promise<void> {
 	}
 }
 
+let pendingSave: Promise<unknown> = Promise.resolve();
+
+function saveDatabaseFile(bytes: Uint8Array): Promise<void> {
+	const path = getDatabasePath();
+	const stagedPath = `${path}.tmp`;
+	const saved = pendingSave.then(async () => {
+		try {
+			await Bun.write(stagedPath, bytes);
+			await rename(stagedPath, path);
+		} catch (error) {
+			await rm(stagedPath, { force: true }).catch(() => undefined);
+			throw error;
+		}
+	});
+	pendingSave = saved.catch(() => undefined);
+	return saved;
+}
+
 export const AppDataSource = new DataSource({
 	type: "sqljs",
 	location: getDatabasePath(),
 	autoSave: true,
+	autoSaveCallback: (bytes: Uint8Array) => {
+		// SQL.js reopens its connection on export, resetting connection PRAGMAs.
+		const driver = AppDataSource.driver as SqljsDriver;
+		const connection = driver.databaseConnection as {
+			run: (sql: string) => void;
+		};
+		connection.run("PRAGMA foreign_keys = ON");
+		return saveDatabaseFile(bytes);
+	},
 	synchronize: true,
 	entities: [
 		AvailabilitySlotEntity,
@@ -63,12 +94,25 @@ export const AppDataSource = new DataSource({
 		PushSubscriptionEntity,
 		PlannerEventEntity,
 		CommunityEventEntity,
+		PersonalTagEntity,
+		PersonalTagAssignmentEntity,
 	],
 	logging: false,
 	sqlJsConfig: {
 		locateFile: (fileName: string) => `node_modules/sql.js/dist/${fileName}`,
 	},
 });
+
+// SQL.js uses one query runner. Keep independent transactions from sharing a savepoint.
+let pendingTransaction: Promise<unknown> = Promise.resolve();
+
+export function databaseTransaction<T>(
+	work: (manager: EntityManager) => Promise<T>,
+): Promise<T> {
+	const result = pendingTransaction.then(() => AppDataSource.transaction(work));
+	pendingTransaction = result.catch(() => undefined);
+	return result;
+}
 
 async function configureDataSourceForCurrentPath(): Promise<string> {
 	const dbPath = getDatabasePath();
@@ -101,11 +145,8 @@ export async function closeDataSource(): Promise<void> {
 
 	const dbPath = getDatabasePath();
 	await ensureDatabaseDirectory(dbPath);
-	const sqljsDriver = AppDataSource.driver as unknown as {
-		export: () => Uint8Array;
-	};
-	const exported = sqljsDriver.export();
-	await Bun.write(dbPath, exported);
+	const sqljsDriver = AppDataSource.driver as SqljsDriver;
+	await saveDatabaseFile(sqljsDriver.export());
 	await AppDataSource.destroy();
 }
 

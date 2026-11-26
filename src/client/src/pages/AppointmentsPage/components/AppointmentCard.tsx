@@ -5,10 +5,14 @@ import { Copy, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import type { ApiCalDAVRepairAction } from "../../../api";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import TagListRow, {
+	type TagSelection,
+} from "../../../components/PersonalTags/TagListRow";
 import type { Appointment } from "../hooks/useAppointmentsPage";
 
 interface Props {
 	appointment: Appointment;
+	selection: TagSelection;
 	formatDate: (date: string) => string;
 	onCancel: (slugId: string) => void;
 	onDelete: (slugId: string) => void;
@@ -23,6 +27,7 @@ interface Props {
 }
 
 export default function AppointmentCard({
+	selection,
 	appointment,
 	formatDate,
 	onCancel,
@@ -420,6 +425,11 @@ export default function AppointmentCard({
 						</Button>
 					</div>
 				</div>
+				<TagListRow
+					item={{ type: "appointment", data: appointment }}
+					label={appointment.name}
+					selection={selection}
+				/>
 			</div>
 
 			<ConfirmationDialog
