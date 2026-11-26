@@ -53,7 +53,7 @@ export async function seedTagItems() {
 			slug_id: "appointment-alpha",
 			slot_id: slot.id,
 			start_at,
-			end_at,
+			end_at: futureIso(1, 12, 15),
 		},
 	);
 	const community = await AppDataSource.getRepository(
