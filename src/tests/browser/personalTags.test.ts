@@ -313,6 +313,15 @@ test("keeps the mobile picker and selection consistent when a save fails", async
 	const page = await context.newPage();
 	await signIn(page);
 	await go(page, "/admin/planner");
+	for (const label of ["Start date", "End date"]) {
+		const dateInput = await page
+			.getByLabel(label, { exact: true })
+			.boundingBox();
+		expect(dateInput).not.toBeNull();
+		expect(
+			(dateInput?.x ?? 0) + (dateInput?.width ?? Infinity),
+		).toBeLessThanOrEqual(390);
+	}
 	let unblockFailure: () => void = () => {};
 	let observedRequest: () => void = () => {};
 	const failed = new Promise<void>((resolve) => {

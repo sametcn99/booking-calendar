@@ -435,6 +435,8 @@
 		"activeFilters": "Aktif filtreler",
 		"search": "Arama",
 		"dateRange": "Tarih Aralığı",
+		"dateFrom": "Başlangıç tarihi",
+		"dateTo": "Bitiş tarihi",
 		"invalidDateRange": "Başlangıç tarihi bitişten sonra olamaz",
 		"noResults": "Filtrelerinize uygun öğe bulunamadı."
 	},

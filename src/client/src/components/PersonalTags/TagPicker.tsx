@@ -55,6 +55,8 @@ function TagPickerPanel({
 	const title = t(
 		action === "apply" ? "personalTags.add" : "personalTags.remove",
 	);
+	const showEmpty =
+		store.tags.length === 0 || action === "remove" || Boolean(key);
 
 	async function choose(tag: PersonalTag, operation = action) {
 		if (await store.changeAssignments(tag, operation, items)) close();
@@ -179,7 +181,7 @@ function TagPickerPanel({
 					</span>
 				</Button>
 			)}
-			{options.length === 0 && !canCreate && !exact && (
+			{showEmpty && options.length === 0 && !canCreate && !exact && (
 				<span
 					className={css({
 						fontSize: "12px",

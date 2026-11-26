@@ -435,6 +435,8 @@
 		"activeFilters": "Active filters",
 		"search": "Search",
 		"dateRange": "Date Range",
+		"dateFrom": "Start date",
+		"dateTo": "End date",
 		"invalidDateRange": "Start date must be before end date",
 		"noResults": "No items found matching your filters."
 	},
