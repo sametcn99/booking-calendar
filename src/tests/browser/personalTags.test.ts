@@ -399,6 +399,42 @@ test("keeps the mobile picker and selection consistent when a save fails", async
 	expect(await page.getByText("Retry label").count()).toBe(0);
 }, 30_000);
 
+test("keeps the entire tag button tappable on a short calendar appointment", async () => {
+	context = await browser.newContext({
+		serviceWorkers: "block",
+		viewport: { width: 390, height: 844 },
+		isMobile: true,
+		hasTouch: true,
+		timezoneId: "UTC",
+	});
+	const page = await context.newPage();
+	await signIn(page);
+	await page.getByRole("button", { name: "Next", exact: true }).click();
+	const control = tagControl(page, "Appointment Alpha");
+	await control.scrollIntoViewIfNeeded();
+	const bounds = await control.evaluate((button) => {
+		const event = button.closest(".rbc-event")?.getBoundingClientRect();
+		const target = button.getBoundingClientRect();
+		if (!event) throw new Error("Calendar event was not rendered");
+		return {
+			height: target.height,
+			width: target.width,
+			insideEvent:
+				target.left >= event.left &&
+				target.right <= event.right &&
+				target.top >= event.top &&
+				target.bottom <= event.bottom,
+			inViewport: target.left >= 0 && target.right <= innerWidth,
+		};
+	});
+	expect(bounds.height).toBeGreaterThanOrEqual(44);
+	expect(bounds.width).toBeGreaterThanOrEqual(44);
+	expect(bounds.insideEvent).toBe(true);
+	expect(bounds.inViewport).toBe(true);
+	await control.tap();
+	await page.getByRole("textbox", { name: "Add tag" }).waitFor();
+}, 30_000);
+
 test("keeps personal tag responses out of the installed PWA cache", async () => {
 	context = await browser.newContext();
 	const page = await context.newPage();
